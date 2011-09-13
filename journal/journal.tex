@@ -1,0 +1,239 @@
+\documentclass[11pt]{article}
+\usepackage{pset}
+
+\newcommand*{\X}{\mathfrak{X}}
+\newcommand*{\Mod}{\mathcal{M}}
+
+\begin{document}
+
+\section{September 9, 2011}
+
+\subsection{Introduction}
+
+I would like to work on a problem in algebraic statistics, and more specifically
+a problem about graphical models.  I do not yet have a coherent `story' for the
+background of a problem, so I will instead discuss some topics in a close
+neighborhood of what I want to work on.
+
+
+\subsection{Graphical models}
+
+Independence conditions arise naturally in many probabilistic models.  A
+graphical model is a probabilistic model for which a graph (directed or
+undirected) represents the conditional independence structure between random
+variables. 
+
+Let $G$ be a graph with vertex set $V$.  Suppose that $(X_\alpha)_{\alpha \in
+V}$ are random variables taking values in probability spaces
+$(\X_\alpha)_{\alpha \in V}$.  Usually the $X_\alpha$ are either discrete or
+real-valued.  The joint probability of $X = (X_\alpha)$ is said to
+factor with respect to $G$ if the probability density is
+\[
+    P[X_1, \ldots, X_n] = 
+        \prod_\alpha P[X_\alpha \mid X_\beta, \beta \text{ is a parent of }
+        \alpha]
+\]
+that is, the dependence of a random variable on the other variables is
+completely captured by its dependence on its immediate parents (i.e. on the
+variables having directed edges into it).  We can also formulate an equivalent
+statement in terms of conditional independence statements.
+
+In the case of an undirected graph, it is known (the Hammersley–Clifford
+theorem) that the probability density factors as
+\[
+    P[X_1, \ldots, X_n] = 
+        \prod_{S \in C(G)} P[X_\alpha \mid X_\beta, \beta \in S]
+\]
+where the $S$ are complete subgraphs (cliques) of $G$.
+
+Graphical models turn up in a number of places -- some include Bayesian networks
+(directed) and Markov random fields (undirected) in statistics, Boltzmann
+machines in machine learning, and Ising models (particle spins in a lattice) in
+statistical mechanics.
+
+\subsection{Boltzmann machines}
+
+A Boltzmann machine factors with respect to an undirected graph, and in addition
+assumes that the variables only have pairwise interactions.
+
+Concretely, let the random variable $X = (X_i)_{1 \le i \le n}$ take values in
+$\{0,1\}^n$, and let $\theta = (\theta_{ij})$ be a symmetric $n \times n$
+matrix.  Then $\theta$ parametrizes a family of probability distributions.
+
+We can regard 
+\[
+    H_\theta(X) = \sum_{i < j} \theta_{ij} X_i X_j + \sum_i \theta_i X_i
+\]
+as the energy of the system.  Then the probability of $X$ is
+\[
+    P_\theta[X] = \frac{\exp(- H_\theta(X))}{Z_\theta}
+\]
+where $Z_\theta$ is the normalizing factor
+\[
+    Z_\theta = \sum_{X \in \{0,1\}^n} \exp(-H_\theta(X))))
+\]
+known as the partition function.
+
+Notice that the `exponent of sum' form of the probability density directly
+corresponds to a `product of terms' form, from which we can derive conditional
+independence statements if some of the entries $\theta_{ij}$ are zero.
+
+The Boltzmann machine is inspired by ideas statistical mechanics, where the
+distribution is known as the Ising model.  Also, restricted Boltzmann machines
+(RBMs) have recently become a building block for an important technique in
+machine learning -- deep belief networks.
+
+A RBM has some number of `observed' variables $X_1, \ldots, X_m$ and hidden
+variables $X_{m+1}, \ldots, X_n$.  The graph for the RBM is the complete
+bipartite graph, where every edge is between an observed and hidden variable,
+i.e. $\theta_{ij} = 0$ if $i,j \le m$ or $i,j \ge m+1$.
+
+Because the hidden variables are not observed, in order to fit the model's
+parameters to the data we consider the marginalized probabilities
+\[
+    P_\theta[X_1, \ldots, X_m] = \sum_{(X_{m+1}, \ldots, X_n) \in \{0,1\}^{n-m}}
+        P_\theta[X_1, \ldots, X_n].
+\]
+With a fitted parameter $\theta$ and an observed value $X_1, \ldots, X_m$, we can
+also compute a probability distribution over the hidden variables; in some
+sense, the hidden variables constitute an `explanation' for the data.
+
+
+\subsection{The (algebraic) geometry of probability models}
+
+A probability distribution over a finite set of size $n$ corresponds with a
+point in the \emph{probability simplex}
+\[
+    \Delta_{n-1} = 
+    \left\{(x_1, \ldots, x_{n}) \mid \sum_{i=1}^n x_i= 1, x_i \ge 0 \right\} 
+    \cong 
+    \left\{(x_1, \ldots, x_n) \mid \sum_{i=1}^{n-1} x_i \le 1, x_i \ge 0 \right\}
+\]
+of dimension $n-1$.  We can think of a probability model as a subspace 
+$\Mod \subset \Delta_{n-1}$.
+
+One way to select a particular probability distribution $p$ from a model $\Mod$
+is by \emph{maximum likelihood}.  That is, given observations $X^{(1)}, \ldots,
+X^{(N)}$ we attempt to maximize
+\[
+    L(p \mid X^{(1)}, \ldots, X^{(N)}) = \prod_{i=1}^N p(X^{(i)}
+\]
+though in practice the negative log-likelihood $l(p, X^{(i)}) = -\log L(p, X^{(i)}$ is
+often used (this is a `loss' function, and the losses of the observations are
+summed).
+
+From the viewpoint of algebraic geometry, we will usually stipulate that models
+are semialgebraic sets, that is, subsets of $\R^n$ that are determined by
+polynomial equations and polynomial inequalities.  Real algebraic geometry
+(which studies these objects) can be difficult, so sometimes the field is
+extended to the complex numbers and/or the Zariski closure of the set is
+considered.
+
+Oftentimes, to compute things we will want some rational parametrization $\R^n
+\supset U \to \Mod$ of the model.
+
+Using the computational tools available to algebraic geometry (and with problem
+sizes, e.g. dimension, that are extremely small) it is sometimes possible to
+answer questions like `what is the maximum likelihood parameter' exactly.
+
+The overall hope of approaches like this is (from what I can see) to apply the
+tools of geometry to the problems of statistics.  (Compare with `information
+geometry', the application of the techniques of differential (esp. Riemannian)
+geometry to problems in probability theory, pioneered in the 1980s -- I don't
+know how much it has caught on.)  One potential gain from this approach is that
+`coordinate-invariance' comes more naturally than usual.
+
+
+\subsection{Machine learning (and deep learning)}
+
+Machine learning involves algorithmically taking data in order to perform better
+at some task.  Abstractly, its goal is similar to that of statistics -- to learn
+from data.  The emphasis, however, tends to be toward large data sets, efficient
+algorithms (for those large data sets), and fewer assumptions on models
+(`non-parametric' statistics).  
+
+Machine learning is studied both by computer scientists and statisticians (who
+sometimes call it statistical learning).  (A very good introduction, and one
+from which I have taken much of my viewpoint on ML, is \textit{The Elements of
+Statistical Learning} by Hastie, Tibshirani, and Friedman -- three
+statisticians.)
+
+One very common task is the classification problem.  Here, observations are
+points in some (complicated, high-dimensional) space $X$, and the goal is to
+assign an observation $x \in X$ to a class label from some finite set $\{A, B,
+\ldots \}$.  It can be viewed as a problem where we are attempting to
+approximate a function $f : X \to \{A, B, \ldots\}$ given a number of observed
+class labels $f(x^{(i)})$.  Of course, this problem is impossible without some very
+strong constraints on the type of function (the `model').  You can transform the
+classification problem into a problem of estimating a probability distribution
+by simply considering the joint distribution over observations and labels.
+
+Most successful algorithms are in some sense `only a step or two away from
+linear'.  A basic approach (to, say, binary classification) is to try to
+separate the points in the two classes by some hyperplane.  A modification (used
+by support vector machines (SVMs)) is to transform the data to some even-higher
+dimensional space (infinite, perhaps), and to separate by a hyperplane there.
+Another common approach is to have some family of basis functions, and to
+consider linear combinations of them.
+
+However, for some problems these techniques may not be enough.  This has
+prompted (with some success only in the last ten years?) the creation of
+so-called `deep learning' methods, which have `many layers of non-linearity'.
+One very important method (perhaps the \emph{most important} so far) is called
+the deep belief network and involves stacking restricted Boltzmann machines and
+training them greedily.  (Professor Keller, I think, has done some work with
+deep belief networks.)  
+
+Deep belief networks can be, however, extremely difficult to optimize.
+Monte-Carlo-Markov-Chain (MCMC) techniques are necessary, and esoteric sounding
+things like `importance sampling' and `simulated annealing' are used to improve
+performance.  (The general subject area is called `stochastic optimization', I
+think.  Remember that we do not need exactly optimal solutions, but only
+solutions that are `good enough'.)
+
+These and similar methods have performed well on some problems.  One `standard'
+example that shows up a lot in papers is the MNIST dataset of handwritten
+digits.  In some cases, these algorithms solve an even harder problem than what
+humans do -- the `permutation invariant' problem delivers the pixels of the
+image as a vector with no a priori knowledge of the geometry of the image.
+
+\subsection{Prior work}
+
+For the algebraic geometry of graphical models, one paper is `On the toric
+algebra of graphical models' (Geiger, Meek, Sturmfels -- 2006).  A book-length
+account that covers graphical models, among other topics in algebraic
+statistics, is `Lectures on Algebraic Statistics' (Drton, Sturmfels, Sullivant
+-- 2009).  
+
+Papers that have focused on specific types of graphical models include
+`Algebraic Geometry of Bayesian Networks' (Garcia, Stillman, Sturmfels -- 2003)
+and `Geometry of the restricted Boltzmann Machine' (Cueto, Morton, and Sturmfels
+-- 2009).  
+
+Inspired by questions in phylogenetics, tropical geometry has been applied to
+questions in algebraic statistics (incl. graphical models).  See the paper
+`Tropical Geometry of Statistical Models' (Pachter, Sturmfels -- 2003) and the
+book `Algebraic Statistics for Computational Biology' (Pachter, Sturmfels --
+2005).
+
+Another book, which builds theory for considering optimization problems from the
+viewpoint of algebraic statistics is `Algebraic Geometry and Statistical
+Learning Theory' (Watanabe 2009).
+
+From the machine learning side, questions in deep learning have spawned a large
+number of papers, but an early and important one is `A fast learning algorithm for
+deep belief nets' (Hinton 2007).  A good survey paper on the need for and
+approaches to deep learning is `Learning deep architectures for AI' (Bengio
+2009).
+
+One very recent type of graphical model that encompasses models with tractable
+partition functions was introduced in `Sum-Product Networks: A New Deep
+Architecture' (Domingos, Poon 2011).
+
+\subsection{Where to go from here}
+
+One possibility for a problem to work on is to simply extend Sturmfels' work on
+the restricted Boltzmann machine.  There is some distance yet between examining
+its geometry and having something useful to say about the optimization problem.
+
+\end{document}
