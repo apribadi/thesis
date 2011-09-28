@@ -3,8 +3,15 @@
 
 \newcommand*{\X}{\mathfrak{X}}
 \newcommand*{\Mod}{\mathcal{M}}
+\usepackage[normalem]{ulem}
+
+\title{Thesis Journal}
+\author{Aaron Pribadi}
+\date{}
 
 \begin{document}
+
+\maketitle
 
 \section{September 9, 2011}
 
@@ -235,5 +242,271 @@ Architecture' (Domingos, Poon 2011).
 One possibility for a problem to work on is to simply extend Sturmfels' work on
 the restricted Boltzmann machine.  There is some distance yet between examining
 its geometry and having something useful to say about the optimization problem.
+
+\section{September 16, 2011}
+
+
+\subsection{The restricted Boltzmann machine}
+
+We describe a restricted Boltzmann machine (RBM); some of this is a repeat from
+earlier.
+
+An RBM with $n$ visible variables and $k$ hidden variables is a model with
+states $(v, h)$ where $v \in \{0,1\}^n$ and $h \in \{0,1\}^k$.  It is
+parametrized by a real $k \times n$ matrix and real vectors $b \in \R^n$, $c \in
+\R^k$ (so it has a total of $nk + n + k$ parameters).  The unnormalized joint
+distribution is
+\[
+    \psi(v, h) = \exp(h^T W v + b^Tv + c^T h).
+\]
+The probability distribution over the visible variables is 
+\[
+    p(v) = \frac 1 Z \cdot \sum_{h \in \{0,1\}^k} \psi(v, h)
+\]
+where $Z = \sum_{v,h} \psi(v, h)$ is the \emph{partition function}.  (This
+procedure, of defining a joint probability distribution and then
+\emph{marginalizing} over hidden variables, is a common one.)
+
+Because the only interactions between variables are pairwise between one visible
+and one hidden, the model factors according to the complete bipartite graph
+$K_{n,k}$.  (Notice that the terms in the sum inside the $\exp$ become
+multiplicative factors.  Thus terms that only involve some subset of variables
+correspond to multiplicative factors that only involve those variables --- from
+which we can derive the appropriate independence conditions.)
+
+\subsection{Summary of `Geometry of the restricted Boltzmann machine'}
+
+Now to the paper.  In order to move to an algebro-geometric presentation, the
+paper uses the parametrization
+\[
+    \gamma_i = \exp(c_i)
+    \qquad
+    \omega_{ij} = \exp(W_{ij})
+    \qquad
+    \beta_j = \exp(b_j)
+\]
+with which
+\[
+    \psi(v, h) = \prod_{i=1}^k \gamma_i^{h_i}
+        \cdot 
+        \prod_{i=1}^k \prod_{j=1}^n \omega_{ij}^{h_i v_j}
+        \cdot
+        \prod_{j=1}^n \beta_j^{v_j}.
+\]
+The above is a monomial, and is not actually very scary.  The partition $Z$ is
+also polynomial in the parameters, so the map $\R^{nk+n+k} \to
+\Delta_{2^n-1}$ from parameters to probability distributions given by $p(v)$ is
+then a rational map.  The image $M_n^k \subset \Delta_{2^n - 1}$ of the map is a
+semialgebraic set.
+
+The author considers both the semialgebraic set $M_n^k \subset \Delta_{2^n - 1}$
+and the variety $V_n^k$ which is the Zariski closure of $M_n^k$ in complex
+projective space.  Some results and conjectures on dimension are given.
+
+In the absence of `problems', one would expect that $M_n^k$ has the same
+dimension as its preimage $\R^{nk + n + k}$.  The dimension of $M_n^k$ of course
+cannot exceed the dimension of its containing space, $2^n - 1$.  Thus the author
+conjectures that
+\[
+    \dim M_n^k = \min\{nk+n+k, 2^n -1\}
+\]
+in $\Delta_{2^n-1}$, and proves the conjecture for most usual values of $n,k$,
+i.e. for $k \le 2^{n - \lceil \log_2(n+1) \rceil}$.
+
+The author also shows that the varieties $M_n^k$ and $V_n^k$ `factor'.
+Specifically, they factor as \emph{Hadamard powers}
+\[
+    V_n^k = (V_n^1)^{[k]}
+    \qquad
+    M_n^k = (M_n^1)^{[k]}.
+\]
+Then $M_n^1$ and $V_n^1$ are examined.  One result proved is that $V_n^1$
+conincides with the first secant variety of the \emph{Segre embedding} of the
+product of projective lines $(\Proj^1)^n$ into $\Proj^{2^n-1}$.  Also, $M_n^1$
+can be seen as a \emph{mixture model} of two independence models and has a
+`star-shaped' independence graph.
+
+(Both the Hadamard product and the Segre embedding are fairly standard
+constructions.)
+
+Another way to look at an RBM (and, indeed, the reason that it is useful for
+deep belief networks) is as an `inference function'.  You give it an observed
+value for the visible nodes, and you get a conditional probability distribution
+over the hidden nodes $p(h \mid v)$.  The value $h \in \{0,1\}^k$ of maximal
+likelihood is an `explanation' of the observed datum.
+
+It turns out that the components $h_i$ of $h$ are, viewed as functions of $v$,
+`linear threshold functions'.  Basically, the values of $v$ are vertices of a
+hypercube, and the decision boundary of whether $h_i = 0$ or $1$ is a hyperplane
+through the hypercube.
+
+The author also examines the RBM using tropical geometry, but I am not familiar
+enough with it to give a good explanation.
+
+\subsection{Summary of Montufar}
+
+I haven't written this up yet
+
+\subsection{Questions}
+
+How does tropical geometry fit into the picture?  The paper \cite{A5} may help.
+
+Can any of these results (incl. tropical) help with the training being done with
+DBNs, i.e. with stochastic optimization on networks with a large number of
+nodes?
+
+As far as where to go with this, one direction is simply to `stack up' the RBMs:
+what is the (algebraic) geometry of the deep belief network?  It also looks like
+the mixture model perspective helps to understand the RBM -- can in also, from
+the alg-geo point of view, help with the DBN?
+
+The variety $\Proj^1 \times \cdots \times \Proj^1$ appears to play an important
+role with the RBM \dots.
+
+Another thing to look at:  It appears that the bounds on the number of hidden
+units for universal approximators require a model with \emph{much much} more
+parameters than are required to solely match the dimension requirements.  When
+the RBM/DBN is at full dimension but does not cover the whole range of possible
+distributions, what do the `holes' look like?
+
+\section{September 23, 2011}
+
+Short (10 min) presentation to thesis group was last Tuesday.
+
+\subsection{Thoughts on an expository paper}
+
+The presentation I did on Tuesday (with \sout{a few} many expanded topics) could
+be one good ordering with which to approach the topic somewhat pedagogically.
+That is, the order
+\begin{itemize}
+\item Brief introduction to algebraic statistics and algebraic geometry (what
+are they?)
+\item The probability simplex (making probability geometric)
+\item Example: the independence model
+\item Example: mixture models and hidden values
+\item Statistical learning -- models, maximum likelihood, and model selection
+criteria
+\item Statistical learning -- common optimization algorithms (?? optional ??)
+\item The RBM (restricted Boltzmann machine) -- definition
+\item The RBM -- marginalization and the interpretation as an inference function
+\item The RBM -- its algebraic geometry
+\item Graphical models -- a taxonomy, applications (?? optional ??)
+\item Graphical models -- computational concerns, and algebraic techniques (?? optional ??)
+\item Machine learning -- goals, techniques, and trends (`deep learning')
+\item The DBN (deep belief network) -- definition, applications, training techniques
+\item The DBN -- the state of the art (unsharp universal approximation results)
+\end{itemize}
+In particular, independence models and mixture models (in addition to being nice
+examples) lead directly to the geometry of the RBM with one hidden node.  The
+book \cite{lectures} is going to be referenced pretty heavily for the more
+general material.  I don't know if I'm going to be able to work in
+\cite{watanabe} for the model selection stuff -- I probabily will not have the
+time to understand it beforehand.
+
+Next week's thesis-ing should mostly be occupied with writing the paper.  Much
+of it is already written up in some form or another.  The major parts that are
+left are a precise description of a DBN, a precise description of universal
+approximation results, and algorithmic things.  I'd like to include enough of
+the algorithms to at least get a rough flavor of what's being used in practice
+-- I think that that's going to mean at least EM and gradient descent.  
+
+I still also need to get a better handle on the computational algebra portions
+-- perhaps read the `toric algebra' paper.  The presence of computational
+algebra in the expository paper will likely be pretty light at this point,
+however.
+
+As indicated, I'm not sure how much I want to include on other types of
+graphical models.  Certainly enough to say `the RBM factors w.r.t a complete
+bipartite graph', but more might not be necessary (?).
+
+I should also dig up some more open problems that I'm \emph{not} going to work
+on.
+
+
+\subsection{A closer look at `Geometry of the RBM'}
+
+I've been looking more closely at the proofs in \cite{RBM}, so I now understand
+better his parametrization of the RBM with one hidden node (generating
+functions!), and why taking Hadamard powers corresponds to adding new nodes.
+Also, the Segre embedding of a product is a natural construction.  I'm still a
+bit shaky on secant varieties.
+
+Also, I don't understand enough about some of the computational aspects, and
+related algebraic techniques.  E.g. determinental varieties, and why do matrix
+minors turn up?
+
+Also, I don't know tropical geometry.
+
+I have a copy of Cox, Little, and O'Shea's \emph{Using Algebraic Geometry}, but
+will probably have to cherry-pick topics to study.  There's a chapter on
+polytopes and resultants that might (?) be useful.
+
+\subsection{Paper hopping and other miscellany}
+
+Referenced in \cite{RBM} is the paper \cite{B2} about the geometry binary-valued
+graphical tree models  (It's mentioned specifically in the context of the
+one-hidden-node RBM, which is a tree.)  Haven't looked too closely yet.
+
+Something I didn't realize before: the directed connections in a DBN are pointed
+\emph{towards} the visible nodes.  I guess that makes sense in a way -- the goal
+is to get an interesting distribution over the visible nodes, and `more hidden'
+layers should correspond to `more abstract' features, which influence layers of
+abstraction beneath them.  This direction also plays nicely with marginalizing
+away the hidden variables.  Also, it makes sense for generation -- a one-hot
+encoding on the classification variables induces a distribution over the visible
+nodes, so we have a generative model.
+
+From a greedy-training standpoint, it also makes sense (as it should).  We're
+looking (at each layer) for parameters that make the layers we already have more
+likely.  Then the causal arrows are pointing towards what we already have.
+
+\subsection{Questions}
+
+Another question -- is model selection even relevant here?  After all, we might
+going for something that's a universal approximator, or close.  Or is the
+`factor analysis'-like structure the important part?  Or perhaps with the
+(sort-of) decomposition of the model, we can say something about model selection
+over the constituent parts?  Do these questions even make sense?
+
+What effect do the one-way-directional influences have on a DBN, versus the lack
+of them in a deep Boltzmann machine?
+
+No answers yet (for last week's stuff). :-(
+
+
+\subsection{Goals for next week}
+\begin{itemize}
+\item Write expository paper (bulk of time)
+\item Write precise description of DBN (incl.\ in above)
+\item Continue to digest Sturmfels' RBM geometry paper
+\item Read toric algebra paper (?)
+\end{itemize}
+
+
+\begin{thebibliography}{100}
+    \bibitem{RBM} Cueto, Morton, Sturmfels. ``Geometry of the Restricted
+    Boltzmann Machine''.  2009.
+    \bibitem{RBM2} Montufar.  ``Mixture Models and Representational Power of
+    RBM's, DBN's and DBM's''.  2010.
+    \bibitem{A2} Geiger, Meed, Sturmfels ``On the toric algebra of graphical
+    models''. 2006.
+    \bibitem{lectures} Drton, Sturmfels, Sullivant. \textit{Lectures on Algebraic
+    Statistics}. 2009.
+    \bibitem{A4} Garcia, Stillman, Sturmfels.  ``Algebraic Geometry of Bayesian
+    Networks''.  2003.
+    \bibitem{A5} Pachter, Sturmfels.  ``Tropical Geometry of Statistical
+    Models''. 2003.
+    \bibitem{A6} Pachter, Sturmfels.  \textit{Algebraic Statistics for
+    Computational Biology}.  2005.
+    \bibitem{watanabe} Watanabe.  \textit{Algebraic Geometry and Statistical Learning
+    Theory}.  2009.
+    \bibitem{A8} Hinton.  ``A fast algorithm for deep belief nets''.  2007.
+    \bibitem{A9} Bengio.  ``Learning deep architectures for AI''. 2009.
+    \bibitem{B1} Domingos, Poon. ``Sum-Product Networks: A New Deep
+    Architecture''. 2011.
+    \bibitem{B2} Smith, Zwiernik.  ``The Geometry of Independence Tree Models
+    with Hidden Variables''.
+\end{thebibliography}
+
 
 \end{document}

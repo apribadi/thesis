@@ -1,7 +1,7 @@
 \ProvidesPackage{pset}
 
 \usepackage[width=15.0cm,bottom=3.2cm,top=2.8cm]{geometry}  % page geometry
-\usepackage{amsmath, amssymb, amsthm}      % AMS math
+\usepackage{amsmath,amssymb,amsthm}        % AMS math
 \usepackage{mathtools}                     % includes shortintertext and more!
 \usepackage[retainorgcmds]{IEEEtrantools}  % nicer equation align
 
@@ -9,10 +9,11 @@
 \usepackage{xunicode}  
 \usepackage{mathspec}  % mathspec contains fontspec
 \defaultfontfeatures{Ligatures=TeX}
-\setmainfont{Minion Pro}
-\setsansfont[Scale=MatchLowercase]{Myriad Pro}
+\setmainfont{Minion Pro} %{Linux Libertine O}
+\setsansfont[Scale=MatchUppercase]{Myriad Pro}
 \setmonofont[Scale=MatchLowercase]{Consolas}
-\setmathrm[Scale=MatchLowercase]{Droid Serif}
+\setmathrm[Scale=MatchLowercase]{CMU Concrete}
+\setmathsf[Scale=MatchUppercase]{Myriad Pro}
 \renewcommand*{\oldstylenums}[1]{{\addfontfeature{Numbers=OldStyle} #1}}
 
 % spacing
@@ -21,6 +22,7 @@
 
 % math fonts
 % eulervm must be loaded AFTER main text fonts, for mathrm etc.
+% euler-digits also replaces comma and period, so don't use :-(
 \usepackage[small,euler-hat-accent]{eulervm}
 
 % hacks to make accents work
@@ -126,8 +128,8 @@
 }{
     \hfill\ensuremath{\Box}
     \end{trivlist}
-    % \vspace{\baselineskip}
-    \pagebreak
+    \vspace{\baselineskip}
+    %\pagebreak
 }
 
 
@@ -142,6 +144,7 @@
 \newcommand*{\Q}{\ensuremath{\mathds{Q}}}
 \newcommand*{\C}{\ensuremath{\mathds{C}}}
 \newcommand*{\R}{\ensuremath{\mathds{R}}}
+\newcommand*{\Proj}{\ensuremath{\mathds{P}}}
 \newcommand*{\inv}[1]{#1^{-1}}
 \newcommand*{\dual}[1]{#1^{\ast}}
 \newcommand*{\dd}{\,d}
@@ -173,7 +176,7 @@
 %   Also defines \Xdil* macro, giving \left and \right modifiers.
 \DeclarePairedDelimiter\sdil{[}{]}
 \DeclarePairedDelimiter\adil{\langle}{\rangle}
-\DeclarePairedDelimiter\cdil{\{}{\{}
+\DeclarePairedDelimiter\cdil{\{}{\}}
 \DeclarePairedDelimiter\pdil{\lparen}{\rparen}
 \DeclarePairedDelimiter\vdil{\vert}{\vert}
 
