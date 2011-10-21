@@ -349,7 +349,7 @@ I haven't written this up yet
 
 \subsection{Questions}
 
-How does tropical geometry fit into the picture?  The paper \cite{A5} may help.
+How does tropical geometry fit into the picture?  The paper \cite{PS03} may help.
 
 Can any of these results (incl. tropical) help with the training being done with
 DBNs, i.e. with stochastic optimization on networks with a large number of
@@ -398,9 +398,9 @@ criteria
 \end{itemize}
 In particular, independence models and mixture models (in addition to being nice
 examples) lead directly to the geometry of the RBM with one hidden node.  The
-book \cite{lectures} is going to be referenced pretty heavily for the more
+book \cite{DSS09} is going to be referenced pretty heavily for the more
 general material.  I don't know if I'm going to be able to work in
-\cite{watanabe} for the model selection stuff -- I probabily will not have the
+\cite{Wat09} for the model selection stuff -- I probabily will not have the
 time to understand it beforehand.
 
 Next week's thesis-ing should mostly be occupied with writing the paper.  Much
@@ -425,7 +425,7 @@ on.
 
 \subsection{A closer look at `Geometry of the RBM'}
 
-I've been looking more closely at the proofs in \cite{RBM}, so I now understand
+I've been looking more closely at the proofs in \cite{CMS09}, so I now understand
 better his parametrization of the RBM with one hidden node (generating
 functions!), and why taking Hadamard powers corresponds to adding new nodes.
 Also, the Segre embedding of a product is a natural construction.  I'm still a
@@ -443,7 +443,7 @@ polytopes and resultants that might (?) be useful.
 
 \subsection{Paper hopping and other miscellany}
 
-Referenced in \cite{RBM} is the paper \cite{B2} about the geometry binary-valued
+Referenced in \cite{CMS09} is the paper \cite{B2} about the geometry binary-valued
 graphical tree models  (It's mentioned specifically in the context of the
 one-hidden-node RBM, which is a tree.)  Haven't looked too closely yet.
 
@@ -482,30 +482,158 @@ No answers yet (for last week's stuff). :-(
 \item Read toric algebra paper (?)
 \end{itemize}
 
+\section{October 14, 2011}
+
+After the expository draft.
+
+For now, it looks like a good idea to focus solely on the RBM (ignoring, e.g.
+the DBN).  What useful things can we say about the model?
+
+Should be on the lookout for computational opportunities.  For example, can we
+take an RBM for some values of $n$ and $k$ and sample to find out what sort of
+volume it occupies in the probability simplex?  
+
+One option would be to sample points from the simplex and then compute whether
+or not they lie within the model.  It would be convenient, if, say, we only had
+to check a finite number of polynomial equations and polynomial inequalities.
+However, we run into the problem of \textbf{implicitization}.  For small models,
+it's already a significant challenge.  In fact, \cite{CTY10} is a whole paper on
+the techniques necessary to implicitize the model with four visible variables
+and two hidden variables (disregarding the inequalities, it's a hypersurface,
+i.e. has codimension 1).
+
+Another option would be to sample from the parameter space.  The problem there
+is that you don't know what the mapping (from parameters to the model) does to
+the closeness of points.  You would (I think) want to be able to compute the
+gradient of the map.  However, the difficulty of computing the gradient is
+\textbf{precisely} what makes training RBMs take as long as it does.
+(Contrastive divergence, etc. is for estimating the gradient, to do gradient
+descent).
+
+A problem with all of these approaches (sampling a space to empirically
+determine its geometry) is the curse of dimensionality.  Basically, as the
+dimension increases, you need exponentially more points to get points to become
+close to each other (using the usual euclidian distance).  In this case, the
+dimension itself is increasing exponentially!
+
+Another line of attack is to consider simplifications or restrictions of the
+model.  For example, if there existed some natural sequence of models $M_1
+\subset M_2 \subset \cdots \subset M_n = M$, we could possibly leverage that.
+
+\section{October 21, 2011}
+
+Learning about toric varieties (\cite{CLS09} and \cite{CLO98}) and real
+algebraic geometry (\cite{Cos09}) is hard.  Perhaps something to put off till
+later?
+
+I think that I better understand the results in \cite{Mon10} on the sizes of
+RBMs required for arbitrarily approximating any distribution.  The upper bounds
+are by parameter (dimension) counting, which is pretty straightforward.  The
+lower bounds are by construction.  Independence models can produce arbitrary
+distributions with support over two states, where the two states are bit vectors
+that differ by one bit.  There is then a procedure for starting with a
+distribution over two of those states, and then with each additional hidden node
+extending the distribution to two more states (that differ by one bit).
+
+Montufar's NIPS paper also has results about constructing arbitrary
+distributions out of mixtures of independence models.  With arbitrary weights,
+it is sufficient to have $2^{n-1}$ factorizing distributions.  This value is
+sharp; there exist distributions that require all $2^{n-1}$ components.
+It is interesting to note that each one of these components can be very simple;
+they're the previously mentioned arbitrary distributions with support over two
+states that differ by one bit.
+
+Thus, if we view the visible distribution as a marginalization over hidden
+variables, the hidden variables must have at least $2^{n-1}$ states.  You can
+check that each conditional probability $p(v \mid h)$ is, in fact, a factorizing
+distribution.  Basically, $p(v) \propto \exp(hWv + bv)$, which factors into
+parts dependent on components of $v$.
+
+The construction given, however, requires $2^{n-1} - 1$ hidden nodes, which have
+$2^{2^{n-1} - 1}$ hidden states, which grows much more rapidly then the
+theoretical bound of $2^{n-1}$.  Contributing to this discrepancy is the fact
+that neither the factorizing models nor the weights are arbitrary.
+
+Some thing(s) that I did!
+
+From the description of the RBM given in \cite{CMS09}, it is possible to express
+the model as a weighted sum of factorizing models, with certain restrictions on
+both the weights and the models.  For $i = 1, \ldots, k$, $l = 0,1$, let $a_k^l$
+be a factorizing distribution over $n$ binary variables (i.e. $a_k^l$ is in the
+independence model $M \subset \Delta_{2^n - 1}$).  Then for $l = (l_1, \ldots,
+l_k) \in \{0,1\}^k$, let $b_l$ be the distribution
+\[
+    b_l = a_1^{l_1} * a_2^{l_1} * \cdots * a_k^{l_k}
+\]
+wher `$*$' is the Hadamard product (multiply component-wise, then renormalize).
+It is fairly straightforward to show that $b_l$ factorizes as an independence
+model.  Then any point in the RBM model is of the form
+\[
+    \sum_{l \in \{0,1\}^k} \pdil*{\prod_{i=1}^k \lambda_i^{l_i} (1 -
+    \lambda_i)^{1 - l_i}} b_l
+\]
+where $\lambda_i \in (0,1)$ are weights.  It's almost as if we have a bunch of
+independence models that are weighted together using another independence model.
+So there are $2^k$ mixture components $b_l$, but both the components and the
+weights are constrained.
+
+In fact, if we take $n=k$ and take $a_i^j$ be the model
+\[
+    a_i^j(v) = \begin{cases}
+        \frac{2}{2^n} & \text{if $v_i = j$}\\
+        0 & \text{if $v_i \ne j$}
+    \end{cases}
+\]
+then 
+\[
+    b_l(v) = \begin{cases}
+        1 & \text{if $v = l$}\\
+        0 & \text{if $v \ne l$}
+    \end{cases}
+\]
+i.e. the $b_l$ are the delta functions.  If the weights were arbitrary, then all
+distributions could be had.  Alas, there are far too few possible weight
+combinations; we actually recover a lone independence model (parametrized by
+values of $\lambda_i$).
+
+This perspective (parametrization in terms of mixture models) might (?) be
+interesting, and we could try the to nest models from here.  Say, what happens
+when we perturb one or more of the $a_i^j$'s away from purely discriminating on
+one of the bits, into say
+\[
+    a_i^j(v) = \begin{cases}
+        p\frac{2}{2^n} & \text{if $v_i = j$}\\
+        (1 - p)\frac{2}{2^n} & \text{if $v_i \ne j$}
+    \end{cases}.
+\]
+The assumption here that $n=k$ is also potentially interesting or slightly
+simplifying.  In any case, it's a realistic choice of parameter, as one could
+stack identically sized ones of these indefinitely.
 
 \begin{thebibliography}{100}
-    \bibitem{RBM} Cueto, Morton, Sturmfels. ``Geometry of the Restricted
-    Boltzmann Machine''.  2009.
-    \bibitem{RBM2} Montufar.  ``Mixture Models and Representational Power of
-    RBM's, DBN's and DBM's''.  2010.
-    \bibitem{A2} Geiger, Meed, Sturmfels ``On the toric algebra of graphical
-    models''. 2006.
-    \bibitem{lectures} Drton, Sturmfels, Sullivant. \textit{Lectures on Algebraic
-    Statistics}. 2009.
-    \bibitem{A4} Garcia, Stillman, Sturmfels.  ``Algebraic Geometry of Bayesian
-    Networks''.  2003.
-    \bibitem{A5} Pachter, Sturmfels.  ``Tropical Geometry of Statistical
-    Models''. 2003.
-    \bibitem{A6} Pachter, Sturmfels.  \textit{Algebraic Statistics for
-    Computational Biology}.  2005.
-    \bibitem{watanabe} Watanabe.  \textit{Algebraic Geometry and Statistical Learning
-    Theory}.  2009.
-    \bibitem{A8} Hinton.  ``A fast algorithm for deep belief nets''.  2007.
-    \bibitem{A9} Bengio.  ``Learning deep architectures for AI''. 2009.
-    \bibitem{B1} Domingos, Poon. ``Sum-Product Networks: A New Deep
-    Architecture''. 2011.
-    \bibitem{B2} Smith, Zwiernik.  ``The Geometry of Independence Tree Models
-    with Hidden Variables''.
+    \bibitem[Ben09]{Ben09} Bengio.  Learning Deep Architectures for AI. 2009.
+    \bibitem[CLO98]{CLO98} Cox, Little, O'Shea.  Using Algebraic Geometry.  1998.
+    \bibitem[CLS09]{CLS09} Cox, Little, Schenck.  Toric Varieties.  2009.
+    \bibitem[CMS09]{CMS09} Cueto, Morton, Sturmfels. Geometry of the Restricted Boltzmann Machine.  2009.
+    \bibitem[Cos09]{Cos09} Michel Coste.  An Introduction to Semialgebraic Geometry.  2002.
+    \bibitem[CTY10]{CTY10} Cueto, Tobis, Yu.  An Implicitization Challenge for Binary Factor Analysis. 2010.
+    \bibitem[DS98]{DS98} Diaconis and Sturmfels.  Algebraic Algorithms for Sampling
+    from Conditional Distributions. 1998.
+    \bibitem[DSS09]{DSS09} Drton, Sturmfels, Sullivant. Lectures on Algebraic
+    Statistics. 2009.
+    \bibitem[GMS06]{GMS06} Geiger, Meed, Sturmfels.  On the Toric Algebra of Graphical Models. 2006.
+    \bibitem[Hin07]{Hin07} Hinton.  A Fast Algorithm for Deep Belief Nets.  2007.
+    \bibitem[Mon10]{Mon10} Montufar.  Mixture Models and Representational Power of
+    RBM's, DBN's and DBM's.  2010.
+    \bibitem[PS03]{PS03} Pachter, Sturmfels.  Tropical Geometry of Statistical Models. 2003.
+    \bibitem[Ric09]{Ric09} Riccomagno.  A Short History of Algebraic Statistics.  2009.
+    \bibitem[Wat09]{Wat09} Watanabe.  Algebraic Geometry and Statistical Learning Theory.  2009.
+
+    \bibitem{A4} Garcia, Stillman, Sturmfels.  Algebraic Geometry of Bayesian Networks.  2003.
+    \bibitem{A6} Pachter, Sturmfels.  Algebraic Statistics for Computational Biology.  2005.
+
+    \bibitem{B1} Domingos, Poon. Sum-Product Networks: A New Deep Architecture. 2011.
+    \bibitem{B2} Smith, Zwiernik.  The Geometry of Independence Tree Models with Hidden Variables.
 \end{thebibliography}
 
 

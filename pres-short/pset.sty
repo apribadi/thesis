@@ -1,0 +1,103 @@
+\ProvidesPackage{macros}
+
+\usepackage{amsmath,amssymb,amsthm}        % AMS math
+\usepackage{mathtools}                     % includes shortintertext and more!
+\usepackage[retainorgcmds]{IEEEtrantools}  % nicer equation align
+
+% math fonts
+% eulervm must be loaded AFTER main text fonts, for mathrm etc.
+% euler-digits also replaces comma and period :-(
+\usepackage[euler-hat-accent]{eulervm}
+
+% hacks to make accents work
+% derived from eulervm's source
+\DeclareSymbolFont{operatorT1}{T1}{\familydefault}{m}{n}
+\DeclareMathAccent{\dot}{\mathalpha}{operatorT1}{10}
+\DeclareMathAccent{\acute}{\mathalpha}{operatorT1}{1}
+\DeclareMathAccent{\grave}{\mathalpha}{operatorT1}{0}
+\DeclareMathAccent{\ddot}{\mathalpha}{operatorT1}{4}
+\DeclareMathAccent{\tilde}{\mathalpha}{operatorT1}{3}
+\DeclareMathAccent{\bar}{\mathalpha}{operatorT1}{9}
+\DeclareMathAccent{\breve}{\mathalpha}{operatorT1}{8}
+\DeclareMathAccent{\check}{\mathalpha}{operatorT1}{7}
+\DeclareMathAccent{\hat}{\mathalpha}{operatorT1}{2}
+\DeclareMathAccent{\dot}{\mathalpha}{operatorT1}{10}
+
+
+% some additional math symbols and fonts
+% loaded AFTER math fonts (eulervm)
+\usepackage{mathbbol}
+\usepackage{dsfont}
+\usepackage{colonequals}
+
+% custom numbered list environments
+\usepackage{mdwlist}
+
+\newenvironment{alphlist}{
+    \begin{enumerate*}
+    \renewcommand{\theenumi}{(\alph{enumi})}
+    \renewcommand{\labelenumi}{\theenumi}
+}{
+    \end{enumerate*}
+}
+\newenvironment{romanlist}{
+    \begin{enumerate*}
+    \renewcommand{\theenumi}{(\roman{enumi})}
+    \renewcommand{\labelenumi}{\theenumi}
+}{
+    \end{enumerate*}
+}
+\newenvironment{arabiclist}{
+    \begin{enumerate*}
+    \renewcommand{\theenumi}{(\arabic{enumi})}
+    \renewcommand{\labelenumi}{\theenumi}
+}{
+    \end{enumerate*}
+}
+
+% starred newcommand behaves better for short commands (use by default)
+
+% other utility commands
+\newcommand*{\linespace}{\vspace*{\baselineskip}}
+\newcommand{\titlesc}[1]{\textsc{\lowercase{#1}}}
+
+% math symbols
+\newcommand*{\Z}{\ensuremath{\mathds{Z}}}
+\newcommand*{\Q}{\ensuremath{\mathds{Q}}}
+\newcommand*{\C}{\ensuremath{\mathds{C}}}
+\newcommand*{\R}{\ensuremath{\mathds{R}}}
+\newcommand*{\inv}[1]{#1^{-1}}
+\newcommand*{\dual}[1]{#1^{\ast}}
+\newcommand*{\dd}{\,d}
+\newcommand*{\cinf}{C^\infty}
+\newcommand*{\g}{\mathfrak{g}}
+\newcommand*{\GL}{\mathfrak{GL}}
+\newcommand*{\gl}{\mathfrak{gl}}
+
+% math operators
+%   See the package amsmath for documentation.
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\D}{D}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\tr}{tr}
+
+\DeclareMathOperator{\image}{Im}
+\DeclareMathOperator{\kernel}{Ker}
+\DeclareMathOperator{\character}{char}
+
+% math brackets
+%   See the package mathtools for documentation.
+%   Has optional argument \Xdil[size_cmd]{...}, with size_cmd = \big, \Big, \bigg, \Bigg
+%   Also defines \Xdil* macro, giving \left and \right modifiers.
+\DeclarePairedDelimiter\sdil{[}{]}
+\DeclarePairedDelimiter\adil{\langle}{\rangle}
+\DeclarePairedDelimiter\cdil{\{}{\}}
+\DeclarePairedDelimiter\pdil{\lparen}{\rparen}
+\DeclarePairedDelimiter\vdil{\vert}{\vert}
+

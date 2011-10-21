@@ -1,0 +1,49 @@
+
+
+Algebraic statistics
+
+    algebraic geometry
+        geometry of polynomials, generalized
+        Mumford quote
+
+    computational tools
+
+    coordinate invariance
+
+Probability simplex
+
+    Low-dimensional examples and pictures
+
+Independence model (example)
+    2 variable binary
+
+    show poly eqs
+
+    show as hyperplane in 3-D simplex
+
+Restricted boltzmann machine
+
+    definition, algebraic parametrization
+
+    Sturmfels' results
+        dimension of varieties
+        decomp as hadamard powers
+        segre embedding of product of P1s
+
+Deep belief network
+
+    Deep learning
+
+    define, show
+
+    what can it solve? (MNIST)
+
+Where to
+    Montufar's work
+        mixture models
+
+    Geometry of DBN
+
+    'fill up the simplex'
+
+    better bounds

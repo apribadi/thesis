@@ -1,0 +1,87 @@
+
+Algebraic Statistics
+    (For the geometric perspective) there was an a movement called
+    `information geometry' in the 1980s that attempted to apply
+    differential geometry to questions in probability.
+
+    (For the computational algorithms)  Things like polynomial
+    ideals are reasonably nice to deal with.  If you've heard of
+    them, Groebner basis techniques are important here.
+
+Algebraic Geometry
+    It's the geometry that starts from the geometry of polynomials
+        (say, lines, parabolas, conics, et cetera)
+    and goes off from there.
+
+
+    -- slide change --
+
+    The algebraic geometry that I'll be using should be of the
+    relatively concrete sort, however.
+
+    Mumford ...
+
+The Probability Simplex
+    We can look at probability distributions geometrically.
+
+    For simplicity, we only consider discrete (finite) models.
+
+    Geometrically, 
+        the 0-simplex is a point, 
+        the 1-simplex is a line segment, 
+        the 2-simplex is a triangle, and 
+        the 3-simplex is a tetrahedron.
+
+    They're manifolds with boundary (if you know what they are).
+
+    Also, they're semialgebraic sets -- they're determined by
+    polynomial equations and polynomial equalities.
+
+Example: Independence Model
+    Say that we have two random variables, both binary.
+
+    If they're independent, then they have to factor into some pair
+    of functions.
+
+    -- slide change --
+
+    Because there are four possible states, we need four
+    probabilities (the p_ij's).  They're in a 3-dimensional space.
+
+    It turns out that we can translate this independence condition
+    (actually any independence condition) into some polynomial
+    constraints.
+
+    The model is a 2-dimensional hypersurface contained inside the
+    probability simplex.
+
+    Because we're only adding polynomial constraints, the model is
+    still a semialgebraic set.
+
+Restricted Boltzmann Machine
+
+    The restricted Boltzmann machine is a model over visible and
+    hidden binary values.  With energy and probability ...
+
+    The bipartite graph corresponds to the fact that the visible
+    variables, in a sense, don't interact with each other.  A
+    general Boltzmann machine (instead of `restricted') might have
+    more or fewer edges.
+    
+    The Boltzmann machine is a specific example of a `graphical
+    model'
+
+    The normalizing constant Z is usually called the partition
+    function.  
+    
+    The pattern (with energy and exponential) is common in
+    statistical mechanics.  With binary values, it's called the
+    Ising model, and it models the spins of particles.
+
+    (Explain marginalization and max-likelihood) ...
+
+DBN
+    Machine learning
+
+Credits
+    CC and BSD licenses, resp.
