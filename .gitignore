@@ -1,0 +1,10 @@
+# LaTeX things
+
+*.aux
+*.log
+*.pdf
+
+*.toc
+*.nav
+*.out
+*.snm

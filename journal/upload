@@ -1,0 +1,2 @@
+#!/bin/bash
+scp journal.pdf knuth.cs.hmc.edu:~/public_html/thesis/journal.pdf

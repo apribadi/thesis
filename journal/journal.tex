@@ -484,10 +484,11 @@ No answers yet (for last week's stuff). :-(
 
 \section{October 14, 2011}
 
-After the expository draft.
+There is now a draft of the expository paper.
 
 For now, it looks like a good idea to focus solely on the RBM (ignoring, e.g.
-the DBN).  What useful things can we say about the model?
+the DBN, or anything about machine learning, really).  What useful things can we
+say about the model?
 
 Should be on the lookout for computational opportunities.  For example, can we
 take an RBM for some values of $n$ and $k$ and sample to find out what sort of
@@ -526,6 +527,8 @@ Learning about toric varieties (\cite{CLS09} and \cite{CLO98}) and real
 algebraic geometry (\cite{Cos09}) is hard.  Perhaps something to put off till
 later?
 
+\subsection{Montufar, Constructive Bounds} 
+
 I think that I better understand the results in \cite{Mon10} on the sizes of
 RBMs required for arbitrarily approximating any distribution.  The upper bounds
 are by parameter (dimension) counting, which is pretty straightforward.  The
@@ -546,41 +549,45 @@ states that differ by one bit.
 Thus, if we view the visible distribution as a marginalization over hidden
 variables, the hidden variables must have at least $2^{n-1}$ states.  You can
 check that each conditional probability $p(v \mid h)$ is, in fact, a factorizing
-distribution.  Basically, $p(v) \propto \exp(hWv + bv)$, which factors into
-parts dependent on components of $v$.
+distribution.  Basically, $p(v) \propto \exp((hW + b)v)$, which factors into
+parts dependent on single components of $v$.
 
 The construction given, however, requires $2^{n-1} - 1$ hidden nodes, which have
-$2^{2^{n-1} - 1}$ hidden states, which grows much more rapidly then the
-theoretical bound of $2^{n-1}$.  Contributing to this discrepancy is the fact
-that neither the factorizing models nor the weights are arbitrary.
+$2^{2^{n-1} - 1}$ hidden states, which is much, much larger than the theoretical
+bound of $2^{n-1}$.  Contributing to this discrepancy is the fact that neither
+the factorizing models nor the weights are arbitrary.
 
-Some thing(s) that I did!
+\subsection{Some thing(s) that I did!}
 
 From the description of the RBM given in \cite{CMS09}, it is possible to express
 the model as a weighted sum of factorizing models, with certain restrictions on
-both the weights and the models.  For $i = 1, \ldots, k$, $l = 0,1$, let $a_k^l$
-be a factorizing distribution over $n$ binary variables (i.e. $a_k^l$ is in the
-independence model $M \subset \Delta_{2^n - 1}$).  Then for $l = (l_1, \ldots,
-l_k) \in \{0,1\}^k$, let $b_l$ be the distribution
+both the weights and the models.  (Basically, I multiplied stuff out.)  
+
+For $i = 1, \ldots, k$, $l = 0,1$, let $a_k^l$ be a factorizing distribution
+over $n$ binary variables (i.e. $a_k^l$ is in the independence model $M \subset
+\Delta_{2^n - 1}$).  Then for $l = (l_1, \ldots, l_k) \in \{0,1\}^k$, let $b_l$
+be the distribution
 \[
     b_l = a_1^{l_1} * a_2^{l_1} * \cdots * a_k^{l_k}
 \]
-wher `$*$' is the Hadamard product (multiply component-wise, then renormalize).
-It is fairly straightforward to show that $b_l$ factorizes as an independence
-model.  Then any point in the RBM model is of the form
+where `$*$' is the Hadamard product (multiply component-wise, then renormalize
+to sum to 1).  It is fairly straightforward to show that $b_l$ factorizes as an
+independence model (a Hadamard product of factorizing distributions produces
+another factorizing distribution).  Then any point in the RBM model is of the
+form
 \[
     \sum_{l \in \{0,1\}^k} \pdil*{\prod_{i=1}^k \lambda_i^{l_i} (1 -
     \lambda_i)^{1 - l_i}} b_l
 \]
 where $\lambda_i \in (0,1)$ are weights.  It's almost as if we have a bunch of
 independence models that are weighted together using another independence model.
-So there are $2^k$ mixture components $b_l$, but both the components and the
-weights are constrained.
+So there are $2^k$ mixture components $b_l$ from the independence model, but
+both the components and the weights are constrained.
 
-In fact, if we take $n=k$ and take $a_i^j$ be the model
+For example, if we take $n=k$ and take $a_i^j$ be the model
 \[
     a_i^j(v) = \begin{cases}
-        \frac{2}{2^n} & \text{if $v_i = j$}\\
+        2^{n-1} & \text{if $v_i = j$}\\
         0 & \text{if $v_i \ne j$}
     \end{cases}
 \]
@@ -602,13 +609,26 @@ when we perturb one or more of the $a_i^j$'s away from purely discriminating on
 one of the bits, into say
 \[
     a_i^j(v) = \begin{cases}
-        p\frac{2}{2^n} & \text{if $v_i = j$}\\
-        (1 - p)\frac{2}{2^n} & \text{if $v_i \ne j$}
+        p 2^{n-1} & \text{if $v_i = j$}\\
+        (1 - p) 2^{n-1}  & \text{if $v_i \ne j$}
     \end{cases}.
 \]
 The assumption here that $n=k$ is also potentially interesting or slightly
 simplifying.  In any case, it's a realistic choice of parameter, as one could
 stack identically sized ones of these indefinitely.
+
+\subsection{Things to Do}
+
+\begin{itemize}
+\item Can we express Montufar's construction in terms of this new parametrization?
+\item We're failing to come up with useful computations to do; the problems
+outlined earlier still seem to hold.
+\item What can we do with the $a_i^j$'s?  They contain most of the freedom of
+the model, and could be further constrained, perhaps making a family of models.
+\item Now that we've phrased things in terms of a straightforward mixture model
+(rather than one mixed up after the fact via Hadamard products), can we use
+that?
+\end{itemize}
 
 \begin{thebibliography}{100}
     \bibitem[Ben09]{Ben09} Bengio.  Learning Deep Architectures for AI. 2009.
