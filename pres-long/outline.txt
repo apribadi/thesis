@@ -1,0 +1,9 @@
+
+
+New parametrization
+    from RBM paper to this parametrization
+    modulo the factorizing distributions, and why you would want this
+    group structures
+    distances
+
+    from distances to bounds (for approximating)

@@ -630,23 +630,364 @@ the model, and could be further constrained, perhaps making a family of models.
 that?
 \end{itemize}
 
+\section{October 28, 2011}
+
+\subsection{Adventures in Reading}
+
+A library visit yielded the book \cite{BCR98} and a collection of papers
+\cite{Top02} from a workshop on algebraic geometry and geometric modeling.  The
+former, along with \cite{Cos09}, gives the picture that the theory of
+semialgebraic sets is fairly well-developed, though it is much more `off the
+beaten path' than say complex geometry.  There are also standard algorithms
+(`cylindrical algebraic decomposition'), though statements like `the complexity
+of the algorithm is doubly exponential in the number of variables' give one
+pause.
+
+The paper collection has such gems as `What is a Toric Variety' by David Cox, as
+well as potentially useful sounding things like `Overview of Approximate
+Implicitization' by Dokken and Thomassen.  I didn't yet come across anything
+directly applicable, but the direction of the topics seemed promising.
+
+\subsection{More Parametrizations}
+
+I revisited the three papers \cite{CMS09}, \cite{Mon10}, and \cite{MA10}, and
+looked, again, at parametrizations of the RBM.
+
+In the previously described setup for the RBM
+\[
+    \sum_{l \in \{0,1\}^k} \pdil*{\prod_{i=1}^k \lambda_i^{l_i} (1 -
+    \lambda_i)^{1 - l_i}} b_l
+    \qquad\text{where}\qquad
+    b_l = a_1^{l_1} * a_2^{l_1} * \cdots * a_k^{l_k}
+\]
+we can, without loss of generality, have
+\[
+    a_i^0 = \text{uniform}
+    \qquad
+    a_i^1 = \text{factorizing distribution}
+\]
+for $i \ge 2$.  This more closely matches the standard parametrization of the
+RBM; the weight $c$ on the $k$th hidden node corresponds to the value
+$\lambda_i$ here, and the edge weights connecting to the $k$th hidden node
+correspond to the factorizing distribution $a_k^1$.  This correspondence makes
+it easier to port over the construction in \cite{MA10}.  It is also interesting
+to note that each step of that construction requires some weights to tend to
+infinity; a full construction of an approximating distribution seems like it
+would require weights to tend to infinity at different rates.
+
+Thinking about this parametrization a bit more, it looks like there is a bit of
+asymmetry that we would like to get rid of -- specifically the non-uniform
+$a_1^0$.  This is, actually, the weights on the visible nodes, and ranges over
+all factorizing distributions.  So maybe we should think of the space of
+all distributions (and the model) modulo scaling by a factorizing distribution.
+That is
+\[
+    \Delta_{2^n - 1} / \sim
+    \qquad\text{where}\qquad
+    p \sim q \text{ iff }
+    q_i = \frac{r_i p_i}{Z}
+\]
+for some factorizing distribution $r$ and normalizing constant $Z$ (dimension
+$2^n - 1 - n$, probably).  The RBM is usually parametrized by $nk + n + k$
+values, and this reduction makes the parametrization use $nk +k = (n+1)k$ values
+instead.
+
+Why do this?  Then each value in the RBM is reachable by exactly $k$ steps, all
+of which are the same (and which, in fact, commute).  Each step corresponds to
+adding a hidden node.  The motivation behind removing one factor of a factorizing
+distribution entirely, instead of say, putting the factorizing distribution as
+the starting location, is that \textit{every step} can insert a new factorizing
+distribution, or cancel one out, and it doesn't really matter at all until you
+consider the contribution of all the steps at once.
+
+Now that we have defined a type of step that we can take, we want to see where
+that can take us.  The construction defined in \cite{MA10} \textit{is a type of
+step} that increases the probability of two (adjacent in Hamming distance)
+states and uniformly decreases the probability of everything else.  It would be
+nice to have a convenient distance in the space of distributions, and to be able
+to say `a step can only move us at most this distance'.  Neither the Euclidean
+nor the Kullback-Leibler distance seems to be what we want; we want a sort of
+measure of `complexity' or `distance from factorizing'.  Each step doubles the
+number of factorizing mixture components that we have access to, but builds up
+the weights in a straightforward way -- for half of the components, multiply the
+old weights by $\lambda$, for the other half, multiply by $1 - \lambda$.
+
+\subsection{Finite Groups}
+
+I should \textit{at least mention} finite groups.  As used in \cite{CTY10}, the
+model has a natural action of $S_n \ltimes (S_2)^n$ (semi-direct!),
+corresponding to shuffling the visible nodes and swapping $0 \leftrightarrow 1$.
+If we consider the joint distribution over both visible and hidden nodes (which
+we do if we're using a parametrization), we also have $S_k \ltimes (S_2)^k$.
+Our geometry should keep track of this.
+
+
+\subsection{Questions, Answered}
+
+From last week, to `Can we express Montufar's construction in terms of this new
+parametrization?', the answer is `Yes!', though I haven't written it out here.
+
+To the question `What can we do with the $a_i^j$'s', we have the answer that `We
+can ignore the $a_i^0$ part'.  This corresponds with a sort of
+`projectivization' (i.e. the $\Proj^1$'s of \cite{CMS09}).  The $a_i^0$'s
+collectively can be pulled out into a \textit{single} factorizing distribution,
+say $a_1^0$, which we \textit{should probably ignore}.
+
+For computations, I kind of want to do random walks.  Specifically, once we take
+$k-1$ steps (adding $k-1$ hidden nodes), where can we go with the $k$th?  This
+is almost exactly the same as simply sampling the parameter space (especially
+since the steps commute), except that we're focusing on the `distance' travelled
+by one step.  For this to be productive, we need to be able to extract some more
+geometry out of the situation.  We can get points, sure, but what do they mean?
+
+For example, if we had some sort of monovariant (value that only
+\{increases, decreases\} with each step), that would be nice.  If we could say
+`this function takes this value at some points of the RBM, and we start at this
+value, and each step can only move us this value' that would be nice.  The
+problem with Kullback-Leibler distance is that I think that it can be infinite
+with one step.  The problem with Euclidean distance is that it can be a bit
+un-useful in very high dimensions, and it doesn't quite measure what we want,
+either; steps can be big jumps (of near maximal size in the space?).  As
+mentioned before, a measure of `how far is this from factorizing', or some such,
+could work.
+
+The distribution with `steps' proposed last week
+\[
+    a_i^j(v) = \begin{cases}
+        p 2^{n-1} & \text{if $v_i = j$}\\
+        (1 - p) 2^{n-1}  & \text{if $v_i \ne j$}
+    \end{cases}.
+\]
+(We could say that $a_i^0$ is uniform, or maybe we don't!  The situation is
+analogous to homogeneous coordinates.)  hasn't been computed yet, so I should
+still do that.
+
+No progress on leveraging the `mixture-model-ness' of the parametrization.
+
+\subsection{Now What?}
+
+So the \textbf{main question} is
+\begin{itemize}
+    \item Is there some function/monovariant/distance that we can impose on the
+    space whose value changes under the `steps' discussed above in a constrained
+    way?
+\end{itemize}
+We would also want this value to be computable.
+
+In addition
+\begin{itemize}
+    \item What to do with mixtures?
+    \item Write out action of symmetry group, what does it induce on quotient
+    space?
+\end{itemize}
+and finally
+\begin{itemize}
+    \item Write code to sample/walk on the RBM.
+\end{itemize}
+In the background are questions of \textit{implicitization}, but that's lower
+priority at the moment (because it's difficult).
+
+More things to do:
+\begin{itemize}
+    \item nest with respect to both hidden and visible nodes.
+    \item wrt to visible nodes, consider the projection map via marginalization.
+          Perhaps look at inverting the projection, to see if we can make good
+          estimations.
+    \item look at both Kullback-Leibler and total variation distance (or
+          Euclidean).  Compute some distances of `steps'.
+\end{itemize}
+
+\section{November 4, 2011}
+
+\subsection{The Space of Factorizing Distributions}
+
+The space of factorizing distributions is an Abelian (Lie) group.  Recall the
+sigmoid function
+\[
+    \sigma(x) = \frac{1}{1 + e^{-x}}
+    \qquad\text{for $x \in \R$}
+\]
+which has image $\sigma(\R) = (0,1)$.  The sigmoid has the useful property that
+$\sigma(-x) = 1 - \sigma(x)$.  A drawback is that it is not an algebraic
+function.
+
+Let $H \subset \Delta_{2^n-1}$ be the space of (strictly-positive) factorizing
+distributions over $n$ binary variables.  Parametrize $H$ by $\R^n$ by
+associating each variable with a coordinate-wise sigmoid function
+\[
+    \rho : \R^n \to H
+    \qquad
+    \rho(x)(v) = \prod_{i=1}^n \sigma(v_i x_i)
+\]
+where $x \in \R^n$ and $v \in \{-1,1\}^n$.  (We use binary variables that are
+sign-valued rather that 0/1 valued, because they're easier and more symmetric.)
+It is clear that $\rho$ is a bijection.
+
+Recall the Hadamard product $*$, defined on probability distributions $p$, $q$
+over finite $X$ by 
+\[
+    (p * q)(x) = \frac{p(x)q(x)}{\sum_{y \in X} p(y)q(y)}.
+\]
+The Hadamard product is a group operation on $H$, where the identity $e \in H$
+is the uniform distribution.  In fact, if we consider $\R^n$ with its additive
+group structure
+\[
+    \rho(x + y) = \rho(x) * \rho(y)
+\]
+so $\rho$ is an isomorphism of groups.  (This may be verified by a
+straightforward computation.)
+
+We may also let $G = \Delta_{2^n-1}$ be the space of all (strictly positive
+distributions) as a group under the Hadamard product.  The uniform distribution
+is still the identity, and inverses exist 
+\[
+    p = (p_1, \ldots, p_m)
+    \qquad
+    \inv p = \pdil*{\frac 1 {p_1}, \ldots, \frac 1 {p_m}}
+\]
+for which we need the `strictly positive' stipulation.  Then $H \subset G$ is a
+normal subgroup, as $G$ is Abelian.  Then $K = G/H$ is the space (also group) of
+distributions modulo the factorizing distributions.  If $H$ is closed, then $K$
+is also a Lie group.
+
+In our description of the RBM earlier, the $b_l$ for $l \in \{-1,1\}^k$ are the
+images of the corners of a $k$-hypercube under $\rho \circ f: \R^k \to
+\Delta_{2^n - 1}$, where $f: \R^k \to \R^n$ is an affine map and $\rho: \R^n \to
+\Delta_{2^n - 1}$ is as above.
+
+\subsection{Why this?}
+
+Motivated by last week, I want to work with the space of distributions, modulo
+the factorizing distributions.  Specifically, the quotient is with respect to
+\textit{the group operation given by the Hadamard product}.
+
+Then we're not really doing geometry on the space of distributions, but a
+quotient.  Do the Kullback-Leibler distance or total variation distance project
+nicely to this quotient?
+
+\subsection{Questions}
+\begin{itemize}
+    \item What is the group of all distributions under the Hadamard product?
+    Specifically, can we parametrize it?  Can we parametrize the quotient?
+\end{itemize}
+
+From the meeting:
+
+\begin{itemize}
+    \item structure of all (strictly positive) distributions under the Hadamard
+    is the group of $(\R^+)^n$ under multiplication, modulo the diagonal
+    subgroup.
+    \item Consider a finitely generated subgroup of the above group, say
+    generated by the uniform distribution $(1,1,\ldots, 1)$ and distributions
+    with one two $(1,\ldots, 1,2,1, \ldots, 1)$.  Then, (non-one) ratios between
+    entries are at least two.
+    \item consider some models, under the full permutation group (permuting all
+    states).  That is, the full group, which contains $S_n \ltimes (S_2)^n
+    \subset S_{2^n}$.
+    \item do the distances (Kullback-Leibler, total variation) project well down
+    to this quotient space?
+\end{itemize}
+
+\section{November 11, 2011}
+
+\subsection{Distributions Modulo the Binary Independence Model}
+
+Throughout, let $N = 2^n$.  Let $\Delta_{N-1}$ be the abelian group of (strictly
+positive) distributions $(\Delta_{N-1}, *)$ under the Hadamard product.  Let $B
+\subset \Delta_{N-1}$ the subgroup of factorizing distributions.
+
+Consider the parametrization
+\begin{align*}
+    \varphi : S \to \Delta_{N-1}
+    &\qquad\text{where}\qquad
+    S = \pdil*{\cdil*{x \in \R^N \mid \sum x_i = 0}, +} \\
+    \varphi(x) = \frac{1}{\sum e^{x_i}}\pdil[\big]{e^{x_1}, \ldots, e^{x_N}}
+\end{align*}
+It is straightforward to check (hah!) that this is an isomorphism of groups.
+
+There is also the parametrization
+\begin{align*}
+    \rho : T \to B
+    &\qquad\text{where}\qquad
+    T = \pdil*{\cdil*{y \in \R^n \mid \sum y_i = 0}, +} \\
+    [\rho(y)]_k = \frac 1 Z \exp\pdil*{ v(k) \cdot y}
+    &\qquad\text{where $v(k)$ is the $k$th binary vector lexicographically}
+\end{align*}
+and $Z$ is the appropriate normalizing constant.  This is also an isomorphism of
+groups.
+
+We claim that the diagram
+\begin{center}
+    \begin{tikzpicture}[ >= stealth ] 
+    \matrix(m) 
+        [   matrix of math nodes, 
+            row sep=2.5em, column sep=2.5em, 
+            text height=1.5ex, text depth=0.35ex  
+        ] 
+        {   S & \Delta_{N-1}\\
+            T & B \\
+        }; 
+        \path[->,font=\scriptsize,auto] 
+            (m-1-1) edge node       {$\varphi$}        (m-1-2) 
+            (m-2-1) edge node       {$\rho$}           (m-2-2) 
+            (m-2-1) edge node       {$f$}              (m-1-1) 
+        ; 
+        \path[right hook->,font=\scriptsize,auto] 
+            (m-2-2) edge node       {}              (m-1-2) 
+        ;
+    \end{tikzpicture}
+\end{center}
+commutes, where $f$, which is both a linear transformation and a group
+homomorphism, is given by the matrix
+\[
+    \begin{bmatrix}
+        0 & \cdots & 0 & 1 \\
+        0 & \cdots & 1 & 0 \\
+        0 & \cdots & 1 & 1 \\
+        \vdots  & \ddots & \vdots & \vdots \\
+        1 & \cdots & 1 & 1 \\
+    \end{bmatrix}
+\]
+of binary vectors in lexicographic order.
+
+Then,
+\[
+    \Delta_{N-1} / B \iso S / f(T)
+\]
+since (as you can check)  $f(T) \subset S$.  Also $S / f(T)$ has the group
+structure of a real vector space under addition, with dimension 
+\[
+    \dim S / f(T) = \dim S - \dim f(T) = (N-1) - (n-1) = 2^n - n.
+\]
+
+
+
+
 \begin{thebibliography}{100}
+    \bibitem[BCR98]{BCR98} Bochnak, Coste, Roy.  Real Algebraic Geometry.  1998.
     \bibitem[Ben09]{Ben09} Bengio.  Learning Deep Architectures for AI. 2009.
     \bibitem[CLO98]{CLO98} Cox, Little, O'Shea.  Using Algebraic Geometry.  1998.
     \bibitem[CLS09]{CLS09} Cox, Little, Schenck.  Toric Varieties.  2009.
     \bibitem[CMS09]{CMS09} Cueto, Morton, Sturmfels. Geometry of the Restricted Boltzmann Machine.  2009.
     \bibitem[Cos09]{Cos09} Michel Coste.  An Introduction to Semialgebraic Geometry.  2002.
-    \bibitem[CTY10]{CTY10} Cueto, Tobis, Yu.  An Implicitization Challenge for Binary Factor Analysis. 2010.
+    \bibitem[CTY10]{CTY10} Cueto, Tobis, Yu.  An Implicitization Challenge for Binary Factor Analysis. 
+    2010.
     \bibitem[DS98]{DS98} Diaconis and Sturmfels.  Algebraic Algorithms for Sampling
     from Conditional Distributions. 1998.
     \bibitem[DSS09]{DSS09} Drton, Sturmfels, Sullivant. Lectures on Algebraic
     Statistics. 2009.
     \bibitem[GMS06]{GMS06} Geiger, Meed, Sturmfels.  On the Toric Algebra of Graphical Models. 2006.
     \bibitem[Hin07]{Hin07} Hinton.  A Fast Algorithm for Deep Belief Nets.  2007.
+    \bibitem[MA10]{MA10} Montufar, Ay.  Refinements of Universal Approximation
+    Results for Deep Belief Networks and Restricted Boltzmann Machines.  2010.
     \bibitem[Mon10]{Mon10} Montufar.  Mixture Models and Representational Power of
     RBM's, DBN's and DBM's.  2010.
     \bibitem[PS03]{PS03} Pachter, Sturmfels.  Tropical Geometry of Statistical Models. 2003.
     \bibitem[Ric09]{Ric09} Riccomagno.  A Short History of Algebraic Statistics.  2009.
+    \bibitem[Top02]{Top02} Topics in Algebraic Geometry and Geometric Modeling:
+    Workshop on Algebraic Geometry and Geometric Modeling July 29 -- August 2,
+    2002 (Contemporary Mathematics).  Ed. by Goldman and Krasauskas.
+
     \bibitem[Wat09]{Wat09} Watanabe.  Algebraic Geometry and Statistical Learning Theory.  2009.
 
     \bibitem{A4} Garcia, Stillman, Sturmfels.  Algebraic Geometry of Bayesian Networks.  2003.

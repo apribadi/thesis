@@ -1,29 +1,13 @@
-\ProvidesPackage{pset}
+\ProvidesPackage{macros}
 
-\usepackage[width=15.0cm,bottom=3.2cm,top=2.8cm]{geometry}  % page geometry
 \usepackage{amsmath,amssymb,amsthm}        % AMS math
 \usepackage{mathtools}                     % includes shortintertext and more!
 \usepackage[retainorgcmds]{IEEEtrantools}  % nicer equation align
 
-% XeTeX font madness
-\usepackage{xunicode}  
-\usepackage{mathspec}  % mathspec contains fontspec
-\defaultfontfeatures{Ligatures=TeX}
-\setmainfont{Minion Pro} %{Linux Libertine O}
-\setsansfont[Scale=MatchUppercase]{Myriad Pro}
-\setmonofont[Scale=MatchLowercase]{Consolas}
-\setmathrm[Scale=MatchLowercase]{CMU Concrete}
-\setmathsf[Scale=MatchUppercase]{Myriad Pro}
-\renewcommand*{\oldstylenums}[1]{{\addfontfeature{Numbers=OldStyle} #1}}
-
-% spacing
-\usepackage{setspace}
-\setstretch{1.05}
-
 % math fonts
 % eulervm must be loaded AFTER main text fonts, for mathrm etc.
-% euler-digits also replaces comma and period, so don't use :-(
-\usepackage[small,euler-hat-accent]{eulervm}
+% euler-digits also replaces comma and period :-(
+\usepackage[euler-hat-accent]{eulervm}
 
 % hacks to make accents work
 % derived from eulervm's source
@@ -43,20 +27,9 @@
 % some additional math symbols and fonts
 % loaded AFTER math fonts (eulervm)
 \usepackage{mathbbol}
-\usepackage{bbm}
 \usepackage{dsfont}
+\usepackage{bbm}
 \usepackage{colonequals}
-
-% Extra packages
-
-% \usepackage{graphicx}  % images
-\usepackage{tikz}  % commutative diagrams
-\usetikzlibrary{matrix,arrows}
-% \usepackage{mathrsfs}  % script font for math
-
-% change style for section headings
-\usepackage{sectsty}
-%\sectionfont{\large}
 
 % custom numbered list environments
 \usepackage{mdwlist}
@@ -83,57 +56,6 @@
     \end{enumerate*}
 }
 
-% amsthm
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}
-\newtheorem{proposition}[theorem]{Proposition}
-
-\theoremstyle{definition}
-\newtheorem*{definition}{Definition}
-\newtheorem*{example}{Example}
-
-% headers with fancyhdr
-\usepackage{fancyhdr}   % manipulate headers
-\usepackage{extramarks} % special marks for headers
-\pagestyle{fancy}
-\renewcommand{\headrulewidth}{0pt} % remove horizontal line in header
-\setlength{\headheight}{15pt}
-\addtolength{\headsep}{-3pt}
-\fancyhead{}
-% \fancyhead[R]{\textsl{\firstxmark}}
-
-% heading
-\newenvironment{heading}{
-    \begin{flushleft}
-    \vspace*{-1cm}
-}{
-    \par\hrulefill
-    \end{flushleft}
-}
-
-% problem and solution environments
-\newenvironment{problem}[1][]{
-    \begin{trivlist}
-    \item[\hskip\labelsep \textbf{#1}]
-    \begin{it}
-    \thispagestyle{plain}
-    \extramarks{\hfill #1 (continued)}{}
-}{
-    \end{it}
-    \hfill\ensuremath{\lrcorner}
-    \end{trivlist}
-}
-\newenvironment{solution}{
-    \begin{trivlist}
-    \item[]
-}{
-    \hfill\ensuremath{\Box}
-    \end{trivlist}
-    \vspace{\baselineskip}
-    %\pagebreak
-}
-
-
 % starred newcommand behaves better for short commands (use by default)
 
 % other utility commands
@@ -145,7 +67,6 @@
 \newcommand*{\Q}{\ensuremath{\mathbbm{Q}}}
 \newcommand*{\C}{\ensuremath{\mathbbm{C}}}
 \newcommand*{\R}{\ensuremath{\mathbbm{R}}}
-\newcommand*{\Proj}{\ensuremath{\mathbbm{P}}}
 \newcommand*{\inv}[1]{#1^{-1}}
 \newcommand*{\dual}[1]{#1^{\ast}}
 \newcommand*{\dd}{\,d}
@@ -153,7 +74,6 @@
 \newcommand*{\g}{\mathfrak{g}}
 \newcommand*{\GL}{\mathfrak{GL}}
 \newcommand*{\gl}{\mathfrak{gl}}
-\newcommand*{\iso}{\cong}
 
 % math operators
 %   See the package amsmath for documentation.
