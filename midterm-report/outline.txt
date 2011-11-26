@@ -1,0 +1,31 @@
+
+geometric setting
+    probability simplex
+    semialgebraic sets and real algebraic geometry
+
+the RBM
+    definition
+        ref to appendix for use in machine learning
+    nesting of models
+    work of Sturmfels et. al.
+        structure of the RBM
+        dimensionality results
+    work of Montufar et. al.
+        universal approximation
+    open questions
+
+specific for our stuff
+    the independence model
+    mixture models
+        as a hidden variable
+    hadamard product
+
+the RBM, con't
+    parametrization of the binary independence model
+    group structures and quotients
+    nesting and distance
+    forward
+        tropical
+        metrics
+        symmetry groups
+        algorithms from real algebraic geometry
