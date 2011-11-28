@@ -1,14 +1,3 @@
-
-@book{Wat09,
-    author = "Sumio Watanabe",
-    title = "Algebraic Geometry and Statistical Learning Theory",
-    publisher = "Cambridge University Press",
-    year = "2009",
-    annotate = {
-        blah blah blah
-    }
-}
-
 @book{Ama,
     author = "Shun-Ichi Amari",
     title = "Methods of Information Geometry",
@@ -26,9 +15,16 @@
 }
 
 @article{Ben09,
-    author = "SOMETHING Bengio",
-    title = "Learing deep architectures for AI",
+    author = "Yoshua Bengio",
+    title = "Learning Deep Architectures for {AI}",
+    journal = "Foundations and Trends in Machine Learning",
     year = "2009",
+    annotate = {
+        This monograph contains both an overview of the motivations for deep
+            learning in the context of artificial intelligence, and an overview
+            of current deep learning techniques, including the Deep Belief
+            Network.
+    },
 }
 
 @book{CLO97,
@@ -38,8 +34,9 @@
     year = "1997",
     edition = "Second",
     annotate = {
-        The standard introduction to computational algebraic geometry at an
-        undergraduate level.
+        The standard introduction to computational algebraic geometry, covering
+        topics including affine and projective varieties, Gröbner bases, and
+        elimination theory.
     }
 }
 
@@ -50,18 +47,22 @@
     year = "2005",
     edition = "Second",
     annotate = {
-        A graduate-level look at computational algebraic statistics focused on
-            Gröbner basis and resultant methods.
+        A graduate-level look at computational algebraic geometry by the same
+            authors as \textit{Ideals, Varieties, and Algorithms} with a
+            particular focus on Gröbner basis and resultant methods.
     }
 }
 
 @article{CMS09,
     author = "Maria Cueto and Jason Morton and Bernd Sturmfels",
-    title = "Geometry of the restricted Boltzmann machine",
+    title = "Geometry of the {R}estricted {B}oltzmann {M}achine",
     year = "2009",
     eprint = "arXiv:09084425",
     annotate = {
-        Central importance to this thesis
+        An examination of the Restricted Boltzmann Machine from an
+            algebro-geometric perspective, additionally using tropical
+            techniques to prove dimensionality results.  This paper is of
+            central importance to this thesis.
     }
 }
 
@@ -71,10 +72,9 @@
     year = "2010",
     eprint = "arXiv:1006.1384",
     annotate = {
-        Inspired by questions given by Bernd Sturmfels, the team
-            managed to compute the defining polynomial for the hypersurface
-            determined by the restricted Boltzmann machine with ... visible and
-            ... hidden nodes.
+        Inspired by a question given by Bernd Sturmfels, the team computed the
+            defining polynomial for the hypersurface determined by the
+            Restricted Boltzmann Machine with four visible and two hidden nodes.
     }
 }
 
@@ -84,9 +84,9 @@
     journal = "The Annals of Statistics",
     year = "1998",
     annotate = {
-        A seminal paper in the field of algebraic statistics, this paper
-            introduced an algorithm to .  Because it was one of the first
-            applications of algebraic methods to ..., this 
+        A seminal paper in the field of algebraic statistics that analyzed
+            contingency tables using a Monte Carlo sampling algorithm computed
+            with Gröbner bases.
     }
 
 }
@@ -97,8 +97,97 @@
     publisher = "Birkhäuser Basel",
     year = "2008",
     annotate = {
-        Produced after a lecture series in ... this is perhaps one of the best
-            introductions to algebraic statistics, despite it's
+        Lecture notes that arose out of a five-day Oberwolfach Seminar in 2008,
+        and perhaps one of the best introductions to algebraic statistics.
+    }
+}
+
+@article{Hin07,
+    author = "Geoffrey Hinton",
+    title = "A fast learning algorithm for deep belief nets",
+    year = "2007",
+    annotate = {
+        An early paper on the Deep Belief Network that introduced the
+            `contrastive divergence' algorithm, sparking increased interest in
+            the model.
+    }
+}
+
+@book{EOSL,
+    author = "Trevor Hastie and Robert Tibshirani and Jerome Friedman",
+    title = "The Elements of Statistical Learning",
+    publisher = "Springer",
+    edition = "Second",
+    year = "2009",
+    annotate = {
+        An excellent introductory textbook on statistical (machine) learning.
+            An electronic version has been made freely available by the authors.
+    }
+}
+
+@online{MNIST,
+    author = "Yann LeCun and Corinna Cortes",
+    title = "The {MNIST} Database of Handwritten Digits",
+    month = "November",
+    year = "2011",
+    howpublished = "\texttt{http://yann.lecun.com/exdb/mnist/}",
+    annotate = {
+        This website hosts the MNIST dataset of handwritten digits, consisting
+            of a training set of 60,000 images and a test set of 10,000 images.
+            The website also tabulates the performance of various algorithms on
+            the dataset, with references.
+    },
+}
+
+@article{MA10,
+    author = "Guido Montufar and Nihat Ay",
+    title = "Refinements of universal approximation results for deep belief
+        networks and restricted Boltzmann machines",
+    year = "2010",
+    annotate = {
+        This paper gives
+    }
+}
+
+@book{Mum99,
+    author = "David Mumford",
+    title = "The Red Book of Varieties and Schemes",
+    publisher = "Springer",
+    year = "1999",
+}
+
+@book{ASCB,
+    author = "Lior Pachter and Bernd Sturmfels",
+    title = "Algebraic Statistics for Computational Biology",
+    year = "2005",
+}
+
+
+@article{Ric09,
+    author = "Eva Riccomagno",
+    title = "A short history of algebraic statistics",
+    year = "2009",
+    annotate = {
+        This covers
+    }
+}
+
+@book{Sha94,
+    author = "Igor Shafarevich",
+    title = "Basic Algebraic Geometry 1",
+    publisher = "Springer"
+    year = "1994"
+}
+
+-------------------------------------------
+
+@book{Wat09,
+    author = "Sumio Watanabe",
+    title = "Algebraic Geometry and Statistical Learning Theory",
+    publisher = "Cambridge University Press",
+    year = "2009",
+    annotate = {
+        blah blah blah
     }
 }
 
@@ -112,26 +201,6 @@
     }
 }
 
-@article{Hin07,
-    author = "Geoffrey Hinton",
-    title = "A fast learning algorithm for deep belief nets",
-    year = "2007",
-    annotate = {
-        One of the early papers on deep belief networks, the introduction of the
-            `contrastive divergence' algorithm sparked increased interest in
-            DBNs.
-    }
-}
-
-@article{MA10,
-    author = "Guido Montufar and Nihat Ay",
-    title = "Refinements of universal approximation results for deep belief
-        networks and restricted Boltzmann machines",
-    year = "2010",
-    annotate = {
-        This paper gives
-    }
-}
 
 @article{Mon10,
     author = "Guido Montufar",
@@ -142,12 +211,7 @@
     }
 }
 
-@book{Mum99,
-    author = "David Mumford",
-    title = "The Red Book of Varieties and Schemes",
-    publisher = "Springer",
-    year = "1999",
-}
+
 
 
 @article{PS03,
@@ -158,49 +222,3 @@
         In connection to their work on models for bioinformatics,
     }
 }
-
-@article{Ric09,
-    author = "Eva Riccomagno",
-    title = "A short history of algebraic statistics",
-    year = "2009",
-    annotate = {
-        This covers
-    }
-}
-
-@book{Sha,
-    author = "Igor Shafarevich",
-    title = "Basic Algebraic Geometry",
-}
-
-@book{ASCB,
-    author = "Lior Pachter and Bernd Sturmfels",
-    title = "Algebraic Statistics for Computational Biology",
-}
-
-@online{MNIST,
-    author = "Yann LeCun and Corinna Cortes",
-    title = "The MNIST Database of Handwritten Digits",
-    month = "November",
-    year = "2011",
-    url = "http://yann.lecun.com/exdb/mnist/",
-}
-
-@book{ESL,
-    author = "Trevor Hastie and Robert Tibshirani and Jerome Friedman",
-    title = "The Elements of Statistical Learning",
-    publisher = "Springer",
-    edition = "Second",
-    year = "2009",
-}
-
-
-\begin{comment}
-\begin{thebibliography}{100}
-    \bibitem[Top02]{Top02} Topics in Algebraic Geometry and Geometric Modeling:
-    Workshop on Algebraic Geometry and Geometric Modeling July 29 -- August 2,
-    2002 (Contemporary Mathematics).  Ed. by Goldman and Krasauskas.
-    \bibitem[Wat09]{Wat09} Watanabe.  Algebraic Geometry and Statistical Learning Theory.  2009.
-
-    \bibitem{A6} Pachter, Sturmfels.  \textit{Algebraic Statistics for
-    Computational Biology}.  2005.

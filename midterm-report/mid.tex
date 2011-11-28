@@ -3,9 +3,11 @@
 
 \newcommand*{\X}{\mathfrak{X}}
 \newcommand*{\Mod}{\mathcal{M}}
+\newcommand*{\Bin}{\mathcal{B}}
 \newcommand*{\vbar}{\;\big\vert\;}
 \newcommand*{\mle}{\theta_{\text{mle}}}
 \DeclareMathOperator{\Mixt}{Mixt}
+\DeclareMathOperator{\intr}{int}
 \DeclareMathOperator{\Sec}{Sec}
 \DeclareMathOperator*{\argmax}{arg\ max}
 \newcommand*{\parop}[1]{\frac{\partial}{\partial #1}}
@@ -30,31 +32,33 @@
     questions using algebraic geometry and commutative algebra.  Once a problem
     has been cast in the language of algebra, a number of computational tools
     can be brought to bear.  For example, one of the early papers in the field
-    analyzed contingency tables using Monte Carlo algorithms with Gröbner bases.
-    \cite{DS98}.
+    analyzed contingency tables using Monte Carlo sampling computed with Gröbner
+    bases \cite{DS98}.
 
-    Algebraic statistics also offers a geometric point of view on families of
-    probability distributions; the tendency is toward intrinsically defined
-    objects in lieu of explicit coordinate systems.  In this light, algebraic
-    statistics might be seen as in the tradition of information geometry, a
-    field pioneered in the 1980s that applied the techniques of Riemannian
-    geometry to probability models (see for example \cite{Ama}).
+    Algebraic statistics also offers a geometric point of view on statistical
+    models; the tendency is toward intrinsically defined objects in lieu of
+    explicit coordinate systems.  In this light, algebraic statistics might be
+    seen as in the tradition of information geometry, a field pioneered in the
+    1980s that applied the techniques of Riemannian geometry to probability
+    models (see for example \cite{Ama}).
 
-    An introduction to the field of algebraic statistics may be found in
-    \cite{DSS08} and a brief history of the field may be found in \cite{Ric09}.
+    An introduction to the field of algebraic statistics may be found in the
+    collection of lecture notes \cite{DSS08} and a brief history of the field
+    may be found in the article \cite{Ric09}.  Algebraic statistics has also
+    been applied to computational biology \cite{ASCB}.
 
-    Our goal is to examine a particular statistical model, the \emph{Restricted
-    Boltzmann Machine}, from the point of view of algebraic statistics building
+    Our goal is to examine a particular statistical model, the Restricted
+    Boltzmann Machine, from the point of view of algebraic statistics building
     from prior work in that direction, especially \cite{CMS09}.  The Restricted
     Boltzmann Machine has recently become the centerpiece of certain
-    developments in the machine learning community, and several basic questions
-    remain unanswered.
+    developments in the machine learning community \cite{Hin07}, and several
+    basic questions about its geometry remain unanswered.
 
 \section{The Geometry of Statistical Models}
     \subsection{The Probability Simplex}
 
-    We usually consider probability distributions over finite sets.  The space
-    of all such distributions corresponds to a geometric object.
+    We consider probability distributions over finite sets.  The space of all
+    such distributions corresponds to a geometric object.
     
     \begin{definition} The \emph{probability simplex} of dimension $N$ (also
     called the \emph{standard simplex}) is the space
@@ -75,8 +79,8 @@
     \end{center}
     A random variable $X$ with $N+1$ possible values corresponds to a point $x =
     (x_1, \ldots, x_{N+1})$ contained in the simplex $\Delta_N$ in a natural
-    way; we set $P[X = i] = x_i$ and equivalently have a probability mass
-    function $p(i) = x_i$.
+    way; we set $P(X = i) = x_i$.  We generally identify a probability
+    distribution with its corresponding point in the probability simplex.
     
     Statisticians are often concerned with families of probability
     distributions.  We identify such families with geometric spaces.
@@ -85,19 +89,22 @@
     \Delta_N$ of a probability simplex.
     \end{definition}
     \noindent A statistical model may be parametrized by a map $f: U \to
-    \Delta_N$, for some space $U$ of parameters.
+    \Delta_N$, for some space $U$ of parameters.  Usually, the space of
+    parameters is a subset of a real affine space $\R^d$, and parametrizations
+    are differentiable almost everywhere.  In the context of algebraic
+    statistics, the parametrization is usually a rational function.
     \begin{example}
-        A random variable $X$ following a binomial distribution with size $n$
-        and parameter $\lambda \in [0,1]$ takes a value $k \in \{0,\ldots, n\}$
-        with probability
-        \[
-            P_\lambda[X = k] = {n \choose k} \lambda^k(1-\lambda)^{n-k}.
-        \]
-        This is the number of heads produced by $n$ `coin tosses', where
-        $\lambda$ is the probability of a head.  The map $\lambda \mapsto
-        P_\lambda$ determines a parametrized statistical model $\{P_\lambda :
-        \lambda \in [0,1] \} \subset \Delta_n$. The statistical model is a
-        curve, i.e. a one-dimensional subspace, of the simplex.
+    A random variable $X$ following a binomial distribution with size $N$ and
+    parameter $\lambda \in [0,1]$ takes a value $k \in \{0,\ldots, N\}$ with
+    probability
+    \[
+        P_\lambda[X = k] = {N \choose k} \lambda^k(1-\lambda)^{n-k}.
+    \]
+    This is the number of heads produced by $n$ `coin tosses', where $\lambda$
+    is the probability of a head.  The map $\lambda \mapsto P_\lambda$
+    determines a parametrized statistical model $\{P_\lambda : \lambda \in [0,1]
+    \} \subset \Delta_N$. The statistical model is a curve, i.e. a
+    one-dimensional subspace, of the simplex.
     \end{example}
     
 \subsection{Maximum Likelihood Estimation}
@@ -115,26 +122,26 @@
     distribution in $\Mod$.
     
     \begin{definition}
-        The \emph{likelihood function} of $\theta \in U$ given the data $Z$ is
-        \[
-            L(\theta; Z) = \prod_{i=1}^n p_\theta(z_i).
-        \]
-        It is the probability that the observed data $Z$ would occur if the
-        observations were independent and identically distributed and following
-        $P_\theta$.  The \emph{log-likelihood function} is
-        \[
-            l(\theta; Z) = \sum_{i=1}^n \log p_\theta(z_i)
-        \]
-        and is often used in place of the likelihood because it is additive.
+    The \emph{likelihood function} of $\theta \in U$ given the data $Z$ is
+    \[
+        L(\theta; Z) = \prod_{i=1}^n p_\theta(z_i).
+    \]
+    It is the probability that the observed data $Z$ would occur if the
+    observations were independent and identically distributed and following
+    $P_\theta$.  The \emph{log-likelihood function} is
+    \[
+        l(\theta; Z) = \sum_{i=1}^n \log p_\theta(z_i)
+    \]
+    and is often used in place of the likelihood because it is additive.
     \end{definition}
     \begin{definition}
-        The \emph{maximum likelihood estimate} of the true parameter is the
-        parameter 
-        \[
-            \mle = \argmax_{\theta \in U} L(\theta; Z)
-        \]
-        that maximizes the likelihood (or equivalently the log-likelihood) of
-        the data.
+    The \emph{maximum likelihood estimate} of the true parameter is the
+    parameter 
+    \[
+        \mle = \argmax_{\theta \in U} L(\theta; Z)
+    \]
+    that maximizes the likelihood (or equivalently the log-likelihood) of the
+    data.
     \end{definition}
 
     Notice that the maximum likelihood estimate might not be unique and might
@@ -221,14 +228,20 @@
     \texttt{Singular}.  An overview of the techniques used to solve such
     polynomial equations, e.g. Gröbner bases, resultants, and elimination, is
     given in the text \cite{CLO05} on computational algebraic geometry.
-
-\subsection{Implicit Models}
+% 
+% \subsection{Implicit Models}
 
     % In the context of algebraic statistics, we usually look at statistical
     % models that are semialgebraic sets.
 
+    % If a statistical model is a semi algebraic set, then we can pass to its
+    % Zariski closure in affine space, or we can embed it in projective space
+    % and takes its Zariski closure there.
+
     % A simplex is the locus of a finite collection of polynomial equations
     % and polynomial inequalities and therefore is a semialgebraic set.
+
+    % Then we can solve the likelihood equations, given the defining ideal?
 
 
 \section{The Restricted Boltzmann Machine}
@@ -269,9 +282,10 @@
     The reader familiar with statistical mechanics may recognize this as a
     Boltzmann distribution with energy $H(v,h) = - \log \psi(v, h)$.  The energy
     $H$ is a quadratic polynomial in the visible and hidden variables.  Because
-    $H$ contains no terms with two visible or two hidden variables, the RBM is a
-    \emph{graphical model} that factors according to the complete bipartite
-    graph $K_{n,k}$ on the visible and hidden nodes.
+    $H$ contains no terms with two visible or two hidden variables, the
+    Restricted Boltzmann Machine is a \emph{graphical model} that factors
+    according to the complete bipartite graph $K_{n,k}$ on the visible and
+    hidden nodes.
     \begin{center}
     \scalebox{1.0}{ \includegraphics[scale=0.8]{images/rbm.png} }
     \end{center}
@@ -279,12 +293,12 @@
     fixed, then $v \mapsto H(v, h)$ is a linear function and the expression
     $e^{H(v,h)}$ decomposes into a product of functions, each dependent on a
     single component of $v = (v_1, \ldots, v_n)$.  It follows that conditioned
-    on a fixed value of $f$, the components $v_i$ are independent random
-    variables.  For a description of graphical models in general, refer to
-    Appendix \ref{sec:graph}.  A general (as opposed to restricted) Boltzmann
-    machine would allow $H$ to be an arbitrary quadratic polynomial, and would
-    only factor according to the complete graph on all units.
-
+    on a fixed value of $h$, the components $v_i$ are independent random
+    variables.  For a description of graphical models in general from an
+    algebro-geometric viewpoint, refer to \cite{DSS08}.  A general (as opposed
+    to restricted) Boltzmann machine would allow $H$ to be an arbitrary
+    quadratic polynomial, and would only factor according to the complete graph
+    on all units.
     
     
 \subsection{The Geometry of the Restricted Boltzmann Machine}
@@ -315,12 +329,12 @@
     which is a polynomial for any particular value of the binary vectors
     $(v,h)$.  The marginalized distribution over for the visible variables
     factors as
-    \[
+    \begin{equation} \label{eq:rbm-alg-par}
         p(v) = \frac 1 Z
         \beta_1^{v_1} \beta_2^{v_2} \cdots \beta_n^{v_n} 
         \prod_{i=1}^k
         (1 + \gamma_i \omega_{i1}^{v_1} \omega_{i2}^{v_2} \cdots \omega_{in}^{v_n})
-    \]
+    \end{equation}
     where the factors $(1 + \gamma_i \omega_{i1}^{v_1} \omega_{i2}^{v_2} \cdots
     \omega_{in}^{v_n})$ correspond to the choice of whether $h_i = 0$ or $h_i =
     1$.  The partition function $Z = \sum_{v,h} \psi(v,h)$ is also a polynomial
@@ -328,172 +342,345 @@
     parametrization $\R_{>0}^{nk+n+k} \to \Delta_{2^n-1}$ of the model is a
     rational map.  
 
-    Following \cite{CMS09}, let $M_n^k \subset \Delta_{2^n-1}$ denote the image
-    of the parametrization, and let $V_n^k$ denote the Zariski closure of
-    $M_n^k$ in the complex projective space $\Proj^{2^n-1}$.  The model $M_n^k$
-    is a semialgebraic set.
-
-    In the absence of a `defect', one would expect that both $M_n^k$ and $V_n^k$
-    have the same dimension as the parameter space $\R^{nk + n + k}$.  In fact,
-    the dimensions are
-    \[
-        \dim M_n^k = \dim V_n^k = \min\{nk+n+k, 2^n -1\}
-    \]
-    when $k \le 2^{n - \lceil \log_2(n+1) \rceil}$, which includes most cases of
-    practical interest.
-
-    The paper \cite{CMS09} also shows that the varieties $M_n^k$ and $V_n^k$
-    `factor'.  Specifically, they factor as \emph{Hadamard powers}
+    Let $M_n^k \subset \Delta_{2^n-1}$ denote the image of the parametrization,
+    and let $V_n^k$ denote the Zariski closure of $M_n^k$ in the complex
+    projective space $\Proj^{2^n-1}$.  The model $M_n^k$ is a semialgebraic set.
+    The referenced paper gives a structural result about the model $M_n^k$ and
+    the variety $V_n^k$.
+    \begin{theorem}[\cite{CMS09}] \label{thm:factor}
+    The RBM variety and model factor as the Hadamard powers
     \[
         V_n^k = (V_n^1)^{[k]}
-        \qquad
-        M_n^k = (M_n^1)^{[k]}.
+        \qquad\text{and}\qquad
+        M_n^k = (M_n^1)^{[k]}
     \]
-    Then $M_n^1$ and $V_n^1$ are examined.  The variety $V_n^1$ coincides with
-    the first secant variety of the \emph{Segre embedding} of the product of
-    projective lines $(\Proj^1)^n$ into $\Proj^{2^n-1}$.  The corresponding
-    statistical model $M_n^1$ with one hidden value is a mixture of two
-    independence models.
-
-    Both the Hadamard product and the Segre embedding are standard
-    algebro-geometric constructions.  The Hadamard product $X * Y$ of two
-    subvarieties $X$ and $Y$ of a projective space $\Proj^n$ is defined to be
-    the Zariski closure of the image of the rational map
+    of the variety and model with one hidden unit.
+    \end{theorem}
+    \noindent The Hadamard product of two statistical models $M, N \subset
+    \Delta_{N-1}$ (consisting of strictly positive distributions) is defined to
+    be
+    \[
+        M * N = \cdil[\big]{p * q \mid p \in M, q \in N}
+        \qquad
+        \text{where}
+        \qquad
+        (p * q)_i = \frac{p_i\,q_i}{\sum_{j=1}^N p_j\,q_j}.
+    \]
+    The Hadamard product $p*q$ may be thought of as the normalized
+    coordinate-wise product of the two distributions.  The Hadamard product $X *
+    Y$ of two subvarieties $X$ and $Y$ of a projective space $\Proj^{N-1}$ is
+    defined to be the Zariski closure of the image of the rational map
     \[
         X \times Y \dashrightarrow \Proj^m,
         \quad
-        (x, y) \mapsto [x_0y_0: x_1y_1 : \cdots : x_n y_n].
+        (x, y) \mapsto [x_1y_1 : x_2y_2\cdots : x_N y_N].
     \]
-    The Segre embedding of the cartesian product of two subvarieties $X \subset
-    \Proj^m$ and $Y \subset \Proj^n$ is the image of the map
+    Given a product operation, positive integer powers are, as usual,
+    recursively defined $M^{[1]} = M$ and $M^{[k]} = M * M^{[k-1]}$, and
+    similarly for $V$.  Taking Hadamard powers `commutes' with taking the
+    Zariski closure.
+
+    The variety $V_n^1$ is the first secant variety of the \emph{Segre
+    embedding} of the product of $n$ projective lines $\Proj^1 \times \cdots
+    \times \Proj^1$ into $\Proj^{2^n-1}$.  The Segre embedding of the Cartesian
+    product of two subvarieties $X \subset \Proj^m$ and $Y \subset \Proj^n$ is
+    the image of the map
     \[
         X \times Y \to \Proj^{(m+1)(n+1) - 1},
         \quad
         (x, y) \mapsto
         [x_0y_0: x_0 y_0 : \cdots : x_my_n]
     \]
-    where the indices are in lexicographic order.
-
-    Viewing the RBM as an `inference function' from hidden values to the more
-    likely visible values, the components $v_i$ of $v$ are
-    `linear threshold functions' of $h$.  That is, the values of $h$ are
-    vertices of a hypercube, and the decision boundary of whether $v_i = 0$ or
-    $1$ is a linear hyperplane through the hypercube.
-
-\subsection{The Nested Sequence}
-
-\subsection{Known Results: Dimensionality and Universal Approximators}
-
-\subsection{Open Questions}
-
-
-\section{The Hadamard Product}
+    where the indices are in lexicographic order; the Segre embedding of the
+    product of multiple varieties is defined analogously.
     
+    The corresponding statistical model $M_n^1$ with one hidden value is a
+    mixture of two independence models; both independence models and mixture
+    models will be discussed in more detail in later sections.
 
-\section{Binary Independence Models}
+\subsection{The Nested Sequence of RBM Models}
 
-
-\subsection{The Independence Model}
-    Independence conditions arise naturally in many statistical questions.
-    Essentially, they allow portions of a model to be considered separately.
-
-    First, we introduce some notation.  For any positive integer $m$, let $[m] =
-    \{1, 2, \ldots, m\}$; this is used when we need a finite set with $m$
-    elements.
-
-    Suppose that the random variables $X$ and $Y$ have state spaces $[r]$ and
-    $[c]$, respectively.  By definition, $X$ and $Y$ are independent if their
-    joint distribution over $[r] \times [c]$ factors into a distribution over
-    $[m]$ and another over $[n]$.  
-    
-    Then the independence model $\Mod \subset \Delta_{rc - 1}$ is the space of
-    distributions of the form
+    It seems that adding more hidden units should not decrease the
+    representational power of the Restricted Boltzmann Machine.  Indeed, we have
+    the bounded nested sequence of models $\{M_n^k\}_{k=0}^\infty$ where
     \[
-        P(X = i, Y = j) = p_i q_j
+        M_n^0 \subset M_n^1 \subset \cdots 
+        \qquad\text{and}\qquad
+        M_n^k \subset \Delta_{2^n-1}
+        \qquad\text{for all $k \in \Z^+$}.
+    \]
+    Indeed, any model in $M_n^k$ with parameters $w_{ij}$, $b_i$, and $c_j$ is
+    contained in $M_n^{k+1}$ where the corresponding parameters are the same
+    except for $w_{1,k+1} = \cdots = w_{n, k+1} = 0$  and $c_{k+1} = 0$.
+
+    Some facts are already known about this sequence.
+    \begin{theorem}[\cite{MA10}] \label{thm:approximator}
+    With $k = 2^{n-1} - 1$, the model $M_n^k$ is dense in $\Delta_{2^n} - 1$.
+    \end{theorem}
+    In the cited paper, this result is phrased as ``Any distribution on
+    $\{0,1\}^n$ can be approximated arbitrarily well by an RBM with $2^{n-1} -
+    1$ hidden units''.  From the machine learning point of view, it is important
+    to quantify the `representational power' of the RBM.
+
+    In the absence of a defect, one would expect that both $M_n^k$ and $V_n^k$
+    have the same dimension as the parametrizing space $\R^{nk + n + k}$.
+    (Here, dimension is defined as usual for varieties.) In most cases, this in
+    fact holds.
+    \begin{theorem}[\cite{CMS09}] \label{thm:dimension}
+    The Restricted Boltzmann Machine has the expected dimension
+    $\min\{nk+n+k, 2^n-1\}$ when $k \le 2^{n-\lceil \log_2(n+1)\rceil}$ and
+    when $k \ge 2^{n-\lfloor\log_2(n+1)\rfloor}$.
+    \end{theorem}
+    Notice that light of this dimensionality result, the bound given in the
+    previous theorem is not necessarily sharp; there exist smaller $k$ such that
+    the models have the requisite full dimension.
+
+\subsection{Open Problems}
+
+    A question naturally suggested by the universal approximation result in
+    Theorem \ref{thm:approximator} and the dimensionality result in Theorem
+    \ref{thm:dimension} is whether the bound given in the former is sharp.  That
+    is, does there exist $k < 2^{n-1}-1$ such that $M_n^k$ is dense in
+    $\Delta_{2^n-1}$?
+
+    Less concretely, it is desirable to get a better handle on the geometry of
+    the RBM, keeping in view the goal of training RBMs of practical sizes.  A
+    typical RBM used in a Deep Belief Network might have several hundred to
+    several thousand visible and hidden units \cite{Hin07}.  While algorithmic
+    innovations in the machine learning community have made training RBMs
+    practical, the run time of such algorithms is still measured in days, rather
+    than seconds.
+    
+    Even though the rational parametrization of the RBM given in
+    \eqref{eq:rbm-alg-par} places the task of likelihood maximization within an
+    algebro-geometric framework, there are still severe computational
+    difficulties with that approach.  In \cite{CMS09}, the authors turn to
+    tropical techniques.  For a model with a mere four visible units and two
+    hidden units, the task of computing the defining polynomial of the Zariski
+    closure of the model (which has co-dimension 1) required a team to resort
+    to creative techniques detailed in \cite{CTY10}.  
+
+    Thus, any progress toward an algorithm leveraging algebro-geometric
+    techniques to do either exact or approximate maximum likelihood
+    more efficiently on the RBM would be of extreme interest.
+
+
+\section{Components of the RBM}
+
+    We saw in Section \ref{sec:rbm-def} that given a fixed value $h \in
+    \{0,1\}^k$ for the hidden units of a RBM, the visible units are all
+    independent in the conditional distribution $P( \cdot\mid h )$.  Breaking
+    the conditional probability out, probability of a state $v \in \{0,1\}^n$
+    for the visible units is
+    \[
+        P( v ) = \sum_{h \in \{0,1\}^k} P( h ) P( v \mid h ).
+    \]
+    There are $2^n$ different hidden states $h$, so the visible distribution is
+    a weighted sum of $2^n$ distributions, such that in each component
+    distribution the visible units are all independent.  The weights $P(h)$ and
+    the independence distributions $P(\cdot \mid h)$ are, however, not
+    arbitrary.  The range of possibilities for both determine the structure of
+    the RBM.
+
+    In this section, we consider the space of strictly positive distributions,
+    denoted by $\intr(\Delta_{N-1})$.  This space contains distributions for
+    which the probability of every event is nonzero, and consists of the
+    interior of the simplex.
+
+\subsection{The Hadamard Product}
+
+    In the RBM, each hidden units influences the visible units.  The effects of
+    the hidden units are combined through the Hadamard product.  (cf. Theorem
+    \ref{thm:factor}).  Recall that for $p, q \in \intr(\Delta)_{N-1}$ the
+    Hadamard product is defined
+    \[
+        (p * q)_i = \frac{p_i q_i}{\sum_{j=1}^N p_j q_j}.
+    \]
+    This is essentially a normalized coordinate-wise product.  The Hadamard
+    product yields a straightforward algebraic structure.
+
+    \begin{theorem}
+    The space $(\intr(\Delta_{N-1}), *)$ of strictly positive distributions
+    equipped with the Hadamard product is an Abelian group.
+    \end{theorem}
+    \begin{proof}
+    By the construction of the Hadamard product, $p * q \in
+    \intr(\Delta_{N-1})$, and it is obvious that the product is commutative.
+    The uniform distribution
+    \[
+        u = \pdil*{\frac 1 N, \ldots, \frac 1 N}
+    \]
+    is the identity element.  The inverse of a distribution $p \in
+    \intr(\Delta_{N-1})$ is 
+    \[
+        \inv p = \frac{1}{\sum_{j=1}^N \frac 1 {p_j}}
+        \cdot\pdil*{\frac 1 {p_1}, \ldots, \frac 1 {p_N}}
+    \]
+    from which we see that the stipulation that distributions be strictly
+    positive is necessary.
+    \end{proof}
+
+    Through a particularly nice parametrization of $\intr(\Delta_{N-1})$, we see
+    that the group has a familiar structure.
+    \begin{theorem} \label{thm:dist-par}
+    There is an isomorphism of (Lie) groups $(\intr(\Delta_{N-1}), *) \iso
+    (\R^{N-1}, +)$, where the latter group is the real vector space with the
+    usual addition operation.
+    \end{theorem}
+    \begin{proof}
+    Consider the vector subspace
+    \[
+        S = \pdil*{\cdil*{x \in \R^N \;\Big\vert\; \sum_{j=1}^N x_i = 0 }, +}
+    \]
+    as a group with the usual addition operation.  Consider the parametrization
+    \[
+        \varphi : S \to \intr(\Delta_{N-1})
         \qquad
-        \text{where $p \in \Delta_{m-1}$ and $q \in \Delta_{n-1}$}.
+        x \mapsto \frac{1}{\sum_{j=1}^N e^{x_j}} 
+        \pdil*{e^{x_1}, \ldots, e^{x_N}}.
     \]
-    \begin{example}
-    If $r = c = 2$ (i.e. if $X$ and $Y$ are binary) then the possible
-    distributions look like
-    \begin{center}
-    \begin{tabular}{l|cc}
-    & $X = 1$ & $X = 2$\\
-    \hline
-    $Y = 1$ & $\alpha\beta$ & $(1-\alpha)\beta$\\
-    $Y = 2$ & $\alpha(1-\beta)$ & $(1-\alpha)(1-\beta)$
-    \end{tabular}
-    \end{center}
-    for some $\alpha, \beta \in [0,1]$.  
-    \end{example}
+    We claim that $\varphi$ is a group isomorphism.  It is clear that $\varphi$
+    is surjective.  To see that it is injective, notice that if $\varphi(x) =
+    \varphi(y)$, then $(e^{x_1}, \ldots, e^{x_N}) = (\lambda e^{y_1}, \ldots,
+    \lambda e^{y_N})$ for some scalar $\lambda$.  The condition $\sum x_j = \sum
+    y_j = 0$, however, implies that $\prod e^{x_j} = \prod e^{y_j} = 1$, so
+    $\lambda^N = 1$ and $\lambda = 1$.  Thus $\varphi$ is a bijection.
 
-    Another way to view the independence model is as the set of all $r\times c$
-    matrices of rank 1 with non-negative entries that sum to 1.  For a matrix of
-    rank 1, all rows (and columns) are multiples of each other, so the rank 1
-    condition is equivalent to the condition that the distribution factors.
-    
-    The independence model has the parametrization
-    \begin{IEEEeqnarray*}{rCrCl}
-        \phi &:& \Delta_{m-1} \times \Delta_{n-1} &\to& \Mod \subset \Delta_{rc-1}\\
-        && \phi_{ij}(p, q) &=& p_i q_j.
-    \end{IEEEeqnarray*}
-    The model $\Mod$ also has an implicit description.  The points in the variety
+    The map $\varphi$ is also a group homomorphism.  In the computation below,
+    note that both the map $\varphi$ and the Hadamard product $*$ normalize
+    their values to sum to 1 to fall within $\intr(\Delta_{N-1})$, so we can
+    essentially ignore a scalar (`projective') factor.  We have
     \[
-        V = \cdil[\big]{
-        \phi \in \R^{rc} 
-        \vbar
-        \phi_{ij} - (\phi_{i+})(\phi_{+j}) = 0
-        \quad
-        \text{for all $i \in [m]$ and $j \in [n]$}
-        }
+        \varphi(x + y)
+        \propto
+        \pdil*{e^{x_1 + y_1}, \ldots, e^{x_N + y_N}}
+        =
+        \pdil*{e^{x_1}e^{y_1}, \ldots, e^{x_N}e^{y_N}}
+        \propto
+        \varphi(x) * \varphi(y)
     \]
-    satisfy the independence condition because the probability $\phi_{ij}$ that
-    $(i,j)$ occurs must factor into the probability $\phi_{i+}$ that $i$ occurs
-    and the probability $\phi_{+j}$ that $j$ occurs.  The independence model is
-    then the intersection $\Mod = V \cap \Delta_{rc-1}$, and is clearly a
-    semialgebraic set.
+    and $\varphi(x + y) \propto \varphi(x) * \varphi(y)$ implies that $\varphi(x
+    + y) = \varphi(x) + \varphi(y)$ when both lie in $\intr(\Delta_{N-1})$.
+    \end{proof}
+    
+
+\subsection{The Binary Independence Model}
+
+    We formally introduce the binary independence model.  Throughout this
+    section, let $N = 2^n$.
+    \begin{definition}
+    Identify the space of strictly positive distributions over $\{0,1\}^n$ with
+    the probability simplex $\intr(\Delta_{N-1})$.  The coordinates of
+    $\Delta_{N-1}$ may be associated with the binary vectors of length $n$
+    ordered lexicographically.  The \emph{binary independence model} $\Bin
+    \subset \Delta_N$ consists of the distributions that factor as
+    \[
+        P(v) = P(v_1) \cdots P(v_n)
+    \]
+    for binary vectors $v = (v_1, \ldots, v_n) \in \{0,1\}^n$.
+    \end{definition}
+
+    Notice that the binary independence model is parametrized by $(\lambda_1,
+    \ldots, \lambda_n) \in (0,1)^n$ as
+    \begin{equation} \label{eq:bin}
+        P(v) 
+        = \lambda_1^{v_1}(1 - \lambda_1)^{1 - v_1}
+        \cdots \lambda_n^{v_n}(1 - \lambda_n)^{1 - v_n}.
+    \end{equation}
+    In fact, it is clear that this parametrization $(0,1)^n \to \Bin$ is a
+    bijection.
+
+    The binary independence model interacts well with the Hadamard product.
+    \begin{theorem}\label{thm:bin-par}
+    The binary independence model $\Bin$ with the Hadamard product is a subgroup
+    of the space $(\intr(\Delta_{N-1}), *)$ of all strictly positive
+    distributions.  Furthermore, $(\Bin, *)$ is  isomorphic to $(\R^n, +)$.
+    \end{theorem}
+    \begin{proof}
+    For $1 \le k \le N$, let $v(k)$ be the $k$th binary vector of length $n$,
+    ordered lexicographically.  Let $S$ and $\varphi$ be as in the proof of
+    Theorem \ref{thm:dist-par}.  Recall that $S$ is a hyperplane in $\R^N$;
+    associate the $k$th coordinate of $S \subset \R^N$ with the probability that
+    the event $v(k)$ occurs.  
+    
+    We construct a parametrization of $\Bin$ via the previous parametrization
+    $\varphi : S \to \intr(\Delta_{N-1})$. Consider the linear transformation 
+    \[
+        \rho: \R^n \to \R^N
+        \qquad\text{given by the matrix}\qquad
+        \begin{bmatrix*}[r]
+            -1 & \cdots & -1 & -1 & -1 \\
+            -1 & \cdots & -1 & -1 &  1 \\
+            -1 & \cdots & -1 &  1 & -1 \\
+            \vdots & \ddots &  & \vdots &  \\
+             1 & \cdots &  1 &  1 &  1
+        \end{bmatrix*}
+    \]
+    where the rows are the $N$ possible rows of length $n$ containing only $-1$
+    and $1$, ordered lexicographically.  Several things are straightforward to
+    verify.  First, $\rho(\R^n) \subset S$, as the columns of the matrix all sum
+    to 0.  More importantly, $(\varphi \circ \rho)(\R^n) = \Bin$, and $\varphi
+    \circ \rho$ is a bijection onto its image $\Bin$.  One can compute that a
+    distribution in the binary independence model given by parameters
+    $\lambda_1, \ldots, \lambda_n$ as in \eqref{eq:bin} has the unique preimage
+    \[
+        x \in \R^n
+        \qquad
+        x_i = \frac 1 2 \log \pdil*{\frac{\lambda_i}{1 - \lambda_i}}
+    \]
+    under $\varphi \circ \rho$.  
+    
+    This amounts to a re-parametrization of $\Bin$, with the advantage that
+    $\rho$ is a linear map.  The matrix has full rank $n$, so $\rho$ is an
+    isomorphism.  The subspace $\rho(\R^n) \subset S$ is then a subgroup of $S$
+    isomorphic to both $\R^n$ and $\Bin$.
+    \end{proof}
 
 \subsection{Hidden Variables and Mixture Models}
-    Consider a random variable $X$ with state space $[r]$, and suppose that
-    another random variable $Y$ with state space $[c]$ has an influence on $X$.
-    If $Y$ has some prior distribution $\pi$, then the joint distribution of $X$
-    and $Y$ is 
+    This section follows Chapter 4 of \cite{DSS08}.
+
+    Suppose that a hidden variable $Y$ influences a visible variable $X$.  As
+    usual, we assume that probability distributions are discrete.  If $Y$
+    follows the probability distribution $\pi$, then the joint distribution of
+    $X$ and $Y$ is 
     \[
         P(X = i, Y = j) = \pi_j \cdot p_i^{(j)}
     \]
-    where $\{p^{(j)} \mid j \in [c]\}$ is some collection of distributions.
-
-    If $Y$ is a hidden variable, we can only observe the marginal distribution
-    of $X$.  The marginal probability is the sum over the possible hidden values
+    for some distributions $p^{(j)}$.  Because we consider $Y$ as the hidden
+    variable, we can only observe the marginal distribution of $X$.  The
+    marginal probability is the sum over the possible hidden values
     \[
-        P(X = i) = \sum_{j \in [c]} \pi_j \cdot p_i^{(j)}.
+        P(X = i) = \sum_{j} \pi_j \cdot p_i^{(j)}.
     \]
-    A hidden variable model allows for the creation of a potentially more
-    complex model out of simple components $p^{(j)} \in \Delta_{r-1}$.
-    In particular, if the distributions $p^{(j)}$ are required to lie in some
-    model $V \subset \Delta_{r-1}$, then we have a mixture model.
+    A hidden variable model allows for the creation of complex model out of
+    simple components $p^{(j)}$.  In particular, if the distributions $p^{(j)}$
+    are required to lie in some model $\Mod \subset \Delta_{N-1}$, then we have
+    a mixture model.
     \begin{definition}
-    Suppose that $V$ and $W$ are subsets of the affine space $\R^n$.  Their
-    \emph{mixture} is the set
+    Suppose that $V_1, \ldots, V_m$ are subsets of the vector space $\R^N$.  The
+    \emph{mixture} of those sets is 
     \[
-        \Mixt(V, W) = \cdil[\big]{
-        \lambda v + (1 - \lambda)w \vbar
-        v \in V, w \in W, \lambda \in [0,1]
+        \Mixt(V_1, \ldots, V_n) = \cdil*{
+            \lambda_1 v_1 + \cdots + \lambda_n v_m
+            \;\big\vert\;
+            v_i \in V_i, \lambda_j \ge 0, \sum_{j=1}^m \lambda_j = 1
         }.
     \]
-    A mixture of $V$ with itself $k$ times produces the higher mixture
-    \[
-        \Mixt^k(V) = \cdil*{
-        \sum_{i=1}^k \lambda_i v_i \vbar v_i \in V, \lambda_i \in [0,1],
-        \text{and }\lambda_1 + \cdots \lambda_s = 1
-        }.
-    \]
-    A \emph{mixture model} is a statistical model produced by mixtures.
+    A \emph{mixture model} is the mixture of statistical models $\Mod_1, \ldots,
+    \Mod_m \subset \Delta_{N-1}$.  
     \end{definition}
+    Note that because $\Delta_{N-1}$ is a convex set, the mixture of statistical
+    models is itself a statistical model.  The mixture of $m$ models contains
+    the distributions that can be constructed with a hidden variable with $m$
+    states, where each state induces a visible distribution taken from the
+    corresponding model.
 
     \begin{example}
-    A \emph{Gaussian mixture model} is a simple model that is useful in a wide
-    variety of situations.  A Gaussian distribution with parameters $(\mu,
+    A \emph{Gaussian mixture model} simulates a multi-modal distribution.  It is
+    relatively easy to work with and is useful in a number of machine learning
+    tasks.  See, for example, Sections 6.8 and 8.5 of \cite{EOSL} for an
+    overview of Gaussian mixtures and the EM algorithm, commonly used to train
+    the model.  A Gaussian distribution on the real line with parameters $(\mu,
     \sigma)$ has probability density
     \[
         p_{\mu, \sigma}(x) = \frac{1}{\sqrt{2\pi\sigma^2}} 
@@ -504,14 +691,14 @@
     \begin{center}
     \scalebox{1}{ \includegraphics[scale=0.5]{images/mixture.png} }
     \end{center}
-    (The space of distributions over the real line is not finite dimensional,
-    but in this case works similarly.) Mixtures of more or higher dimensional
-    Gaussian distriubtions are defined as one would expect.  Such models are
-    useful, for instance, for clustering tasks.
+    Mixtures of more Gaussians in higher dimensions are defined analogously.
+    Note that because the space of distributions over the real line is not
+    finite dimensional, this example does not formally fit under our framework;
+    the constructions, however, generalize easily.
     \end{example}
 
     Mixture models correspond to a relatively well-studied object in algebraic
-    geometry.
+    geometry.  (For definitions of terms, see Appendix \ref{sec:varieties}.)
     \begin{definition}
     The \emph{secant variety} of the affine variety $V \subset \F^n$ is
     \[
@@ -522,38 +709,77 @@
         \lambda \in \F
         }}
     \]
-    where the line indicates the Zariski closure of the set.  Higher secant
-    varieties are defined in the natural way, that is, $\Sec^1(V) = V$ and
-    $\Sec^k(V) = \Sec(Sec^{k-1}(V), V)$ for $k \ge 2$.
+    where the line indicates the Zariski closure of the set.  
     \end{definition}
-
-    There is a reasonably straightforward relationship between mixture models
-    and secant varieties.
     \begin{proposition}[\cite{DSS08}]
-    If $V$ is a semialgebraic set, then the secant variety
-    $\Sec^k(\overline{V})$ is the Zariski closure of the mixture $\Mixt^k(V)$.
+    If $M$ is a semialgebraic set, then the secant variety
+    $\Sec\pdil[\big]{\overline{M}}$ is the Zariski closure of the mixture
+    $\Mixt(M, M)$.
     \end{proposition}
 
-\section{Steps Forward}
+    For a more thorough exposition on mixture models and secant varieties, we
+    refer the reader to Chapter 4 of \cite{DSS08}.
 
-\begin{comment}
-    The marginal distribution of the RBM over its visible variables is
+\subsection{The RBM as a Mixture Model}
+
+    We claim that a distribution in the RBM model $M_n^K$ is the weighted sum of
+    $2^k$ distributions from the binary independence model, where both the
+    weights and the component distributions are subject to certain restrictions.
+    From the characterization of the RBM model given in Theorem
+    \ref{thm:factor}, we can make this precise.
+    \begin{proposition}
+    A distribution is in the RBM model $M_n^k$ if and only if it is of the form
     \[
-        p_V(v) = \sum_{h \in \{0,1\}^k} p(v, h).
+        \sum_{h \in \{0,1\}^k} \mu_h v_h
+        \qquad
+        \mu_h \in \R, \;
+        v_h \in \Bin
     \]
-    Given a fixed value $h$ for the hidden variables, the visible variables are
-    all independent.  It follows that the marginal distribution over the visible
-    variables is a mixture of independence models.  The mixture model can have
-    up to $2^k$ components, because there are $2^k$ possible states for the
-    hidden variables.
+    where for all binary vectors $h = (h_1, \ldots, h_k)$, the weight $\mu_h$
+    and distribution $v_h$ are as follows.  There are $\lambda_1, \ldots,
+    \lambda_k \in (0,1)$ such that
+    \[
+        \mu_h = \lambda_1^{h_1}(1 - \lambda_1)^{1-h_1} \cdots
+        \lambda_k^{h_k}(1-\lambda_k)^{1-h_k}.
+    \]
+    There are distributions $t \in \Bin$ and $u_1, \ldots, u_k \in \Bin$ such
+    that
+    \[
+        v_h = t * u_{i_1} * \cdots * u_{i_m}
+    \]
+    where $u_{i_j}$ is included in the product only when $h_{i_j} = 1$.
+    \end{proposition}
 
-    In some sense, the hidden variables constitute an `explanation' for the
-    observed variables.  That is, a particular value of $v$ induces a
-    probability distribution over possible values $h$ of the hidden variables.
-    This observation motivates a number of uses for the RBM, including as the
-    building block for the Deep Belief Network, discussed later.
-\end{comment}
+    We make the following observation.
+    \begin{proposition}
+        For any distribution $p \in M_n^k$ where $k \ge 1$, there exists a
+        distribution $q \in M_n^{k-1}$ such that
+        \[
+            p = \lambda q + (1 - \lambda)(q * u)
+        \]
+        for some weighting scalar $\lambda \in (0,1)$ and independence
+        distribution $u \in \Bin$.
+    \end{proposition}
+    Using the above observation inductively, we see that we can then reach any
+    distribution in $M_n^k$ in a series of $k$ `steps', where we begin from a
+    distribution $t \in M_n^0 = \Bin$.
 
+\subsection{Bounding the Growth of Nested RBM Models}
+
+    We now move to more speculative areas, in which progress could be made
+
+    
+
+    % Let $\rho$ and $\varphi$ be as in the proof to Theorem \ref{thm:bin-par}.
+    % We can consider the binary vector $h \in \{0,1\}^k$ as in the space $\R^k$;
+    % the set of all $h$ consists of the corners of the standard $k$-dimensional
+    % hypercube.  Then for a given distribution in the RBM model, there exists
+    % some fixed affine map $\tau: \R^k \to \R^n$ (i.e. linear map with
+    % translation) such that $v_h = (\varphi \circ \rho \circ \tau)(h)$ for all
+    % $h$.
+
+    % in terms of the BIM and mixtures
+    % remember the affine image of a hypercube!
 
 
 
@@ -603,6 +829,10 @@
             = \cdil[\big]{x \in \A^n \vbar f_i(x) = 0 \quad\text{for all $i$}}
         \]
         for some finite set of polynomials $f_i \in \F[x_1, \ldots, x_n]$.
+
+        An \emph{affine variety} is an irreducible affine algebraic set, i.e. an
+        affine algebraic set that cannot be written as the union of two proper
+        affine algebraic subsets.
     \end{definition}
     \noindent Instead of a finite set of polynomials, we can equivalently
     consider a finitely generated ideal.  In fact, $\F[x_1,\ldots,x_n]$ is a
@@ -645,14 +875,15 @@
     is then well-defined.  It follows that we can define the projective analogue
     of an affine variety.
     \begin{definition}
-        A \emph{projective variety} is a subset of the projective space
+        A \emph{projective algebraic set} is a subset of the projective space
         $\Proj^n$ of the form
         \[
             V(f_1, \ldots, f_m)
             = \cdil[\big]{x \in \Proj^n \vbar f_i(x) = 0 \quad\text{for all $i$}}
         \]
         for some finite set of homogeneous polynomials $f_i \in \F[x_0,
-        \ldots,x_n]$.
+        \ldots,x_n]$.  A \emph{projective variety} is an irreducible projective
+        algebraic set.
     \end{definition}
     As in the affine case, there is a well-behaved correspondence between the
     homogeneous ideals of $\F[x_0, \ldots, x_n]$ and projective varieties.
@@ -688,23 +919,22 @@
     perform specified tasks better.  The emphasis of the field, tends to be
     toward large data sets, efficient algorithms, and `non-parametric' models
     with few assumptions.  Machine learning is studied both by computer
-    scientists and statisticians.  The text \cite{ESL} is an excellent overview
+    scientists and statisticians.  The text \cite{EOSL} is an excellent overview
     of machine learning from the latter perspective.
 
 \subsection{Statistical Classification}
 
     One common task is the classification problem.  Here, observations are
-    points in some usually large, complicated, or high-dimensional space $X$,
-    and the task is to assign a class label to an observation $x \in X$.  Class
-    labels come from finite set $C$, and usually have some meaning.
-    Classification can also be viewed as an attempt to approximate a function $f
-    : X \to C$ given a training data set $\{(x_i, f(x_i)\}_{i=1}^n$ of
-    observations.  Of course for this task to be feasible, there must be strong
-    constraints on the functions under consideration; we must select a model.
+    points in some large, complicated, or high-dimensional space $X$, and the
+    task is to assign a class label to an observation $x \in X$.  Class labels
+    come from finite set $C$, and have some meaning.  Classification can also be
+    viewed as an attempt to approximate a function $f : X \to C$ given a set of
+    observations $\{(x_i, f(x_i)\}_{i=1}^n$ as training data.  For this task to
+    be feasible, we cannot consider arbitrary functions; there must be a model.
 
     \begin{example} 
-    One dataset commonly seen in the literature is the MNIST dataset of
-    handwritten digits \cite{MNIST}.
+    The MNIST dataset of handwritten digits \cite{MNIST} is commonly seen in the
+    machine learning literature.
     \begin{center}
     \scalebox{0.8}{
     \includegraphics{images/mnist_0.png}\,
@@ -714,14 +944,15 @@
     \includegraphics{images/mnist_4.png}
     }
     \end{center}
-    Each $28\times28$ pixel image depicts a handwritten digit.  The training set
-    contains 60,000 examples and the test set contains 10,000 examples.  The
-    task is to classify each image in the test set as one of the digits
-    $0,1,\ldots,9$.
+    Each $28\times28$ pixel image depicts a handwritten digit $0, \ldots, 9$.
+    The training set contains 60,000 images and the test set contains 10,000
+    images.  An algorithm under evaluation is given the training set with
+    correct labels; the task is to correctly label a high percentage of the
+    remaining test set.
     \end{example}
 
-    The majority of successful algorithms are in some sense `only a step or two
-    away from linear'.  For instance the \emph{perceptron}, a binary linear
+    The majority of algorithms in use are in some sense `only a step or two away
+    from linear'.  For instance the \emph{perceptron}, a binary linear
     classifier, places observations (which are real vectors) into two classes by
     learning a hyperplane which separates the classes.  The \emph{support vector
     machine} takes a modified approach, as it maps the observed data to a very
@@ -762,83 +993,13 @@
     \begin{center}
     \scalebox{0.6}{\includegraphics{images/DBN3.png}}
     \end{center}
-    For classification, the network would be greedily trained to represent the
-    input data.  The top layer $h^m$ would then be trained to classify the
-    inputs with a one-hot encoding.
+    For classification, the network is greedily trained to represent the input
+    data.  The top layer $h^m$ is then trained to classify the inputs with a
+    one-hot encoding.  The cited paper reported very low error rates (1.25\%) on
+    the MNIST dataset using a Deep Belief Network.
 
-\subsection{Graphical models}
-    \label{sec:graph}
-
-    A graphical model is a probabilistic model for which a graph (directed or
-    undirected) represents the conditional independence structure between random
-    variables. 
-
-    Let $G$ be a graph with vertex set $V$.  Suppose that $(X_\alpha)_{\alpha
-    \in V}$ are random variables.  It is common for the $X_\alpha$ to be either
-    discrete or real-valued.  The joint probability of $X = (X_\alpha)$ is said
-    to factor with respect to $G$ if the probability density is
-    \[
-        p(X_1, \ldots, X_n) = 
-            \prod_\alpha p(X_\alpha \mid X_\beta, \beta \text{ is a parent of }
-            \alpha).
-    \]
-    The dependence of a random variable on the other variables is completely
-    captured by its dependence on its immediate parents (i.e. on the variables
-    having directed edges into it).  It is also possible to formulate an
-    equivalent statement in terms of conditional independence statements.
-
-    In the case of an undirected graph, it is known (in a result called the
-    Hammersley–Clifford theorem) that the probability density factors as
-    \[
-        p(X_1, \ldots, X_n) = 
-            \prod_{S \in C(G)} p(X_\alpha \mid X_\beta, \beta \in S)
-    \]
-    where the $S$ are complete subgraphs (cliques) of $G$.
-
-    Graphical models turn up in a number of places: Bayesian networks (directed)
-    and Markov random fields (undirected) in statistics, Boltzmann machines in
-    machine learning, and Ising models (particle spins in a lattice) in
-    statistical mechanics.
-
-\nocite{*}
+% \nocite{*}
 \bibliographystyle{annotate}
 \bibliography{mid}
-
-\begin{comment}
-\begin{thebibliography}{100}
-    \bibitem[BCR98]{BCR98} Bochnak, Coste, Roy.  Real Algebraic Geometry.  1998.
-    \bibitem[Ben09]{Ben09} Bengio.  Learning Deep Architectures for AI. 2009.
-    \bibitem[CLO92]{CLO92} Cox, Little, O'Shea.  Ideals, Varieties, and
-    Algorithms.  1992.
-    \bibitem[CLO98]{CLO98} Cox, Little, O'Shea.  Using Algebraic Geometry.  1998.
-    \bibitem[CLS09]{CLS09} Cox, Little, Schenck.  Toric Varieties.  2009.
-    \bibitem[CMS09]{CMS09} Cueto, Morton, Sturmfels. Geometry of the Restricted Boltzmann Machine.  2009.
-    \bibitem[Cos09]{Cos09} Michel Coste.  An Introduction to Semialgebraic Geometry.  2002.
-    \bibitem[CTY10]{CTY10} Cueto, Tobis, Yu.  An Implicitization Challenge for Binary Factor Analysis. 
-    2010.
-    \bibitem[DS98]{DS98} Diaconis and Sturmfels.  Algebraic Algorithms for Sampling
-    from Conditional Distributions. 1998.
-    \bibitem[DSS08]{DSS08} Drton, Sturmfels, Sullivant. Lectures on Algebraic
-    Statistics. 2009.
-    \bibitem[GMS06]{GMS06} Geiger, Meed, Sturmfels.  On the Toric Algebra of Graphical Models. 2006.
-    \bibitem[Hin07]{Hin07} Hinton.  A Fast Algorithm for Deep Belief Nets.  2007.
-    \bibitem[MA10]{MA10} Montufar, Ay.  Refinements of Universal Approximation
-    Results for Deep Belief Networks and Restricted Boltzmann Machines.  2010.
-    \bibitem[Mon10]{Mon10} Montufar.  Mixture Models and Representational Power of
-    RBM's, DBN's and DBM's.  2010.
-    \bibitem[PS03]{PS03} Pachter, Sturmfels.  Tropical Geometry of Statistical Models. 2003.
-    \bibitem[Ric09]{Ric09} Riccomagno.  A Short History of Algebraic Statistics.  2009.
-    \bibitem[Top02]{Top02} Topics in Algebraic Geometry and Geometric Modeling:
-    Workshop on Algebraic Geometry and Geometric Modeling July 29 -- August 2,
-    2002 (Contemporary Mathematics).  Ed. by Goldman and Krasauskas.
-    \bibitem[Wat09]{Wat09} Watanabe.  Algebraic Geometry and Statistical Learning Theory.  2009.
-
-    \bibitem{A5} Pachter, Sturmfels.  ``Tropical Geometry of Statistical
-    Models''. 2003.
-    \bibitem{A6} Pachter, Sturmfels.  \textit{Algebraic Statistics for
-    Computational Biology}.  2005.
-\end{thebibliography}
-\end{comment}
-
 
 \end{document}
