@@ -16,7 +16,7 @@
 
 \title{The Restricted Boltzmann Machine}
 \author{Aaron Pribadi}
-\date{November 2011}
+\date{Fall 2011}
 
 \begin{document}
 
@@ -43,8 +43,7 @@
     models (see for example \cite{Ama}).
 
     An introduction to the field of algebraic statistics may be found in the
-    collection of lecture notes \cite{DSS08} and a brief history of the field
-    may be found in the article \cite{Ric09}.  Algebraic statistics has also
+    collection of lecture notes \cite{DSS08}.  Algebraic statistics has also
     been applied to computational biology \cite{ASCB}.
 
     Our goal is to examine a particular statistical model, the Restricted
@@ -762,13 +761,52 @@
     \end{proposition}
     Using the above observation inductively, we see that we can then reach any
     distribution in $M_n^k$ in a series of $k$ `steps', where we begin from a
-    distribution $t \in M_n^0 = \Bin$.
+    distribution $t \in M_n^0 = \Bin$.  A step is of course equivalent to
+    adding another hidden unit with the appropriately weighted connections.
 
 \subsection{Bounding the Growth of Nested RBM Models}
 
-    We now move to more speculative areas, in which progress could be made
+    This section outlines potential avenues for further progress.
 
+    We would like to characterize how the nested models $\Bin = M_n^0 \subset
+    M_n^1 \subset M_n^2 \subset \cdots$ grow.  One possible coarse description
+    would use some notion of distance in the space of distributions.
+    Specifically, a metric $d(\cdot, \cdot)$ on $\Delta_{N-1}$ such that for $q
+    \in M_n^{k-1}$ the distance
+    \[
+        d(q, \lambda q + (1 - \lambda)(q * u))
+    \]
+    for any $\lambda \in (0,1)$ and $u \in \Bin$ is relatively small.  Given a
+    `uniform' bound for the above, this would imply that
+    \[
+        \sup_{p \in M_n^k}
+        \inf_{q \in M_n^{k-1}} d(p, q)
+    \]
+    is bounded, hopefully nontrivially.  There are a number of commonly used
+    measures of distance between probability distributions, including the
+    Kullback-Leibler divergence, the total variation distance, and the usual
+    Euclidean distance on the simplex.  It is unknown whether any of these
+    distances will be useful or could be modified to be useful in this
+    situation.
+
+    It may be useful to consider the space of distributions modulo the binary
+    independence model with respect to the Hadamard product.  Recall that, with
+    the Hadamard product, the space of distributions is an Abelian group and the
+    binary independence model is a subgroup, so the quotient is well-defined.
+    The following points are suggestive.
+    \begin{itemize*}
+        \item Every model $M_n^k$ is invariant under the action of $\Bin$, so
+        it projects cleanly to the quotient.
+        \item The projection of $M_n^0$ is the identity.
+        \item The `path' to a distribution in $M_n^k$ is unique (disregarding
+        reordering of steps) when we work in the quotient; this is not the case
+        in the original space.
+    \end{itemize*}
+    The difficulty is characterizing mixture models in the quotient space; this
+    is a current goal.
     
+    % in terms of the BIM and mixtures
+    % remember the affine image of a hypercube!
 
     % Let $\rho$ and $\varphi$ be as in the proof to Theorem \ref{thm:bin-par}.
     % We can consider the binary vector $h \in \{0,1\}^k$ as in the space $\R^k$;
@@ -777,11 +815,6 @@
     % some fixed affine map $\tau: \R^k \to \R^n$ (i.e. linear map with
     % translation) such that $v_h = (\varphi \circ \rho \circ \tau)(h)$ for all
     % $h$.
-
-    % in terms of the BIM and mixtures
-    % remember the affine image of a hypercube!
-
-
 
 \appendix
 
@@ -806,9 +839,9 @@
     and Gröbner bases algorithms while assuming a relatively small amount of
     prerequisite knowledge.  The same authors have a graduate text \cite{CLO05}.
 
-    Here, we introduce some classical algebro-geometric objects.  There are many
-    references in which these objects and their importance is explicated; one is
-    \cite{Sha}.
+    Here, we introduce some classical algebro-geometric objects.  For a
+    reference, there are several good introductory textbooks for algebraic
+    geometry; one is \cite{Sha94}.
 
 \subsection{Affine and Projective Varieties}
     \label{sec:varieties}
@@ -912,7 +945,7 @@
     arbitrary commutative rings.  This road leads to the theory of schemes,
     which we will neither need nor pursue here.
 
-\section{Machine Learning: Goals, Techniques, and Trends}
+\section{Machine Learning: Tasks and Tools}
     \label{sec:ML}
 
     The goal of machine learning is to algorithmically use data in order to
