@@ -1,7 +1,11 @@
 @book{Ama,
     author = "Shun-Ichi Amari",
     title = "Methods of Information Geometry",
+    publisher = "American Mathematical Society",
     year = "2001",
+    annotate = {
+        A standard reference for the field of Information Geometry.
+    }
 }
 
 @book{BCR98,
@@ -56,7 +60,9 @@
 @article{CMS09,
     author = "Maria Cueto and Jason Morton and Bernd Sturmfels",
     title = "Geometry of the {R}estricted {B}oltzmann {M}achine",
-    year = "2009",
+    year = "2010",
+    journal = "Contemporary Mathematics",
+    volume = "516",
     eprint = "arXiv:09084425",
     annotate = {
         An examination of the Restricted Boltzmann Machine from an
@@ -66,10 +72,12 @@
     }
 }
 
-@article{CTY10,
+@misc{CTY10,
     author = "Maria Cueto and Enrique Tobis and Josephine Yu",
     title = "An implicitization challenge for binary factor analysis",
     year = "2010",
+    publisher = "Preprint",
+    howpublished = "Preprint at \texttt{http://arxiv.org/abs/1006.1384}",
     eprint = "arXiv:1006.1384",
     annotate = {
         Inspired by a question given by Bernd Sturmfels, the team computed the
@@ -98,18 +106,19 @@
     year = "2008",
     annotate = {
         Lecture notes that arose out of a five-day Oberwolfach Seminar in 2008,
-        and perhaps one of the best introductions to algebraic statistics.
+        and one of the few good introductions to algebraic statistics.
     }
 }
 
 @article{Hin07,
     author = "Geoffrey Hinton",
     title = "A fast learning algorithm for deep belief nets",
-    year = "2007",
+    year = "2006",
+    journal = "Neural Computation",
     annotate = {
         An early paper on the Deep Belief Network that introduced the
             `contrastive divergence' algorithm, sparking increased interest in
-            the model.
+            the Restricted Boltzmann Machine.
     }
 }
 
@@ -143,7 +152,8 @@
     author = "Guido Montufar and Nihat Ay",
     title = "Refinements of universal approximation results for deep belief
         networks and restricted Boltzmann machines",
-    year = "2010",
+    year = "2011",
+    journal = "Neural Computation",
     annotate = {
         This paper shows that given enough hidden units, a Restricted Boltzmann
             Machine can approximate any distribution on the visible units
@@ -152,17 +162,11 @@
     },
 }
 
-@book{Mum99,
-    author = "David Mumford",
-    title = "The Red Book of Varieties and Schemes",
-    publisher = "Springer",
-    year = "1999",
-}
-
 @book{ASCB,
     author = "Lior Pachter and Bernd Sturmfels",
     title = "Algebraic Statistics for Computational Biology",
     year = "2005",
+    publisher = "Cambridge University Press",
     annotate = {
         This book is probably more important to the field of algebraic
             statistics than the title would indicate, as the subject has seen
@@ -176,10 +180,42 @@
     publisher = "Springer",
     year = "1994",
     annotate = {
-        An introduction to algebraic geometry at a more elementary level, than,
-        say, Hartshorne's \textit{Algebraic Geometry}.
+        An introduction to algebraic geometry at a more elementary level than,
+        for example, Hartshorne's \textit{Algebraic Geometry}.
     },
 }
+
+@book{Mum99,
+    author = "David Mumford",
+    title = "The Red Book of Varieties and Schemes",
+    publisher = "Springer",
+    year = "1999",
+    annotate = {
+        A well-known introduction to algebraic geometry.
+    }
+}
+
+@book{Invitation,
+    author = "Karen E. Smith and  Lauri Kahanpää and Pekka Kekäläinen and William Traves",
+    title = "An Invitation to Algebraic Geometry",
+    publisher = "Springer",
+    year = "2010",
+    annotate = {
+        An excellent, readable, and brief introduction to some of the ideas of
+        algebraic geometry.
+    }
+}
+
+@book{Hart,
+    author = "Robin Hartshorne",
+    title = "Algebric Geometry",
+    publisher = "Springer",
+    year = "2010",
+    annotate = {
+        The standard graduate-level introduction to algebraic geometry.
+    }
+}
+
 
 -------------------------------------------
 
@@ -234,8 +270,12 @@
 @article{GSS,
     author = "Luis Garcia and Michael Stillman and Bernd Sturmfels",
     title = "Algebraic Geometry of Bayesian Networks",
-    year = "2003",
+    year = "2005",
+    journal = "Journal of Symbolic Computation",
     annotate = {
+        An algebro-geometric examination of the Bayesian networks.  Bayesian
+            networks use directed graphs, in contrast to the undirected graphs
+            of Markov random fields.
     },
 }
 

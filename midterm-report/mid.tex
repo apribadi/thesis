@@ -15,7 +15,7 @@
 
 \numberwithin{equation}{section}
 
-\title{The Restricted Boltzmann Machine}
+\title{Midyear Report: The Restricted Boltzmann Machine}
 \author{Aaron Pribadi}
 \date{Fall 2011}
 
@@ -52,7 +52,12 @@
     from prior work in that direction, especially \cite{CMS09}.  The Restricted
     Boltzmann Machine has recently become the centerpiece of certain
     developments in the machine learning community \cite{Hin07}, and basic
-    questions about its geometry remain unanswered.
+    questions about its geometry remain unanswered.  
+    
+    We begin in Section 2 by explaining the geometric framework of our approach.
+    In Section 3 we present the Restricted Boltzmann Machine and some known
+    results, and in Section 4 we develop our own characterization of the model
+    in the hope that it will prove illuminating.
 
 \section{The Geometry of Statistical Models}
     \subsection{The Probability Simplex}
@@ -273,7 +278,7 @@
     % Then we can solve the likelihood equations, given the defining ideal?
 
 
-\section{The Restricted Boltzmann Machine}
+\section{Introducing the Restricted Boltzmann Machine}
 
     We now focus on the Restricted Boltzmann Machine, a statistical model that
     has recently become important to the machine learning community in its the
@@ -406,7 +411,7 @@
     visible units are all independent; removing the hidden units completely
     disconnects the graph.
     
-\subsection{The Geometry of the Restricted Boltzmann Machine}
+\subsection{The Algebraic Geometry of the RBM}
     The recent paper \cite{CMS09} examines the Restricted Boltzmann Machine from
     an algebro-geometric perspective.  We outline a small portion of its
     approach.
@@ -515,10 +520,12 @@
     \]
     Indeed, any model in $M_n^k$ with parameters $w_{ij}$, $b_i$, and $c_j$ is
     contained in $M_n^{k+1}$ where the corresponding parameters are the same
-    except for $w_{1,k+1} = \cdots = w_{n, k+1} = 0$  and $c_{k+1} = 0$.
+    except for $w_{1,k+1} = \cdots = w_{n, k+1} = 0$  and $c_{k+1} = 0$.  While
+    none of these constructions are new, we do not think that anybody has before
+    drawn attention to the nested sequence itself as an object of interest.
 
-    Some facts are already known about this sequence.
-    \begin{theorem}[\cite{MA10}] \label{thm:approximator}
+    Some properties of this sequence are already known.
+    \begin{theorem}[from \cite{MA10}, in our notation] \label{thm:approximator}
     With $k = 2^{n-1} - 1$, the model $M_n^k$ is dense in $\Delta_{2^n - 1}$.
     \end{theorem}
     In the cited paper, this result is phrased as ``Any distribution on
@@ -554,15 +561,21 @@
     Theorem \ref{thm:approximator} and the dimensionality result in Theorem
     \ref{thm:dimension} is whether the bound given in the former is sharp.  That
     is, does there exist $k < 2^{n-1}-1$ such that $M_n^k$ is dense in
-    $\Delta_{2^n-1}$?
+    $\Delta_{2^n-1}$?  The proof of the dimensionality result required passing
+    from the model, a semialgebraic set, to the corresponding projective variety
+    and tropical variety.  When dealing with a mixture model (as we will see is
+    the case for the RBM), there is a loss in information in the passage from a
+    semialgebraic set to a variety; Example 4.1.5 in \cite{DSS08} illustrates
+    this phenomenon in a different model.
 
     Less concretely, it is desirable to get a better handle on the geometry of
-    the RBM, keeping in view the goal of training RBMs of practical sizes.  A
-    typical RBM used in a Deep Belief Network might have several hundred to
-    several thousand visible and hidden units \cite{Hin07}.  While algorithmic
-    innovations in the machine learning community have made training RBMs
-    practical, the run time of such algorithms is still measured in days, rather
-    than seconds.
+    the Restricted Boltzmann Machine, keeping in view the model's use in
+    practical applications.  A typical RBM used in a Deep Belief Network might
+    have several hundred to several thousand visible and hidden units
+    \cite{Hin07}.  Such an RBM would be trained with a data set containing tens
+    of thousands of examples.  While algorithmic innovations in the machine
+    learning community have made training RBMs practical, the run time of such
+    algorithms is still measured in days, rather than seconds.
     
     Even though the rational parametrization of the RBM given in
     \eqref{eq:rbm-alg-par} places the task of likelihood maximization within an
@@ -574,11 +587,15 @@
     to creative techniques detailed in \cite{CTY10}.  
 
     Thus, any progress toward an algorithm leveraging algebro-geometric
-    techniques to do either exact or approximate maximum likelihood
-    more efficiently on the RBM would be of extreme interest.
+    techniques to compute (approximate) maximum likelihood estimates for the RBM
+    more efficiently  would be of extreme interest.
 
 
-\section{Components of the RBM}
+\section{The Structure of the Restricted Boltzmann Machine}
+
+    We examine the Restricted Boltzmann Machine as a mixture model of
+    independence distributions.  With the exception of subsection 4.3, the
+    material in this section is original.
 
     We saw in Section \ref{sec:rbm-def} that given a fixed value $h \in
     \{0,1\}^k$ for the hidden units of a RBM, the visible units are all
@@ -595,10 +612,10 @@
     arbitrary.  The range of possibilities for both determine the structure of
     the RBM.
 
-    In this section, we consider the space of strictly positive distributions,
-    denoted by $\intr(\Delta_{N-1})$.  This space contains distributions for
-    which the probability of every event is nonzero, and consists of the
-    interior of the simplex.
+    In this section, we restrict ourselves to the space of strictly positive
+    distributions, denoted by $\intr(\Delta_{N-1})$.  This space contains
+    distributions for which the probability of every event is nonzero, and
+    consists of the interior of the simplex.
 
 \subsection{The Hadamard Product}
 
@@ -682,11 +699,11 @@
     We formally introduce the binary independence model.  Throughout this
     section, let $N = 2^n$.
     \begin{definition}
-    Identify the space of strictly positive distributions over $\{0,1\}^n$ with
-    the probability simplex $\intr(\Delta_{N-1})$.  The coordinates of
-    $\Delta_{N-1}$ may be associated with the binary vectors of length $n$
-    ordered lexicographically.  The \emph{binary independence model} $\Bin
-    \subset \Delta_N$ consists of the distributions that factor as
+    Identify the space of strictly positive distributions over the $N$ states
+    $\{0,1\}^n$ with the probability simplex $\intr(\Delta_{N-1})$.  The
+    coordinates of $\Delta_{N-1}$ may be associated with the binary vectors of
+    length $n$ ordered lexicographically.  The \emph{binary independence model}
+    $\Bin \subset \Delta_N$ consists of the distributions that factor as
     \[
         P(v) = P(v_1) \cdots P(v_n)
     \]
@@ -801,13 +818,16 @@
     \]
     A mixture of two Gaussian distributions is a weighted sum $p(x) = \lambda
     p_{\mu_1, \sigma_1}(x) + (1 - \lambda)p_{\mu_2, \sigma_2}(x)$.  
-    \begin{center}
-    \scalebox{1}{ \includegraphics[scale=0.5]{images/mixture.png} }
-    \end{center}
+    \begin{figure}[H]
+        \centering
+        \scalebox{1}{ \includegraphics[scale=0.5]{images/mixture.png} }
+        \caption{A mixture of two Gaussian distributions, with components shown
+        dashed.}
+    \end{figure}
     Mixtures of more Gaussian distributions in higher dimensions are defined
     analogously.  Note that because the space of distributions over the real
     line is not finite dimensional, this example does not formally fit under our
-    framework; the constructions, however, generalize easily.
+    framework; the relevant constructions, however, generalize easily.
     \end{example}
 
     Mixture models correspond to a relatively well-studied object in algebraic
@@ -840,7 +860,7 @@
     weights and the component distributions are subject to certain restrictions.
     From the characterization of the RBM model given in Theorem
     \ref{thm:factor}, we can make this precise.
-    \begin{proposition}
+    \begin{proposition}\label{prop:rbm-mix}
     A distribution is in the RBM model $M_n^k$ if and only if it is of the form
     \[
         \sum_{h \in \{0,1\}^k} \mu_h v_h
@@ -862,6 +882,11 @@
     \]
     where $u_{i_j}$ is included in the product only when $h_{i_j} = 1$.
     \end{proposition}
+    \begin{proof}
+        Write an arbitrary distribution in $M_n^k$ as the Hadamard product of
+        $k$ mixture models, each a weighted sum of two independence models.
+        Multiplying out yields the stated form.
+    \end{proof}
 
     We make the following observation.
     \begin{proposition}
@@ -873,10 +898,21 @@
         for some weighting scalar $\lambda \in (0,1)$ and independence
         distribution $u \in \Bin$.
     \end{proposition}
+    \begin{proof}
+        The observation follows immediately from Proposition \ref{prop:rbm-mix}.
+    \end{proof}
     Using the above observation inductively, we see that we can then reach any
-    distribution in $M_n^k$ in a series of $k$ `steps', where we begin from a
-    distribution $t \in M_n^0 = \Bin$.  A step is of course equivalent to
-    adding another hidden unit with the appropriately weighted connections.
+    distribution in $M_n^k$ in a series of $k$ steps, where we begin from a
+    distribution $t \in M_n^0 = \Bin$.  A step is determined by a weighting
+    parameter $\lambda \in (0,1)$ and an independence distribution $u \in \Bin$
+    and proceeds
+    \[
+        \text{from}\qquad q \in M_n^{k-1}
+        \qquad\text{to}\qquad
+        \lambda q + (1 - \lambda)(q * u) \in M_n^k.
+    \]
+    A step is of course equivalent to adding another hidden unit with the
+    appropriately weighted connections.
 
 \subsection{Bounding the Growth of Nested RBM Models}
 
@@ -885,18 +921,26 @@
     We would like to characterize how the nested models $\Bin = M_n^0 \subset
     M_n^1 \subset M_n^2 \subset \cdots$ grow.  One possible coarse description
     would use some notion of distance in the space of distributions.
-    Specifically, a metric $d(\cdot, \cdot)$ on $\Delta_{N-1}$ such that for $q
-    \in M_n^{k-1}$ the distance
-    \[
-        d(q, \lambda q + (1 - \lambda)(q * u))
-    \]
-    for any $\lambda \in (0,1)$ and $u \in \Bin$ is relatively small.  Given a
-    `uniform' bound for the above, this would imply that
-    \[
+    Specifically, a metric $d(\cdot, \cdot)$ on $\Delta$ would be useful
+    if for $q \in M_n^{k-1}$, $\lambda \in (0,1)$, and $u \in \Bin$ the distance
+    traversed in a single step
+    \begin{equation}\label{eq:step-distance}
+        d(q,\, \lambda q + (1 - \lambda)(q * u))
+    \end{equation}
+    is relatively small.  Ideally, the `radius' of the space, i.e. the distance
+    from the subset $M_n^0$ to a point in $\Delta$ as far away from the subset
+    as possible, would be large relative to the distance traversed in a single
+    step.  A `uniform' bound for \eqref{eq:step-distance} that does not depend
+    on $q$, $\lambda$, or $u$ would imply that the maximal distance from a point
+    in $M_n^k$ to the smaller model $M_n^{k-1}$
+    \begin{equation}\label{eq:expansion}
         \sup_{p \in M_n^k}
         \inf_{q \in M_n^{k-1}} d(p, q)
-    \]
-    is bounded, hopefully non-trivially.  There are a number of commonly used
+    \end{equation}
+    is bounded.  The value \eqref{eq:expansion} measures how much a model can
+    `expand' in the simplex given an additional hidden unit. 
+    
+    There are a number of commonly used
     measures of distance between probability distributions, including the
     Kullback-Leibler divergence, the total variation distance, and the usual
     Euclidean distance on the simplex.  It is unknown whether any of these
@@ -916,7 +960,7 @@
         reordering of steps) when we work in the quotient; this is not the case
         in the original space.
     \end{itemize*}
-    The difficulty is characterizing mixture models in the quotient space; this
+    The difficulty is in characterizing mixture models in the quotient space; this
     is a current goal.
     
     % in terms of the BIM and mixtures
@@ -954,8 +998,8 @@
     prerequisite knowledge.  The same authors have a graduate text \cite{CLO05}.
 
     Here, we introduce some classical algebro-geometric objects.  There are
-    several good introductory textbooks for algebraic geometry; one is
-    \cite{Sha94}.
+    many good introductory textbooks for algebraic geometry, including
+    \cite{Invitation}, \cite{Sha94}, \cite{Hart}, and \cite{Mum99}.
 
 \subsection{Affine and Projective Varieties}
     \label{sec:varieties}
@@ -1063,7 +1107,7 @@
     \label{sec:ML}
 
     The goal of machine learning is to algorithmically use data in order to
-    perform specified tasks better.  The emphasis of the field, tends to be
+    perform specified tasks better.  The emphasis of the field tends to be
     toward large data sets, efficient algorithms, and `non-parametric' models
     with few assumptions.  Machine learning is studied both by computer
     scientists and statisticians.  The text \cite{EOSL} is an excellent overview
@@ -1080,9 +1124,10 @@
     be feasible, we cannot consider arbitrary functions; there must be a model.
 
     \begin{example} 
-    The MNIST dataset of handwritten digits \cite{MNIST} is commonly seen in the
+    The MNIST data set of handwritten digits \cite{MNIST} is commonly seen in the
     machine learning literature.
-    \begin{center}
+    \begin{figure}[H]
+        \centering
     \scalebox{0.8}{
     \includegraphics{images/mnist_0.png}\,
     \includegraphics{images/mnist_1.png}\,
@@ -1090,12 +1135,13 @@
     \includegraphics{images/mnist_3.png}\,
     \includegraphics{images/mnist_4.png}
     }
-    \end{center}
-    Each $28\times28$ pixel image depicts a handwritten digit $0, \ldots, 9$.
-    The training set contains 60,000 images and the test set contains 10,000
-    images.  An algorithm under evaluation is given the training set with
-    correct labels; the task is to correctly label a high percentage of the
-    remaining test set.
+        \caption{Some digits from the MNIST data set.}
+    \end{figure}
+    \noindent Each $28\times28$ pixel image depicts a handwritten digit $0,
+    \ldots, 9$.  The training set contains 60,000 images and the test set
+    contains 10,000 images.  An algorithm under evaluation is given the training
+    set with correct labels; the task is to correctly label a high percentage of
+    the remaining test set.
     \end{example}
 
     The majority of algorithms in use are in some sense `only a step or two away
@@ -1137,13 +1183,15 @@
     The conditional independence structure of the DBN is described by a graph
     with undirected connections between the top two layers and directed
     connections between all other adjacent layers.
-    \begin{center}
-    \scalebox{0.6}{\includegraphics{images/DBN3.png}}
-    \end{center}
-    For classification, the network is greedily trained to represent the input
-    data.  The top layer $h^m$ is then trained to classify the inputs with a
-    one-hot encoding.  The cited paper reported very low error rates (1.25\%) on
-    the MNIST dataset using a Deep Belief Network.
+    \begin{figure}[H]
+        \centering
+        \scalebox{0.6}{\includegraphics{images/DBN3.png}}
+        \caption{Layers of a Deep Belief Network.}
+    \end{figure}
+    \noindent For classification, the network is greedily trained to represent
+    the input data.  The top layer $h^m$ is then trained to classify the inputs
+    with a one-hot encoding.  The cited paper reported very low error rates
+    (1.25\%) on the MNIST data set using a Deep Belief Network.
 
 % \nocite{*}
 \bibliographystyle{annotate}
