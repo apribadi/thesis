@@ -1,4 +1,6 @@
-all: 
+all:
+	xelatex mid
+bib: 
 	xelatex mid
 	bibtex mid
 	xelatex mid
