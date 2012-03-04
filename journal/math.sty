@@ -1,0 +1,123 @@
+% Built to work with pset
+\ProvidesPackage{math}
+
+% AMS packages
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+% math fonts
+% eulervm must be loaded AFTER main text fonts, for mathrm etc.
+% euler-digits also replaces comma and period, so don't use :-(
+\usepackage[small,euler-hat-accent]{eulervm}
+
+% hacks to make accents work
+% derived from eulervm's source
+\DeclareSymbolFont{operatorT1}{T1}{\familydefault}{m}{n}
+\DeclareMathAccent{\dot}{\mathalpha}{operatorT1}{10}
+\DeclareMathAccent{\acute}{\mathalpha}{operatorT1}{1}
+\DeclareMathAccent{\grave}{\mathalpha}{operatorT1}{0}
+\DeclareMathAccent{\ddot}{\mathalpha}{operatorT1}{4}
+\DeclareMathAccent{\tilde}{\mathalpha}{operatorT1}{3}
+\DeclareMathAccent{\bar}{\mathalpha}{operatorT1}{9}
+\DeclareMathAccent{\breve}{\mathalpha}{operatorT1}{8}
+\DeclareMathAccent{\check}{\mathalpha}{operatorT1}{7}
+%\DeclareMathAccent{\hat}{\mathalpha}{operatorT1}{2}
+\DeclareMathAccent{\dot}{\mathalpha}{operatorT1}{10}
+
+% Some additional math symbols and fonts loaded AFTER math fonts (eulervm).
+\usepackage{bbm}
+\usepackage{mathbbol}
+\usepackage{colonequals}
+
+% Extra packages
+\usepackage{mathtools}                    % includes shortintertext and more!
+\usepackage[retainorgcmds]{IEEEtrantools} % nicer equation align
+\usepackage{tikz}                         % commutative diagrams
+\usetikzlibrary{matrix,arrows}
+% \usepackage{mathrsfs}  % script font for math
+
+% amsthm
+\usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem*{definition}{Definition}
+%\newtheorem*{example}{Example}
+
+% problem and solution environments
+\newenvironment{problem}[1][]{
+    \begin{trivlist}
+    \item[\hskip\labelsep \textbf{#1}]
+    \begin{it}
+}{
+    \end{it}
+    \!\!\!\!\!\!\!\hfill\raisebox{-3.0pt}{\ensuremath{\lrcorner}}
+    \end{trivlist}
+}
+\newenvironment{solution}{
+    \begin{trivlist}
+    \item[]
+}{
+    \hfill\ensuremath{\Box}
+    \end{trivlist}
+    \vspace{\baselineskip}
+}
+
+
+% starred newcommand behaves better for short commands (use by default)
+
+% math symbols
+\newcommand*{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand*{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand*{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand*{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand*{\inv}[1]{#1^{-1}}
+\newcommand*{\dual}[1]{#1^{\ast}}
+\newcommand*{\dd}{\,d}
+\newcommand*{\cinf}{C^\infty}
+\newcommand*{\g}{\mathfrak{g}}
+\newcommand*{\GL}{\mathfrak{GL}}
+\newcommand*{\gl}{\mathfrak{gl}}
+\newcommand*{\Proj}{\mathbbm{P}}
+\newcommand*{\iso}{\mathbbm{P}}
+
+\newcommand*{\qedsc}{\textsc{qed}}
+
+% Math operators; see the package amsmath for documentation.
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\D}{D}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Span}{Span}
+
+% Suboptimal names.
+\DeclareMathOperator{\image}{Im}
+\DeclareMathOperator{\kernel}{Ker}
+\DeclareMathOperator{\character}{char}
+
+% Math brackets
+% See the package mathtools for documentation.
+% Has optional argument \Xdil[size_cmd]{...}, with size_cmd = \big, \Big, \bigg, \Bigg
+% Also defines \Xdil* macro, giving \left and \right modifiers.
+\DeclarePairedDelimiter\sdel{[}{]}
+\DeclarePairedDelimiter\adel{\langle}{\rangle}
+\DeclarePairedDelimiter\cdel{\{}{\}}
+\DeclarePairedDelimiter\pdel{\lparen}{\rparen}
+\DeclarePairedDelimiter\vdel{\vert}{\vert}
+
+\newenvironment{matr}{
+    \left[
+    \;
+    \begin{matrix*}[r]
+}{
+    \end{matrix*}
+    \;
+    \right]
+}
