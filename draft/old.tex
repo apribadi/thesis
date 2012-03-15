@@ -3,9 +3,6 @@
 \usepackage{util}
 \usepackage{math}
 
-\usepackage{extarrows}
-\usepackage{kbordermatrix}
-
 \usepackage{makeidx}
 \makeindex
 
@@ -22,12 +19,12 @@
 
 \newcommand*{\parop}[1]{\frac{\partial}{\partial #1}}
 
-\numberwithin{equation}{chapter}
-\numberwithin{thmcounter}{chapter}
+\numberwithin{equation}{section}
 
 \title{Thesis Draft}
 \author{Aaron Pribadi}
 \thesisyear{2012}
+
 \advisor{Michael Orrison}
 \reader{Weiqing Gu}
 
@@ -72,6 +69,17 @@
     collection of lecture notes \citep{DSS08}.  Algebraic statistics has also
     been applied to computational biology \citep{ASCB}.
 
+    Our goal is to examine a particular statistical model, the Restricted
+    Boltzmann Machine, from the point of view of algebraic statistics building
+    from prior work in that direction, especially \citep{CMS09}.  The Restricted
+    Boltzmann Machine has recently become the centerpiece of certain
+    developments in the machine learning community \citep{Hin07}, and basic
+    questions about its geometry remain unanswered.  
+    
+    We begin in Section 2 by explaining the geometric framework of our approach.
+    In Section 3 we present the Restricted Boltzmann Machine and some known
+    results, and in Section 4 we develop our own characterization of the model
+    in the hope that it will prove illuminating.
 
 \chapter{The Geometry of Statistical Models}
     \section{The Probability Simplex}
@@ -201,8 +209,6 @@
 
 \section{Solutions to the Likelihood Equations}
 
-    Do I keep this?
-
     Here, we give a flavor of how algebro-geometric techniques can be applied to
     maximum likelihood estimation.  Our exposition follows Section 3.3 of
     \citep{ASCB} and Section 2.1 of \citep{DSS08}.
@@ -280,10 +286,6 @@
     \texttt{Singular}.  An overview of the techniques used to solve such
     polynomial equations, e.g. Gröbner bases, resultants, and elimination, is
     given in the text \citep{CLO05} on computational algebraic geometry.
-
-\section{Inference}
-    
-    Stuff?
 % 
 % \section{Implicit Models}
 
@@ -300,10 +302,15 @@
     % Then we can solve the likelihood equations, given the defining ideal?
 
 
+\chapter{Introducing the Restricted Boltzmann Machine}
 
-\chapter{Log-Linear Models}
-
-\section{Sufficient Statistics}
+    We now focus on the Restricted Boltzmann Machine, a statistical model that
+    has recently become important to the machine learning community in its the
+    pursuit of so-called deep learning architectures.  In particular, this
+    model is the key component of the Deep Belief Network which has achieved
+    considerable success at a number of machine learning tasks \citep{Hin07}.  In
+    our brief overview of machine learning in Appendix \ref{sec:ML}, we describe
+    the motivation behind this application of the Restricted Boltzmann Machine.
 
 \section{Markov Random Fields}
     \label{sec:rbm-def}
@@ -364,315 +371,169 @@
     the variables have binary values and all interactions are pairwise.
     Following the machine learning literature, we refer to binary-valued random
     variables and their corresponding vertices as `units'.
+    
 
-\section{Hierarchical Log-Linear Models}
+\section{The Binary Independence Model}
 
-\chapter{Algorithms and the Lattice Ideal}
-
-\section{Lattice Bases}
-
-\section{Sampling from a Conditional Distribution}
-
-\section{Birch's Theorem and Maximum Likelihood}
-
-\chapter{Representations of the Hyperoctahedral Group}
-
-\section{Permutations of the Hypercube}
-
-    Consider the joint distribution of $n$ binary random variables over their
-    $2^n$ states.  The symmetry group of interest to us is the hyperoctahedral
-    group.  This group may be defined as the automorphism group of the
-    $n$-hypercube or as the wreath product $S_2 \wr S_n$.
-% Coxeter?
-    The first formulation is very concrete, so we describe it first. 
-
-    Each joint state of the $n$ binary random variables can be represented as a
-    binary string of length $n$.  That is, the states are
-    \[
-        \underbrace{
-        \underbrace{0\cdots00}_\text{$n$ bits}\;,\;
-        0\cdots01,\;
-        0\cdots10,\;
-        \ldots,\;
-        1\cdots11
-        }_\text{$2^n$ binary strings}.
-    \]
+    We formally introduce the binary independence model.  Throughout this
+    section, let $N = 2^n$.
     \begin{definition}
-    The \emph{Hamming distance} between two binary strings is the number of
-    positions in which the two strings differ.  
+    Identify the space of strictly positive distributions over the $N$ states
+    $\{0,1\}^n$ with the probability simplex $\intr(\Delta_{N-1})$.  The
+    coordinates of $\Delta_{N-1}$ may be associated with the binary vectors of
+    length $n$ ordered lexicographically.  The \emph{binary independence model}
+    $\Bin \subset \Delta_N$ consists of the distributions that factor as
+    \[
+        P(v) = P(v_1) \cdots P(v_n)
+    \]
+    for binary vectors $v = (v_1, \ldots, v_n) \in \{0,1\}^n$.
     \end{definition}
-    For example, the following binary strings of length 4 have Hamming distances
-    of 0, 1, and 2.
-    \begin{align*}
-        0010 &\xleftrightarrow{\quad\text{Hamming distance $0$}\quad} 0010 \\
-        0010 &\xleftrightarrow{\quad\text{Hamming distance $1$}\quad} 0110 \\
-        0010 &\xleftrightarrow{\quad\text{Hamming distance $2$}\quad} 0100
-    \end{align*}
-    The hypercube graph uses the Hamming distance to determine its edges.
-    \begin{definition}\index{hypercube}
-        The \emph{$n$-hypercube} graph has as its vertices the length-$n$ binary
-        strings.  There is an edge between two vertices if and only if
-        their Hamming distance from each other is 1, that is, if they differ in
-        exactly one bit.
+
+    Notice that the binary independence model is parametrized by $(\lambda_1,
+    \ldots, \lambda_n) \in (0,1)^n$ as
+    \begin{equation} \label{eq:bin}
+        P(v) 
+        = \lambda_1^{v_1}(1 - \lambda_1)^{1 - v_1}
+        \cdots \lambda_n^{v_n}(1 - \lambda_n)^{1 - v_n}.
+    \end{equation}
+    In fact, it is clear that this parametrization $(0,1)^n \to \Bin$ is a
+    bijection.
+
+    The binary independence model interacts well with the Hadamard product.
+    \begin{theorem}\label{thm:bin-par}
+    The binary independence model $\Bin$ with the Hadamard product is a subgroup
+    of the space $(\intr(\Delta_{N-1}), *)$ of all strictly positive
+    distributions.  Furthermore, $(\Bin, *)$ is  isomorphic to $(\R^n, +)$.
+    \end{theorem}
+    \begin{proof}
+    For $1 \le k \le N$, let $v(k)$ be the $k$th binary vector of length $n$,
+    ordered lexicographically.  Let $S$ and $\varphi$ be as in the proof of
+    Theorem \ref{thm:dist-par}.  Recall that $S$ is a hyperplane in $\R^N$;
+    associate the $k$th coordinate of $S \subset \R^N$ with the probability that
+    the event $v(k)$ occurs.  
+    
+    We construct a parametrization of $\Bin$ via the previous parametrization
+    $\varphi : S \to \intr(\Delta_{N-1})$. Consider the linear transformation 
+    \[
+        \rho: \R^n \to \R^N
+        \qquad\text{given by the matrix}\qquad
+        \begin{bmatrix*}[r]
+            -1 & \cdots & -1 & -1 & -1 \\
+            -1 & \cdots & -1 & -1 &  1 \\
+            -1 & \cdots & -1 &  1 & -1 \\
+            \vdots & \ddots &  & \vdots &  \\
+             1 & \cdots &  1 &  1 &  1
+        \end{bmatrix*}
+    \]
+    where the rows are the $N$ possible rows of length $n$ containing only $-1$
+    and $1$, ordered lexicographically.  Several things are straightforward to
+    verify.  First, $\rho(\R^n) \subset S$, as the columns of the matrix all sum
+    to 0.  More importantly, $(\varphi \circ \rho)(\R^n) = \Bin$, and $\varphi
+    \circ \rho$ is a bijection onto its image $\Bin$.  One can compute that a
+    distribution in the binary independence model given by parameters
+    $\lambda_1, \ldots, \lambda_n$ as in \eqref{eq:bin} has the unique preimage
+    \[
+        x \in \R^n
+        \qquad
+        x_i = \frac 1 2 \log \pdel*{\frac{\lambda_i}{1 - \lambda_i}}
+    \]
+    under $\varphi \circ \rho$.  
+    
+    This amounts to a re-parametrization of $\Bin$, with the advantage that
+    $\rho$ is a linear map.  The matrix has full rank $n$, so $\rho$ is an
+    isomorphism.  The subspace $\rho(\R^n) \subset S$ is then a subgroup of $S$
+    isomorphic to both $\R^n$ and $\Bin$.
+    \end{proof}
+
+\section{Hidden Variables and Mixture Models}
+    This section follows Chapter 4 of \citep{DSS08}.
+
+    Suppose that a hidden variable $Y$ influences a visible variable $X$.  As
+    usual, we assume that probability distributions are discrete.  If $Y$
+    follows the probability distribution $\pi$, then the joint distribution of
+    $X$ and $Y$ is 
+    \[
+        P(X = i, Y = j) = \pi_j \cdot p_i^{(j)}
+    \]
+    for some distributions $p^{(j)}$.  Because we consider $Y$ as the hidden
+    variable, we can only observe the marginal distribution of $X$.  The
+    marginal probability is the sum over the possible hidden values
+    \[
+        P(X = i) = \sum_{j} \pi_j \cdot p_i^{(j)}.
+    \]
+    A hidden variable model allows for the creation of complex model out of
+    simple components $p^{(j)}$.  In particular, if the distributions $p^{(j)}$
+    are required to lie in some model $\Mod \subset \Delta_{N-1}$, then we have
+    a mixture model.
+    \begin{definition}
+    Suppose that $V_1, \ldots, V_m$ are subsets of the vector space $\R^N$.  The
+    \emph{mixture} of those sets is 
+    \[
+        \Mixt(V_1, \ldots, V_n) = \cdel*{
+            \lambda_1 v_1 + \cdots + \lambda_n v_m
+            \;\big\vert\;
+            v_i \in V_i, \lambda_j \ge 0, \sum_{j=1}^m \lambda_j = 1
+        }.
+    \]
+    A \emph{mixture model} is the mixture of statistical models $\Mod_1, \ldots,
+    \Mod_m \subset \Delta_{N-1}$.  
     \end{definition}
-    The graph distance between any two vertices of the hypercube graph, i.e. the
-    minimal number of edges between those two vertices, is the same as their
-    Hamming distance.  A look at a picture of a hypercube graph
-    (Figure~\ref{fig:hypercube}) makes it clear as to why it is called a
-    hypercube.
+    Note that because $\Delta_{N-1}$ is a convex set, the mixture of statistical
+    models is itself a statistical model.  The mixture of $m$ models contains
+    the distributions that can be constructed with a hidden variable with $m$
+    states, where each state induces a visible distribution taken from the
+    corresponding model.
 
-
-    \begin{figure}[h]
+    \begin{example}
+    A \emph{Gaussian mixture model} simulates a multi-modal distribution.  It is
+    relatively easy to work with and is useful in a number of machine learning
+    tasks.  See, for example, Sections 6.8 and 8.5 of \citep{EOSL} for an
+    overview of Gaussian mixtures and the EM algorithm, commonly used to train
+    the model.  A Gaussian distribution on the real line with parameters $(\mu,
+    \sigma)$ has probability density
+    \[
+        p_{\mu, \sigma}(x) = \frac{1}{\sqrt{2\pi\sigma^2}} 
+        \exp\pdel*{-\frac{(x - \mu)^2}{2\sigma^2}}.
+    \]
+    A mixture of two Gaussian distributions is a weighted sum $p(x) = \lambda
+    p_{\mu_1, \sigma_1}(x) + (1 - \lambda)p_{\mu_2, \sigma_2}(x)$.  
+    \begin{figure}[H]
         \centering
-        % http://code.google.com/p/graph-theory-algorithms-book/
-        % GPL Documentation Licence
-
-        \begin{tikzpicture}
-        [nodedecorate/.style={shape=circle,inner sep=2pt,draw,thick},%
-          linedecorate/.style={-,thick}]
-        %% nodes or vertices
-        \foreach \nodename/\x/\y in {1/0/0, 2/2/0, 3/2/2, 4/0/2, 5/0.5/0.5,
-          6/2.5/0.5, 7/2.5/2.5, 8/0.5/2.5}
-        {
-          \node (\nodename) at (\x,\y) [nodedecorate] {};
-        }
-        %% edges or lines
-        \path
-        \foreach \startnode/\endnode in {1/2, 2/3, 3/4, 4/1, 5/6, 6/7, 7/8,
-          8/5, 1/5, 2/6, 3/7, 4/8}
-        {
-          (\startnode) edge[linedecorate] node {} (\endnode)
-        };
-        \end{tikzpicture}
-
-        \caption{The $3$-hypercube graph}
-        \label{fig:hypercube}
+        \scalebox{1}{ \includegraphics[scale=0.5]{images/mixture.png} }
+        \caption{A mixture of two Gaussian distributions, with components shown
+        dashed.}
     \end{figure}
-    
-    Speaking generally, the symmetries of an object correspond with a group
-    action that preserves the structure of the object.  The structure of a graph
-    is determined entirely by its edges.
+    Mixtures of more Gaussian distributions in higher dimensions are defined
+    analogously.  Note that because the space of distributions over the real
+    line is not finite dimensional, this example does not formally fit under our
+    framework; the relevant constructions, however, generalize easily.
+    \end{example}
+
+    Mixture models correspond to a relatively well-studied object in algebraic
+    geometry.  (For definitions of terms, see Appendix \ref{sec:varieties}.)
     \begin{definition}
-        A \emph{graph automorphism} is a permutation of the vertices of a graph
-        that preserves the edges.  That is, a permutation $\sigma: V \to V$ is a
-        graph automorphism if for every $(u, v) \in E$, we have $(\sigma(u),
-        \sigma(v)) \in E$.
-        The \emph{automorphism group} of a graph is the set of all
-        automorphisms of a graph with the group operation being composition of
-        permutations.
-    \end{definition}
-
-    \begin{definition}
-        The \emph{hyperoctahedral group} $H_n$ is the automorphism group of the
-        $n$-hypercube.
-    \end{definition}
-
-    The wreath product is a construction on two permutation groups.
-    Essentially, one permutation group shuffles copies of another permutation
-    group.  In our example, $S_n$ permutes the binary variables, each of which
-    has two states.  The copies of $S_2$ are each attached to one of the
-    variables, and flip the values $0$ and $1$.  These copies of $S_2$ are then
-    shuffled by the action of $S_n$.  We present a formal definition of the
-    wreath product.
-    \begin{definition}[\citet{Cam99}]
-        Let $H$ and $K$ be permutation groups on the sets $\Gamma$ and $\Delta$
-        respectively.  Let $\Omega = \Gamma \times \Delta$.  Think of $\Omega$
-        as a fiber bundle over the set $\Delta$, with projection map $(\gamma,
-        \delta) \mapsto \delta$; each fiber \mbox{$\Gamma_\delta = \{(\gamma, \delta)
-        \mid \gamma \in \Gamma\}$} for fixed $\delta \in \Delta$ is isomorphic to
-        $\Gamma$.  Let $B$ be the cartesian product of $|\Delta|$ copies of $H$,
-        one acting on each fiber as $H$ acts on $\Gamma$.  Thus $B$ is the set
-        of functions from $\Delta$ to $H$ with pointwise operations; the action
-        on $\Gamma \times \Delta$ is given by
-        \[
-            f\cdot(\gamma, \delta) = (f(\delta) \cdot \gamma, \delta)
-        \]
-        where ($\cdot$) is used to denote group actions.  Let $T$ be a copy of
-        the group $K$ permuting the fibers:
-        \[
-            k \cdot (\gamma, \delta) = (\gamma, k \cdot \delta).
-        \]
-        Then wreath product $H \wr K$ is defined to be the semidirect product $B
-        \rtimes T$.
-    \end{definition}
-
-\section{Group Representations}
-    
-    The idea of representation theory is to better understand the possible
-    inscrutable structure of a group (or algebra) by transferring over to the
-    domain of linear algebra.  The field of representation theory is very rich,
-    and we only introduce a few foundational concepts from the representation
-    theory of finite groups.
-
-    \begin{definition}
-        A \emph{representation} of a group $G$ is a group homomorphism $\rho: G
-        \to GL(U)$ from $G$ to the group of invertible linear transformations on
-        a vector space $U$.  
-    \end{definition}
-    Here, we make the simplifying assumptions that $G$ is a finite group and
-    that $U$ is a finite dimensional complex vector space.  It is common to
-    identify the group representation $\rho$ with the vector space $U$; we then
-    say that $U$ is the group representation.
-
-    Representations of finite groups behave tractably in large part because they
-    decompose well.
-    \begin{definition}
-        An \emph{irreducible representation} is
-    \end{definition}
-    \begin{theorem}[Maschke]
-        A representation \ldots
-    \end{theorem}
-
-\section{Distance-Transitive Graphs}
-
-    The hypercube graph is has a number of nice properties.  In particular, it
-    is distance-transitive; this allows us to characterize some of its
-    irreducible representations easily.
-    \begin{definition}
-        A \emph{distance-transitive} graph is a graph such that given any two
-        vertices $u_1$ and $v_1$ at distance $d$ and any other two vertices
-        $u_2$ and $v_2$ also at distance $d$, there exists some automorphism
-        $\sigma$ of the graph with $\sigma(u_1) = u_2$ and $\sigma(v_1) = v_2$.
-    \end{definition}
-
-    Let $(V, E)$ be a graph with automorphism group $G$.  Let \mbox{$U = \{ f : V \to
-    \C\}$} be the vector space of complex-valued functions on the vertices of the
-    graph.  The group $G$ has a permutation representation on $U$ defined for $f
-    \in U$ and $x \in V$ as
-    \begin{gather*}
-        \sigma(f)(x) = f(\inv\sigma(x))
-    \intertext{or, equivalently defined on delta functions as}
-        \sigma(\delta_x) = \delta_{\sigma(x)}.
-    \end{gather*}
-    The permutation representation of the automorphism group of a
-    distance-transitive graph decomposes into the eigenspaces of a particular
-    matrix.  The information characterizing a graph may be encoded in an
-    adjacency matrix.  The adjacency matrix of the $2$-hypercube is show below.
+    The \emph{secant variety} of the affine variety $V \subset \F^n$ is
     \[
-        \raisebox{-2.75em}{
-        \begin{tikzpicture}
-          \node (00) at (-1, 1) {00};
-          \node (01) at (1, 1) {01};
-          \node (10) at (-1, -1) {10};
-          \node (11) at (1, -1) {11};
-          \foreach \from/\to in {00/01, 01/11, 11/10, 10/00}
-            \draw (\from) -- (\to);
-        \end{tikzpicture}
-        }
-        \quad\text{has adjacency matrix}\qquad
-        \kbordermatrix{
-               & 00 & 01 & 10 & 11 \\
-            00 &  0 &  1 &  1 &  0 \\
-            01 &  1 &  0 &  0 &  1 \\
-            10 &  1 &  0 &  0 &  1 \\
-            11 &  0 &  1 &  1 &  0 \\
-        }
+        \Sec(V) = \overline{\cdel[\big]{
+        \lambda u + (1 - \lambda) v \vbar
+        u,v \in V
+        \text{ and }
+        \lambda \in \F
+        }}
     \]
-    Of course, the adjacency matrix of a graph may be viewed as a linear
-    transformation on $U$.
+    where the line indicates the closure of the set under the Zariski topology.  
+    \end{definition}
+    \begin{proposition}[\citep{DSS08}]
+    If $M$ is a semialgebraic set, then the secant variety
+    $\Sec\pdel[\big]{\overline{M}}$ is the Zariski closure of the mixture
+    $\Mixt(M, M)$.
+    \end{proposition}
 
-    The following theorem makes precise the relationship between the
-    decomposition of $U$ into irreducible representations with the eigenspaces
-    of the adjacency matrix of the graph.
-    \begin{theorem}[\citet{Sta84}]
-        Let $G$ be the automorphism group of a distance-transitive graph.  Let
-        $U$ be the permutation representation of $G$ on the complex-valued
-        functions on the vertices of the graph.  Then $U$ decomposes as
-        \[
-            U = U_{\lambda_1} \oplus \cdots \oplus U_{\lambda_k}
-        \]
-        where the $\lambda_i$ are distinct eigenvalues of the adjacency matrix,
-        $U_{\lambda_i}$ is the eigenspace corresponding to $\lambda_i$, and the
-        $U_{\lambda_i}$ are also distinct irreducible representations of $G$.
-    \end{theorem}
-
-    The adjacency matrices and eigenspaces for the $n$-hypercubes have a
-    recursive structure.
-    \begin{theorem}[\cite{CW06}]
-        The adjacency matrix $Q_n$ for the $n$-hypercube, with vertices ordered
-        lexicographically, is given by the following recursively defined block
-        matrix
-        \[
-            Q_0 = \begin{bmatrix} \;0\; \end{bmatrix}
-            \qquad
-            \text{and}
-            \qquad
-            Q_n = \begin{bmatrix}
-                Q_{n-1} & I \\
-                I & Q_{n-1}
-            \end{bmatrix}
-            \qquad
-            \text{for $n \ge 1$}
-        \]
-        where $I$ is the $2^{n-1}\times 2^{n-1}$ identity matrix.
-    \end{theorem}
-
-    \begin{theorem}[\cite{CW06}]
-        If $v$ is an eigenvector of $Q_{n-1}$ with eigenvalue $\lambda$ then the
-        concatenated vectors $\adel{v_1, \ldots, v_{2^{n-1}},v_1, \ldots,
-        v_{2^{n-1}}}$ and $\adel{v_1, \ldots, v_{2^{n-1}}, -v_1, \ldots,
-        -v_{2^{n-1}}}$ are eigenvectors of $Q_n$ with eigenvalues $\lambda +1$
-        and $\lambda - 1$ respectively.
-    \end{theorem}
-
-    \begin{theorem}[\cite{CW06}]
-        The eigenvectors of $Q_n$ are the Walsh functions of dimension $2^n$.
-        The eigenvalues are given by $\lambda_k = 2k - n$ for $k \in \{0,
-        \ldots, n\}$, and have multiplicity $\binom{n}{k}$.
-    \end{theorem}
-
-    These theorems give us a full characterization of the permutation
-    representation of the hyperoctahedral group.
-
-
-
-\chapter{Symmetric Binary Models}
-
-\section{Model Selection}
-    The essential tradeoff in model selection is between descriptive power \ldots
-
-    A `larger' model is capable of describing data more accurately, but may also be
-    subject to over-fitting.
-
-\section{The Set of Symmetric Binary Models}
-
-    Consider a random variable $X$ with binary states, i.e. taking values in the
-    set $\{0, 1\}^n = \{0\cdots00, 0\cdots01, \ldots, 1\cdots11\}$.  It is often
-    the case that we do not want to use the meanings of these states to
-    distinguish between them.  There are two natural symmetry requirements:
-    \begin{itemize}\nospace
-    \item The model is invariant under any permutation of the bits.
-    \item The model is invariant under any `flip' of a bit.
-    \end{itemize}
-    Concretely, say that the distribution $p = (p(0\cdots00), p(0\cdots01),
-    \ldots, p(1\cdots11))$ in the model $\mathcal M$.  Then for any permutation
-    $\sigma \in S_n$
-    Then we would want the distributions
-    \[
-        P[Y = b_1 \cdots b_n] = P[
-    \]
-
-    We restrict our attention, as before, to log-linear models over binary
-    variables.
-
-    The actions listed above permute the $2^n$ states, and the permutations
-    generate the hyperoctahedral group.  Thus, we are left with the stipulation
-    that the model is invariant under the hyperoctahedral group.
-
-    Geometrically speaking, for our model $\mathcal M \subset \Delta$ and group
-    action $\rho: H_n \to \mathrm{Aut}(\mathcal M)$, we require
-    \[
-        \rho(g)(\mathcal M) = \mathcal M
-    \]
-    for any group element $g \in H_n$.
-
-    With the decomposition of the permutation representation of the
-    hyperoctahedral group into irreducible components, we can enumerate.
-
+    For a more thorough exposition on mixture models and secant varieties, we
+    refer the reader to Chapter 4 of \citep{DSS08}.
 
 
 \appendix
-
 
 \chapter{A Little Algebraic Geometry}
 
@@ -801,14 +662,103 @@
     arbitrary commutative rings.  This road leads to the theory of schemes,
     which we will neither need nor pursue here.
 
-% \nocitep{*}
+\chapter{Machine Learning: Tasks and Tools}
+    \label{sec:ML}
 
-\backmatter
+    The goal of machine learning is to algorithmically use data in order to
+    perform specified tasks better.  The emphasis of the field tends to be
+    toward large data sets, efficient algorithms, and `non-parametric' models
+    with few assumptions.  Machine learning is studied both by computer
+    scientists and statisticians.  The text \citep{EOSL} is an excellent overview
+    of machine learning from the latter perspective.
+
+\section{Statistical Classification}
+
+    One common task is the classification problem.  Here, observations are
+    points in some large, complicated, or high-dimensional space $X$, and the
+    task is to assign a class label to an observation $x \in X$.  Class labels
+    come from finite set $C$, and have some meaning.  Classification can also be
+    viewed as an attempt to approximate a function $f : X \to C$ given a set of
+    observations $\{(x_i, f(x_i)\}_{i=1}^n$ as training data.  For this task to
+    be feasible, we cannot consider arbitrary functions; there must be a model.
+
+    \begin{example} 
+    The MNIST data set of handwritten digits \citep{MNIST} is commonly seen in the
+    machine learning literature.
+    \begin{figure}[H]
+        \centering
+    \scalebox{0.8}{
+    \includegraphics{images/mnist_0.png}\,
+    \includegraphics{images/mnist_1.png}\,
+    \includegraphics{images/mnist_2.png}\,
+    \includegraphics{images/mnist_3.png}\,
+    \includegraphics{images/mnist_4.png}
+    }
+        \caption{Some digits from the MNIST data set.}
+    \end{figure}
+    \noindent Each $28\times28$ pixel image depicts a handwritten digit $0,
+    \ldots, 9$.  The training set contains 60,000 images and the test set
+    contains 10,000 images.  An algorithm under evaluation is given the training
+    set with correct labels; the task is to correctly label a high percentage of
+    the remaining test set.
+    \end{example}
+
+    The majority of algorithms in use are in some sense `only a step or two away
+    from linear'.  For instance the \emph{perceptron}, a binary linear
+    classifier, places observations (which are real vectors) into two classes by
+    learning a hyperplane which separates the classes.  The \emph{support vector
+    machine} takes a modified approach, as it maps the observed data to a very
+    high-dimensional space, and learns a separating hyperplane there.  Another
+    common approach is to construct an approximating function as a weighted
+    linear combination of a family of basis functions.
+
+    For some problems, however, these techniques may not be sufficient.  Within
+    the past ten years, there has been increased interest in so-called `deep
+    learning' methods.  An overview of the motivating problems of deep learning
+    is contained in \citep{Ben09}.  Perhaps the most influential technique put
+    forward so far is the Deep Belief Network.
+
+
+\section{The Deep Belief Network}
+    A Deep Belief Network (DBN) is a generative model consisting essentially a
+    stack of RBMs, trained greedily.  The paper \citep{Hin07} introduced a
+    technique known as `contrastive divergence' that allowed RBMs, and in turn
+    DBNs, to be trained efficiently on problems of practical interest.
+    \begin{definition}
+    A \emph{Deep Belief Network} is a model on multiple layers of hidden
+    variables, built out of RBMs.  Specifically, let $h^k \in \{0,1\}^{n_k}$
+    denote the binary state vector of the $k^{\text{th}}$ layer for $0 \le k \le
+    m$.  The layer $h^0$ is the visible layer.  The joint distribution of the
+    DBN is
+    \begin{align*}
+        P(v,h^1, \ldots, h^m) &= P(h^{m-1}, h^m) \prod_{k=0}^{m-2} P(h^k \mid h^{k+1})\\
+        P(h^k\mid h^{k+1}) &\propto \exp\pdel*{(h^k)^Tb^k + (h^k)^T W^{k+1} h^{k+1}}\\
+        P(h^{m-1}, h^{m}) &\propto  \exp\pdel*{(h^{m-1})^T b^k + (h^{m-1})^T W^m
+        h^m + (h^m)^T b^m}
+    \end{align*}
+    for some collection of parameters $b^k$ and $W^k$.
+    \end{definition}
+
+    The conditional independence structure of the DBN is described by a graph
+    with undirected connections between the top two layers and directed
+    connections between all other adjacent layers.
+    \begin{figure}[H]
+        \centering
+        \scalebox{0.6}{\includegraphics{images/DBN3.png}}
+        \caption{Layers of a Deep Belief Network.}
+    \end{figure}
+    \noindent For classification, the network is greedily trained to represent
+    the input data.  The top layer $h^m$ is then trained to classify the inputs
+    with a one-hot encoding.  The cited paper reported very low error rates
+    (1.25\%) on the MNIST data set using a Deep Belief Network.
+
+% \nocitep{*}
 
 \bibliographystyle{hmcmath}
 \bibliography{thesis}
 
 \printindex
 
+\backmatter
 
 \end{document}

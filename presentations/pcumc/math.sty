@@ -10,15 +10,16 @@
 \usepackage[retainorgcmds]{IEEEtrantools} % nicer equation align
 \usepackage{tikz}                         % commutative diagrams
 \usetikzlibrary{matrix,arrows}
+\usepackage{ifthen}
+\usepackage{kbordermatrix}
 
 % amsthm
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}
 \newtheorem*{theorem*}{Theorem}
 \newtheorem{proposition}[theorem]{Proposition}
-\theoremstyle{definition}
-\newtheorem*{definition}{Definition}
+\ifthenelse{\isundefined{\theorem}}{ \newtheorem{theorem}{Theorem} }{ }
+\ifthenelse{\isundefined{\definition}}{ \newtheorem{definition}{Definition} }{ }
 
 
 % starred newcommand behaves better for short commands (use by default)
@@ -26,7 +27,7 @@
 % math symbols
 \newcommand*{\Z}{\ensuremath{\mathbb{Z}}}
 \newcommand*{\Q}{\ensuremath{\mathbb{Q}}}
-%\newcommand*{\C}{\ensuremath{\mathbb{C}}}
+\providecommand*{\C}{\ensuremath{\mathbb{C}}}
 \newcommand*{\R}{\ensuremath{\mathbb{R}}}
 \newcommand*{\inv}[1]{#1^{-1}}
 \newcommand*{\dual}[1]{#1^{\ast}}
@@ -69,3 +70,4 @@
 \DeclarePairedDelimiter\cdel{\{}{\}}
 \DeclarePairedDelimiter\pdel{\lparen}{\rparen}
 \DeclarePairedDelimiter\vdel{\vert}{\vert}
+\DeclarePairedDelimiter\ddel{\|}{\|}

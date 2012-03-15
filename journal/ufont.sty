@@ -1,0 +1,45 @@
+\ProvidesPackage{ufont}
+
+% Unicode packages
+\usepackage[math-style=french,colon=literal]{unicode-math}
+\usepackage{xltxtra}
+
+% Same thing as mapping=tex-text
+\defaultfontfeatures{Ligatures=TeX}
+
+% Set fonts below
+
+% Primary fonts
+\setmainfont[Numbers=OldStyle]{Linux Libertine O}
+\setmathfont{XITS Math}
+
+% Make math punctuation match body font (, .)
+\setmathfont[range={"002C,"002E}]{Linux Libertine O}
+
+
+% Fonts for variables
+\setmathfont[range=\mathup/{latin,Latin}]{Linux Libertine O}
+\setmathfont[range=\mathup/{greek,Greek}]{Linux Libertine O}
+%\setmathfont[range=\mathup/{latin,Latin}]{Myriad Pro}
+%\setmathfont[range=\mathup/{greek,Greek}]{Myriad Pro}
+
+%\setmathfont[range=\mathit/{latin,Latin}]{OFL Sorts Mill Goudy Italic}
+%\setmathfont[range=\mathit/{greek,Greek}]{Linux Libertine O Italic}
+%\setmathfont[range=\mathscr]{XITS Math}
+%\setmathfont[range=\mathcal]{XITS Math}
+%\setmathfont[range=\mathbb]{Asana-Math.otf}
+
+% Body font digits
+\setmathfont[
+    range={"0030,"0031,"0032,"0033,"0034,"0035,"0036,"0037,"0038,"0039}
+    %range={"0030-"0039}
+    ]{Linux Libertine O}%{"0030-"0039}]{Arial}
+
+% For text figures
+% By default, Sorts Mill Goudy uses text figures anyway
+\renewcommand*{\oldstylenums}[1]{{\addfontfeature{Numbers=OldStyle} #1}}
+\newcommand*{\tfig}{\oldstylenums}
+
+% Spacing
+\usepackage{setspace}
+\setstretch{1.05}

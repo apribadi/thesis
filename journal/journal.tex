@@ -1,9 +1,16 @@
-\documentclass[11pt]{article}
-\usepackage{pset}
+\documentclass[12pt]{article}
 
+\usepackage{pset}
+\usepackage{math}
+\usepackage{util}
+\usepackage{ufont}
+
+\usepackage[normalem]{ulem}
 \newcommand*{\X}{\mathfrak{X}}
 \newcommand*{\Mod}{\mathcal{M}}
-\usepackage[normalem]{ulem}
+\newcommand*{\ms}{\mathcal{M}}
+\newcommand*{\ps}{\mathcal{P}\,}
+
 
 \title{Thesis Journal}
 \author{Aaron Pribadi}
@@ -576,7 +583,7 @@ independence model (a Hadamard product of factorizing distributions produces
 another factorizing distribution).  Then any point in the RBM model is of the
 form
 \[
-    \sum_{l \in \{0,1\}^k} \pdil*{\prod_{i=1}^k \lambda_i^{l_i} (1 -
+    \sum_{l \in \{0,1\}^k} \pdel*{\prod_{i=1}^k \lambda_i^{l_i} (1 -
     \lambda_i)^{1 - l_i}} b_l
 \]
 where $\lambda_i \in (0,1)$ are weights.  It's almost as if we have a bunch of
@@ -655,7 +662,7 @@ looked, again, at parametrizations of the RBM.
 
 In the previously described setup for the RBM
 \[
-    \sum_{l \in \{0,1\}^k} \pdil*{\prod_{i=1}^k \lambda_i^{l_i} (1 -
+    \sum_{l \in \{0,1\}^k} \pdel*{\prod_{i=1}^k \lambda_i^{l_i} (1 -
     \lambda_i)^{1 - l_i}} b_l
     \qquad\text{where}\qquad
     b_l = a_1^{l_1} * a_2^{l_1} * \cdots * a_k^{l_k}
@@ -843,7 +850,7 @@ is still the identity, and inverses exist
 \[
     p = (p_1, \ldots, p_m)
     \qquad
-    \inv p = \pdil*{\frac 1 {p_1}, \ldots, \frac 1 {p_m}}
+    \inv p = \pdel*{\frac 1 {p_1}, \ldots, \frac 1 {p_m}}
 \]
 for which we need the `strictly positive' stipulation.  Then $H \subset G$ is a
 normal subgroup, as $G$ is Abelian.  Then $K = G/H$ is the space (also group) of
@@ -900,8 +907,8 @@ Consider the parametrization
 \begin{align*}
     \varphi : S \to \Delta_{N-1}
     &\qquad\text{where}\qquad
-    S = \pdil*{\cdil*{x \in \R^N \mid \sum x_i = 0}, +} \\
-    \varphi(x) = \frac{1}{\sum e^{x_i}}\pdil[\big]{e^{x_1}, \ldots, e^{x_N}}
+    S = \pdel*{\cdel*{x \in \R^N \mid \sum x_i = 0}, +} \\
+    \varphi(x) = \frac{1}{\sum e^{x_i}}\pdel[\big]{e^{x_1}, \ldots, e^{x_N}}
 \end{align*}
 It is straightforward to check (hah!) that this is an isomorphism of groups.
 
@@ -909,8 +916,8 @@ There is also the parametrization
 \begin{align*}
     \rho : T \to B
     &\qquad\text{where}\qquad
-    T = \pdil*{\cdil*{y \in \R^n \mid \sum y_i = 0}, +} \\
-    [\rho(y)]_k = \frac 1 Z \exp\pdil*{ v(k) \cdot y}
+    T = \pdel*{\cdel*{y \in \R^n \mid \sum y_i = 0}, +} \\
+    [\rho(y)]_k = \frac 1 Z \exp\pdel*{ v(k) \cdot y}
     &\qquad\text{where $v(k)$ is the $k$th binary vector lexicographically}
 \end{align*}
 and $Z$ is the appropriate normalizing constant.  This is also an isomorphism of
@@ -962,6 +969,392 @@ structure of a real vector space under addition, with dimension
 \]
 
 
+\section{January 30, 2012}
+
+This week was occupied by numerical experiments.
+
+To recap, for $n$ (number of visible nodes) and $k$ (number of hidden nodes), we
+have models $M_n^k \subset \Delta_{2^n}$.  Furthermore, we have a
+parametrization
+\[
+    f: \R^{nk + n + k} \to M_n^k \subset \Delta
+\]
+such that $f(\R^{nk+n+k}) = M_n^k$.  We wish to examine the sequence $M_n^0
+\subset M_n^1 \subset M_n^2 \subset \cdots$.
+
+First, we select a metric on $\Delta$.  We employ the \emph{total variation
+distance}, defined 
+\[
+    d(p, q) = \sup \{ |p(A) - q(A)| : A \subset S\}
+\]
+for two probability measures on a state space $S$, over measurable sets $A$.
+Notice that $d(p, q) \le 1$.  If $S$ is finite, then
+\[
+    d(p, q) = \frac 1 2 \sum_{x \in S} |p(x) - q(x)|
+\]
+so this is merely a constant multiple of the taxicab distance.
+
+On top of this metric, we employ the \emph{Hausdorff distance} between subsets
+of a metric space.  For two subsets $X, Y$ of a metric space $M$, this is defined
+\[
+    d_H(X, Y) = max \cdel[\big]{
+        \sup_{x \in X} \inf_{y \in Y} d(x, y),
+        \sup_{y \in Y} \inf_{x \in X} d(x, y)
+    }.
+\]
+The following picture should make things more clear.
+\begin{figure}[H]
+    \centering
+    \scalebox{1}{ \includegraphics[scale=0.8]{images/hausdorff_distance.png} }
+    \caption{Hausdorff distance in $\R^2$}
+\end{figure}
+
+In the absence of an analytic expression for the Hausdorff distance in our case,
+we attempt to compute it using Monte Carlo methods with the following procedure.
+\begin{itemize}\nospace
+    \item Fix $n$, let $k$ vary.
+    \item Sample from the parameter space $\R^{nk + n + k}$.
+    \item Transform under $f: \R^{nk + n + k} \to M_n^k$.
+    \item Compute Hausdorff distances between the images under $f$.
+    \item Use these distances to approximate $d_H(M_n^k, M_n^{k+1})$.
+\end{itemize}
+Using intuition from low-dimensional $\R^n$, it seems at least plausible that
+this procedure should give a good estimate.  If the finite samplings are
+$\epsilon$-dense subsets of the spaces, the error should be on the order of
+$\epsilon$.  One way to check to see if the sampling is sufficiently dense is to
+sample twice from the same subspace; the Hausdorff distance should be close to
+zero.  Furthermore, because there is an exponential dependence on the
+parameters, it should be sufficient to sample the parameter space near the
+origin.
+
+This procedure was carried out, first in a Python implementation, and then in a
+C++ implementation for better performance.  Parts of the parametrization can be
+formulated in terms of matrix operations; the C++ version used the linear
+algebra library \texttt{armadillo}, which is backed by the \texttt{BLAS} (Basic
+Linear Algebra Subprograms) library, implemented in Fortran.  The performance
+difference is approximately a factor of 100.
+
+The source is currently hosted under version control at
+\mbox{\texttt{https://github.com/apribadi/thesis-code}}.
+
+\section{February 6, 2012}
+
+There are two items on the agenda:
+\begin{enumerate}
+    \item Instead of sampling randomly from the parameter space, take a lattice
+    from the parameter space.
+    \item Instead of computing the Hausdorff distance from two random samples,
+    and a quadratic algorithm in the number of samples, sample from the `outer'
+    distribution, and find the proper inner one using gradient descent.
+\end{enumerate}
+
+The first task was implemented.  As before, code is at
+\mbox{\texttt{https://github.com/apribadi/thesis-code}}.  Unfortunately, this
+does not do much to alleviate the curse of dimensionality.  The number of
+samples is still exponential in the number of parameters.  The degenerate case
+of a lattice is the hypercube
+\[
+    \{ (x_1, \ldots, x_{nk+n+k}) \mid x_i \in \{-1, 1\}\} \subset \R^{nk+n+k}.
+\]
+Here, of course, we are sampling $2^{nk+n+k}$ points.  For a decent run of
+values of $k$ (enough to pick up patterns), we want $n=2$.  (The $n=1$ case is
+trivial; we get the whole space immediately.)
+
+For the second task, you can download libraries to do the training for you.  I
+tried the \texttt{Shark} machine learning library at
+\mbox{\texttt{http://image.diku.dk/shark/sphinx\_pages/build/html/index.html}}.
+I was not, however, able to get it to work.  (A note for future passers-by:
+Perhaps a third of the time actually implementing things was spent arguing with
+the C++ compiler and linker.  This is unfortunate.)
+
+\sout{
+There is, however, another significant problem.  Going back the non-lattice case
+(as would have been approached using these ML libraries), there isn't actually a
+non-trivial bound on distances!  Specifically, with notation as before,}
+\[
+    d_H(M_n^{k_1}, M_n^{k_2}) = 1
+\]\sout{
+for any $k_1$, $k_2$, where the Hausdorff distance is derived from the total
+variation distance.  This is because with only the binary independence model, we
+can get arbitrarily close to a $\delta$-function, i.e., for $\epsilon > 0$, we
+have $p_v \in \Delta$ such that}
+\begin{align*}
+    p_v[X = v] &= (1 - \epsilon)^N \\
+    p_v[X \ne v] &\le \epsilon
+\end{align*}
+\sout{ for any $v$.  Then for $v \ne u$,}
+\[
+    d(p_v, p_u) \ge (1 - \epsilon)^N - \epsilon \to 1
+\]
+\sout{
+as $\epsilon \to 0$.  The maximal total variation distance \ldots.}
+
+The above \sout{struck out} thoughts don't actually invalidate this approach,
+though they \emph{do} make it impossible to compute a bound via the naive
+method suggested in the midyear report, bounding the distance of a step from any
+starting point (where we use the total variation distance -- the hope was to use
+something more suitable).
+
+Results for the hypercube mapping are
+\begin{verbatim}
+    Hausdorff distance between k=0 and k=1 is: 0.310871
+    Hausdorff distance between k=1 and k=2 is: 0.346856
+    Hausdorff distance between k=2 and k=3 is: 0.210349
+    Hausdorff distance between k=3 and k=4 is: 0.171509
+    Hausdorff distance between k=4 and k=5 is: 0.101923
+\end{verbatim}
+and the program does not compute any further values.  This is a downward trend,
+as one would expect.
+    
+
+\section{February 13, 2012}
+
+We're going to talk about symmetry groups of graphical models.  
+
+\subsection{A digression into hierarchical log-linear models}
+We first take
+another look at graphical models, following \cite{DSS09}
+
+Specifically, we work with undirected graphs and binary-valued nodes.  We can
+formulate undirected graphical models in terms of a hierarchical log-linear
+model.
+
+\begin{definition}
+    Let $V$ be a finite set.  A \emph{simplicial complex} is a collection
+    $\Gamma \subset \ps(V)$ of subsets of $V$ such that $F \in \Gamma$ and $S
+    \subset F$ implies that $S \in \Gamma$.  
+\end{definition}
+The elements of $\Gamma$ are called \emph{faces} of $\Gamma$ and the
+inclusion-maximal faces are the \emph{facets} of $\Gamma$.  Notice that to
+describe a simplicial complex it is sufficient to list only its facets.
+
+With notation as in section 1.2 of \cite{DSS09}, we have the following
+definition.
+
+\begin{definition}
+    Let $\Gamma \subset \ps(V)$ be a simplicial complex.  For each facet $F$, we
+    introduce $2^{|F|}$ positive parameters $\theta_{i_F}^{(F)}$.  The
+    associated \emph{hierarchical log-linear model} is
+    \[
+        \ms_\Gamma = \cdel*{p \in \Delta_{2^{|V|} - 1}
+            \mid p_i = \frac{1}{Z(\theta)} \prod_{F} \theta_{i_f}^{(F)}
+        }
+    \]
+    where $Z(\theta)$ is the appropriate normalizing constant.
+\end{definition}
+
+For every hierarchical log-linear model, there exists a matrix $A$ with integer
+entries for which
+\[
+    \ms_\Gamma = \ms_A = \cdel*{
+        p \in \Delta \mid \log p \in \mathrm{rowspan}(A)
+    }
+\]
+and we can therefore find an associated Markov basis.
+
+Via the Hammersley-Clifford theorem, a graphical model is a hierarchical
+log-linear model where the facets correspond to the maximal cliques.
+Equivalently, a subset of the nodes of the graph is in the simplicial complex if
+and only if the subgraph on those nodes is a complete graph.
+Because we're interested in Boltzmann machines, we are actually interested in a
+slightly different model.
+
+\begin{definition}
+    A \emph{binary graph model} of a graph $G = (V, E)$ is the hierarchical log-linear
+    model associated with the simplicial complex
+    \[
+        \Gamma = \{\{v\}\mid v \in V\} \cup \{ \{v, w\} \mid (v, w) \in E\}
+    \]
+\end{definition}
+If there are no cliques of size three or more (say, if the graph is bipartite), then
+the notion of a binary graph model corresponds with that of a usual undirected
+graphical model.
+
+\subsection{Symmetries of graphical models}
+Say that we have a graphical mode, and that it has $m$ nodes, all binary valued.
+Either a usual undirected graphical model or a binary graph model will do.
+
+There are $N = 2^m$ states, indexed by binary strings, e.g. $(0, 0, 1, 0,
+\ldots, 1)$.  A probability distribution is a function on the binary strings
+\[
+    p: \{0, 1\}^m \to \R
+    \qquad
+    p(x) > 0
+    \qquad
+    \sum_{x \in \{0, 1\}^m} p(x) = 1
+\]
+and can naturally be embedded in $\R^N$ where basis vectors are associated
+with states.
+
+Let $\ms \subset \Delta \subset \R^N$ be the associated model.  Let $G = S_2
+\wr H$ be the wreath product of $S_2$ and $H$, where $H$ is the automorphism
+group of the graph.  Recall that an automorphism of a graph is a permutation of
+its nodes such that edges are preserved.  There is a natural action of $G$ on
+the set of states.  Essentially, $H$ acts on the nodes of the graph, and each
+copy of $S_2$ permutes a binary state.  Write this action $g(x)$ for $g \in
+G$.
+
+This group action induces an action on $\R^N$
+\[
+    g(p)(x) = p(\inv g x)
+    \qquad
+    \text{for $p \in \R^N$}
+\]
+which is in fact a permutation representation of $G$.  Additionally, it seems
+clear that $g(\ms) = \ms$ for all $g \in G$, i.e. that the model is invariant
+under the action of the wreath product group.  A proof would merely involve
+carefully stating the relevant ideas.
+
+\subsection{Star graphs}
+We're going to be looking at the simplified case of a RBM with only one hidden
+node.  First, look at the model before marginalization.  The associated graph is
+a star graph.
+\begin{figure}[H]
+    \centering
+    \scalebox{1}{ \includegraphics[scale=0.5]{images/star_graphs.png} }
+    \caption{Some star graphs}
+\end{figure}
+Let $n$ be the number of leaf nodes.  Assume that $n \ge 2$.  The automorphism
+group of the graph is $2^n$ (acting on $n+1$ nodes); any of the leaves can be
+permuted but the central node must be fixed.
+
+\subsection{Invariant Subspaces}
+
+Given a linear group action on $\R^N$, it is natural to consider subspaces of
+$\R^N$ invariant under the action, and especially irreducible subspaces.
+
+We first ignore graph automorphisms, and only consider binary swaps `internal'
+to nodes.  Then we have the group $J = (S_2)^m$ acting on the states.  The
+representation theory of $J$ is easy, of course, because it is abelian.
+
+Fix some state $s_0$ (the choice is arbitrary).  The group $J$ acts transitively
+on states, and is in fact regular.  We can write every state uniquely as
+$g(s_0)$ for $g \in J$.  Thus the action of $J$ on $\R^N$ corresponds to the
+regular representation of $J$.
+
+Let $J$ have generators $J = \adel*{g_1, \ldots, g_m}$,
+all of order 2.  To every bit vector $b = (b_1, \ldots, b_m) \in \{0, 1\}$ there
+corresponds the irreducible representation
+\[
+    \rho_b((g_1)^{c_1 }\cdots (g_m)^{c_m}) = (-1)^{b_1 c_1} \cdots (-1)^{b_m c_m}
+\]
+For $m=2$, the character table looks like
+\[
+\begin{matrix}
+    & 1 & g_1 & g_2 & g_1g_2 \\
+    \chi_1 & 1 & 1 & 1 & 1 \\
+    \chi_2 & 1 & -1 & 1 & -1 \\
+    \chi_3 & 1 & 1 & -1 & -1 \\
+    \chi_4 & 1 & -1 & -1 & 1 \\
+\end{matrix}
+\]
+Then, a decomposition of $\R^N$ (for $m=2$) into irreducible invariant spaces is
+\[
+    \R^4 = 
+    \adel*{\begin{bmatrix}1 \\ 1 \\ 1 \\ 1\end{bmatrix}}
+    \oplus
+    \adel*{\begin{bmatrix}1 \\ -1 \\ 1 \\ -1\end{bmatrix}}
+    \oplus
+    \adel*{\begin{bmatrix}1 \\ 1 \\ -1 \\ -1\end{bmatrix}}
+    \oplus
+    \adel*{\begin{bmatrix}1 \\ -1 \\ -1 \\ 1\end{bmatrix}}
+\]
+and similarly for greater $m$.
+
+For any vector $v \in \R^N$, we can project $v$ into these subspaces.  The
+appropriate inner product is, I think,
+\[
+    \adel*{v, w} = \frac 1 {N} \sum_i v_i w_i
+\]
+so that it matches the inner product for the regular representation of
+$(S_2)^m$, and the subspaces are orthogonal.  In any case, since the
+irreducibles are 1-dimensional, we can take basis vectors from the irreducibles
+and consider their coefficients in a decomposition.
+
+Consider probability distributions $p \in \R^N$ (i.e. $\sum p_i = 1$, $p_i \ge
+0$), decomposed into these invariant subspaces.   The coefficient of the trivial
+representation will always be $\tfrac 1 N$, because the other vectors all sum to
+zero.  This is because (considering the permutation action) the identity has $N$
+fixed points, and all other group elements have no fixed points.  The sums
+hold because these are permutation characters.
+
+The projection of the uniform distribution is
+\[
+    \mathrm{uniform} = (\tfrac 1 N, 0, \ldots, 0)
+\]
+and the delta distributions look like
+\[
+    (0, \ldots, 0, 1, 0, \ldots, 0)
+    = \tfrac 1 N (\epsilon(1), \ldots, \epsilon(N))
+\]
+where $\epsilon(i)$ is \ldots something.
+
+We can move from the group $J = (S_2)^m$ to $G = S_2 \wr H$ where $H$ is, again, the
+automorphism group of the graph.  The invariant subspaces of $G$ are composed of
+those of $J$, grouped together, as $J$ is a subgroup of $G$.
+
+\subsection{Log-linearity}
+
+There is a bit of a mismatch between the model $\ms \subset \Delta \subset \R^N$
+and $\R^N$ as a representation.  Specifically, if $p, q \in \ms$ then for $\mu,
+\lambda \in \R$, the subspace $\adel{\mu p + \lambda q}$ may not intersect $\ms$.
+
+If that were the case, then we would be looking at arbitrary mixtures of the
+model.  We have seen, however, that arbitrary mixtures of the independence model
+produces the trivial model, i.e. the whole simplex $\Delta$.
+
+Notice the form of a (hierarchical) log-linear model.
+\[
+    \ms_\Gamma = \ms_A = \cdel*{
+        p \in \Delta \mid \log p \in \mathrm{rowspan}(A)
+    }
+\]
+Here, $\log p$, rather than $p$, lies within a linear subspace.  Because the
+logarithm is component-wise, everything about permutation representations still
+hold.  So perhaps we should consider $\log p$ in relation to invariant
+subspaces.
+
+\section{February 20, 2012}
+
+Tentative outline of thesis:
+\lspace
+
+\noindent Statistical models
+\begin{itemize}\nospace
+\item geometry (simplex)
+\item hypothesis testing
+\item maximum-likelihood fitting
+\item inference
+\end{itemize}
+
+\noindent Log-Linear models
+\begin{itemize}\nospace
+\item graphical
+\item hierarchical
+\item general
+\end{itemize}
+
+\noindent Bases of an integer lattice
+\begin{itemize}\nospace
+\item Markov basis
+\item Lattice ideal $M_A = \adel{p^{b^+} - p^{b^-} \mid b \in B}$
+\end{itemize}
+
+\noindent Algorithms
+\begin{itemize}\nospace
+\item MCMC sampling from fiber $F(u)$ with Markov basis
+\item Birch's theorem
+\end{itemize}
+
+\noindent Symmetries, groups and representations
+\begin{itemize}\nospace
+\item representations of $S_2 \wr S_n$
+\end{itemize}
+
+\noindent Binary models with $S_2 \wr S_n$ symmetry.
+\begin{itemize}\nospace
+\item classification?
+\end{itemize}
 
 
 \begin{thebibliography}{100}

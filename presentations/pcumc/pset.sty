@@ -6,10 +6,14 @@
 % Header with line.
 \newenvironment{heading}{
     \begin{flushleft}
-    \vspace*{-1cm}
+    \vspace*{-25pt}
 }{
-    \!\!\!\hrulefill
+    \vspace*{-0.5em}
+    \hrulefill
     \end{flushleft}
+
+    \aftergroup\@afterindentfalse
+    \aftergroup\@afterheading
 }
 
 % problem and solution environments
@@ -22,15 +26,16 @@
 
 \newenvironment{problem}[2][]{
     \begin{trivlist}
-    \setlength{\labelwidth}{6pt}
+    \setlength{\labelwidth}{1.5em}
+    %\setlength{\labelsep}{0pt}
     %\item[\hskip\labelsep \textbf{#1}]
-    \item[\textbf{#2}]
-    \ifthenelse{\equal{#1}{}}
+    \item[\hfill\textbf{#1}]
+    \ifthenelse{\equal{#2}{}}
         {}
-        {\textbf{(#1)}}\begin{it}
+        {\textbf{#2}}\begin{it}
 }{
     \end{it}
-    \!\!\!\!\!\!\!\hfill\raisebox{-3.0pt}{\ensuremath{\lrcorner}}
+    \hfill\hspace*{-11pt}\raisebox{-2pt}{\ensuremath{\lrcorner}\hspace*{-1pt}}
     \end{trivlist}
 }
 \newenvironment{solution}{

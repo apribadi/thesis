@@ -1,6 +1,6 @@
 all:
 	xelatex *.tex
-back:
+stuff:
 	xelatex *.tex
 	bibtex *.aux
 	makeindex *.idx

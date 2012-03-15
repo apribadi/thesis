@@ -1,0 +1,130 @@
+\documentclass[11pt]{article}
+\usepackage{pset}
+
+\newcommand*{\X}{\mathfrak{X}}
+
+\begin{document}
+
+\section{Intro}
+
+builds off of
+
+Toric ideals and graphical models
+
+geometry of the restricted boltzmann machine
+
+geometry of bayesian networks
+
+tropical geometry of statistical models
+
+\linespace
+Watanabe algebraic geometry
+
+IGO
+
+\linespace
+sum-product networks
+
+\linespace
+\noindent prior art in deep learning
+
+efficient algorithm for deep belief networks (contrastive divergence)
+
+deep boltzmann (?)
+
+
+\section{Graphical models}
+
+A graphical model is a probabilistic model for which a graph (directed or
+undirected) represents the conditional independence structure between random
+variables. 
+
+Let $G$ be a graph with vertex set $V$.  Suppose that $(X_\alpha)_{\alpha \in
+V}$ are random variables taking values in probability spaces
+$(\X_\alpha)_{\alpha \in V}$.  Usually the $X_\alpha$ are either discrete or
+real-valued.  The joint probability of $X = (X_\alpha)$ is said to
+\emph{factorize} with respect to $G$ if
+\[
+    P[X_1, \ldots, X_n] = 
+        \prod_\alpha P[X_\alpha \mid X_\beta, \beta \text{ is a parent of }
+        \alpha]
+\]
+that is, random variables have non-trivial dependencies only if they are
+neighbors.  We can also formulate an equivalent statement in terms of
+conditional independence statements.
+
+In the case of an undirected graph, via the Hammersley–Clifford theorem it is
+known that the probability density factors as
+\[
+    P[X_1, \ldots, X_n] = 
+        \prod_{S \le G} P[X_\alpha \mid X_\beta, \beta \in S]
+\]
+where the $S$ are complete subgraphs (cliques) of $G$.
+
+Graphical models turn up in a number of places -- Bayesian networks (directed)
+and Markov random fields (undirected) in statistics, Boltzmann machines in
+machine learning, and Ising models (spins of particles in a lattice) in
+statistical mechanics.
+
+\section{Example: Boltzmann machines}
+
+A Boltzmann machine factors with respect to an undirected graph, and in addition
+assumes that the random variables only have pairwise interactions.
+
+Concretely, let the random variable $X = (X_i)_{1 \le i \le n}$) take values in
+$\{0,1\}^n$, and let $\theta = (\theta_{ij})$ be a symmetric $n \times n$ matrix.
+Then $\theta$ parametrizes a family of probability distributions.
+
+We can regard 
+\[
+    H_\theta(X) = \sum_{i < j} \theta_{ij} X_i X_j + \sum_i \theta_i X_i
+\]
+as the energy of the system.  Then the probability of $X$ is
+\[
+    P_\theta[X] = \frac{\exp H_\theta(X)}{Z_\theta}
+\]
+where $Z_\theta$ is the normalizing factor
+\[
+    Z_\theta = \sum_{X \in \{0,1\}^n} H_\theta(X)
+\]
+known as the partition function.
+
+This probability model is, of course, inspired by statistical mechanics where it
+is known as the Ising model.  Boltzmann machines have recently become important
+in certain types of machine learning.
+
+
+\section{Geometry of Families of Probability Distributions}
+
+A probability distribution over a finite set corresponds with a point in the
+simplex 
+\[
+    S_n = 
+    \left\{(x_1, \ldots, x_{n}) \mid x_i \ge 0, \sum_{i=1}^n x_i= 1\right\} 
+    \cong 
+    \left\{(x_1, \ldots, x_n) \mid x_i \ge 0, \sum_{i=1}^{n-1} \le 1\right\}
+\]
+of appropriate dimension.
+
+Then the possible
+
+information geometry (Riemannian geometry)
+
+algebraic geometry
+
+tropical geometry
+
+optimization - maximum a priori, BIC, AIC
+
+algorithms, MCMC
+
+
+\section{A primer on machine learning}
+\subsection{Goals}
+foo bar
+\subsection{Techniques}
+baz quz
+\subsection{Deep learning}
+asdf 
+
+\end{document}

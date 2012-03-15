@@ -11,3 +11,6 @@
 *.bbl
 *.blg
 *.swp
+*.idx
+*.ilg
+*.ind

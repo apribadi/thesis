@@ -1,0 +1,58 @@
+\documentclass[11pt]{article}
+\usepackage{pset}
+
+\newcommand*{\X}{\mathfrak{X}}
+\newcommand*{\Mod}{\mathcal{M}}
+
+\begin{document}
+
+\noindent A really simple nontrivial model -- naive Bayes.
+
+Before we think about classification, we should just think about probability
+distributions.  Suppose that we have a random variable $X = (X_1, X_2)$ that
+takes values in $\{0,1\}^2$.  There are $4$ possible values, so the distribution
+of $X$ is a point in the 3-dimensional probability simplex
+\[
+    \Delta_3 = \left\{(p_{00}, p_{01}, p_{10}, p_{11}) \mid \sum p_{ij} = 1, p_{ij} \ge
+    0\right\} \subset \R^4
+\]
+where the coordinate $p_{ij}$ is the probability that $(i, j)$ occurs.
+
+If we make the assumption that the components $X_1$ and $X_2$ are independent,
+we introduce the constraints
+\[
+    p_{ij} = (p_{i+})(p_{+j}) = (p_{i0} + p_{i1})(p_{0j} + p_{1j})
+\]
+where a $+$ in an index position indicates summation over that index, e.g.
+$p_{i+} = p_{i0} + p_{i1}$.  These are quadratic polynomial equations.  Then our
+model is
+\[
+    \mathcal{M}
+        = \left\{(p_{00}, p_{01}, p_{10}, p_{11}) \mid \sum p_{ij} = 1, p_{ij}
+        \ge 0, p_{ij} = (p_{i+})(p_{+j})
+    \right\} \subset \Delta_3 \subset \R^4
+\]
+which is a semialgebraic set.
+
+We can introduce an explicit parametrization of $\mathcal{M}$.  Specifically
+\begin{IEEEeqnarray*}{rCrCl}
+    f &:& \{(u, v) \mid 0 \le u,v \le 1\} &\to& \mathcal{M}\\
+     && (u,v)      &\mapsto& (uv, u(1-v), (1-u)v, (1-u)(1-v))
+\end{IEEEeqnarray*}
+is a polynomial parametrization from a 2-dimensional space (which I think would
+be considered an isomorphism of semialgebraic sets?).  Here $u = p_{0+}$ and $v
+= p_{+0}$.
+
+In order to examine a binary classification problem, we would consider the joint
+distribution over $\{0,1\}^2 \times \{0, 1\}$ and introduce appropriate
+independence conditions there.  With coordinates $p_{ijk}$, I think the
+conditions are
+\[
+    p_{ijk} = (p_{i+k})(p_{+jk})
+\]
+but I would need to check.  Then given an observation $(i, j)$, the probability
+of the label $0$ would be $p_{ij0} / p_{ij+}$ and the probability of the label
+$1$ would be $p_{ij1} / p_{ij+}$.
+
+
+\end{document}
