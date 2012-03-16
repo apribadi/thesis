@@ -634,7 +634,7 @@
     A `larger' model is capable of describing data more accurately, but may also be
     subject to over-fitting.
 
-\section{The Set of Symmetric Binary Models}
+\section{The Linear Spaces of Binary Models}
 
     Consider a random variable $X$ with binary states, i.e. taking values in the
     set $\{0, 1\}^n = \{0\cdots00, 0\cdots01, \ldots, 1\cdots11\}$.  It is often
@@ -644,13 +644,57 @@
     \item The model is invariant under any permutation of the bits.
     \item The model is invariant under any `flip' of a bit.
     \end{itemize}
-    Concretely, say that the distribution $p = (p(0\cdots00), p(0\cdots01),
-    \ldots, p(1\cdots11))$ in the model $\mathcal M$.  Then for any permutation
-    $\sigma \in S_n$
-    Then we would want the distributions
-    \[
-        P[Y = b_1 \cdots b_n] = P[
-    \]
+
+    We formulate these two requirements concretely.  Identify a probability
+    distribution with the corresponding function from the space of states $\{0,
+    1\}^n$ to probabilities in the interval $[0, 1]$.  Suppose that we want a
+    model $\ms \subset \Delta$ to satisfy these symmetry requirements, and that
+    some distribution $p$ is in the model $\ms$.  Then for certain permutations
+    $g$ of the space of states $\{0, 1\}^n$, we require that
+    the function
+    \begin{align*}
+        \{0, 1\}^n &\to [0, 1] \\
+        b_1 \cdots b_n &\mapsto f(\inv g(b_1 \cdots b_n))
+    \end{align*}
+    is also a distribution in the model $\ms$.  A shuffling of the bits given
+    by an element of the symmetric group $\sigma \in S_n$ is the permutation
+    \begin{align*}
+        \{0, 1\}^n &\to \{0, 1\}^n \\
+        b_1 \cdots b_n &\mapsto b_{\sigma(1)} \cdots b_{\sigma(n)}.
+    \end{align*}
+    A flip of the $k$th bit is the permutation
+    \begin{align*}
+        \{0, 1\}^n &\to \{0, 1\}^n \\
+        b_1 \cdots 0 \cdots b_n 
+        &\mapsto
+        b_1 \cdots 1 \cdots b_n  \\
+        b_1 \cdots 1 \cdots b_n 
+        &\mapsto
+        b_1 \cdots 0 \cdots b_n
+    \end{align*}
+    where the only changed bit is in the $k$th position.
+
+    These permutations are elements of the symmetric group on $\{0, 1\}^n$.
+    They generate the group known as the hyperoctahedral group $S_2 \wr S_n$.
+    The group acts of the space of all functions on $\{0, 1\}^n$ by permuting
+    basis elements, that is, delta functions.  (Clarify?)  Thus $S_2 \wr S_n$
+    has a natural action by linear transformations on the space $\R^{2^n}$, and
+    then on the simplex $\Delta \subset \R^{2^n}$.  
+    
+    From a geometric perspective, we arrive at this notion of invariance.  With
+    a group action $S_2 \wr S_n \le \mathrm{Aut}(\Delta)$, a model $\ms \subset
+    \Delta$ is invariant under the group action if for any $g \in S_n \wr S_n$
+    we have $g(\ms) = \ms$.
+
+    The fact that $S_2 \wr S_n$ acts linearly on a linear space suggests that
+    representation theory will be useful in understanding the symmetries of
+    possible models.  A difficulty arises in that in the general case neither
+    the simplex $\Delta$ nor a model $\ms \subset \Delta$ can be considered as
+    linear spaces.  In the log-linear case, however, transformed versions of
+    models are linear spaces, and techniques from representation theory are
+    applicable.
+
+\section{Blah}
 
     We restrict our attention, as before, to log-linear models over binary
     variables.
@@ -659,10 +703,10 @@
     generate the hyperoctahedral group.  Thus, we are left with the stipulation
     that the model is invariant under the hyperoctahedral group.
 
-    Geometrically speaking, for our model $\mathcal M \subset \Delta$ and group
-    action $\rho: H_n \to \mathrm{Aut}(\mathcal M)$, we require
+    Geometrically speaking, for our model $\ms \subset \Delta$ and group
+    action $\rho: H_n \to \mathrm{Aut}(\ms)$, we require
     \[
-        \rho(g)(\mathcal M) = \mathcal M
+        \rho(g)(\ms) = \ms
     \]
     for any group element $g \in H_n$.
 
