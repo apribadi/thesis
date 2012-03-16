@@ -375,14 +375,82 @@
 
 \section{Birch's Theorem and Maximum Likelihood}
 
-\chapter{Representations of the Hyperoctahedral Group}
+\chapter{Symmetries of Binary Models}
+
+\section{Desirable Symmetries}
+
+    Consider a random variable $X$ with binary states, i.e. taking values in the
+    set $\{0, 1\}^n = \{0\cdots00, 0\cdots01, \ldots, 1\cdots11\}$.  It is often
+    the case that we do not want to use the meanings of these states to
+    distinguish between them.  There are two natural symmetry requirements:
+    \begin{itemize}\nospace
+    \item The model is invariant under any permutation of the bits.
+    \item The model is invariant under any `flip' of a bit.
+    \end{itemize}
+
+    We formulate these two requirements concretely.  Identify a probability
+    distribution with the corresponding function from the space of states $\{0,
+    1\}^n$ to probabilities in the interval $[0, 1]$.  Suppose that we want a
+    model $\ms \subset \Delta$ to satisfy these symmetry requirements, and that
+    some distribution $p$ is in the model $\ms$.  Then for certain permutations
+    $g$ of the space of states $\{0, 1\}^n$, we require that
+    the function
+    \begin{align*}
+        \{0, 1\}^n &\to [0, 1] \\
+        b_1 \cdots b_n &\mapsto f(\inv g(b_1 \cdots b_n))
+    \end{align*}
+    is also a distribution in the model $\ms$.  A shuffling of the bits given
+    by an element of the symmetric group $\sigma \in S_n$ is the permutation
+    \begin{align*}
+        \{0, 1\}^n &\to \{0, 1\}^n \\
+        b_1 \cdots b_n &\mapsto b_{\sigma(1)} \cdots b_{\sigma(n)}.
+    \end{align*}
+    A flip of the $k$th bit is the permutation
+    \begin{align*}
+        \{0, 1\}^n &\to \{0, 1\}^n \\
+        b_1 \cdots 0 \cdots b_n 
+        &\mapsto
+        b_1 \cdots 1 \cdots b_n  \\
+        b_1 \cdots 1 \cdots b_n 
+        &\mapsto
+        b_1 \cdots 0 \cdots b_n
+    \end{align*}
+    where the only changed bit is in the $k$th position.
+
+    These permutations are elements of the symmetric group on $\{0, 1\}^n$.
+    They generate the group known as the hyperoctahedral group $S_2 \wr S_n$.
+    The group acts of the space of all functions on $\{0, 1\}^n$ by permuting
+    basis elements, that is, delta functions.  (Clarify?)  Thus $S_2 \wr S_n$
+    has a natural action by linear transformations on the space $\R^{2^n}$, and
+    then on the simplex $\Delta \subset \R^{2^n}$.  
+    
+    From a geometric perspective, we arrive at this notion of invariance.  With
+    a group action $S_2 \wr S_n \le \mathrm{Aut}(\Delta)$, a model $\ms \subset
+    \Delta$ is invariant under the group action if for any $g \in S_n \wr S_n$
+    we have $g(\ms) = \ms$.
+
+\section{Log-Linear Symmetries}
+
+    The fact that $S_2 \wr S_n$ acts linearly on a linear space suggests that
+    representation theory will be useful in understanding the symmetries of
+    possible models.  A difficulty arises in that in the general case neither
+    the simplex $\Delta$ nor a model $\ms \subset \Delta$ can be considered as
+    linear spaces.  In the log-linear case, however, transformed versions of
+    models are linear spaces, and techniques from representation theory are
+    applicable.
+
+    Recall the form of a log-linear model
+    \[
+        \ms_A = \cdel[\big]{}
+    \]
+
+\chapter{The Hyperoctahedral Group}
 
 \section{Permutations of the Hypercube}
 
-    Consider the joint distribution of $n$ binary random variables over their
-    $2^n$ states.  The symmetry group of interest to us is the hyperoctahedral
-    group.  This group may be defined as the automorphism group of the
-    $n$-hypercube or as the wreath product $S_2 \wr S_n$.
+    The symmetry group of interest to us is the hyperoctahedral group.  This
+    group may be defined as the automorphism group of the $n$-hypercube or as
+    the wreath product $S_2 \wr S_n$.
 % Coxeter?
     The first formulation is very concrete, so we describe it first. 
 
@@ -626,74 +694,6 @@
 
 
 
-\chapter{Symmetric Binary Models}
-
-\section{Model Selection}
-    The essential tradeoff in model selection is between descriptive power \ldots
-
-    A `larger' model is capable of describing data more accurately, but may also be
-    subject to over-fitting.
-
-\section{The Linear Spaces of Binary Models}
-
-    Consider a random variable $X$ with binary states, i.e. taking values in the
-    set $\{0, 1\}^n = \{0\cdots00, 0\cdots01, \ldots, 1\cdots11\}$.  It is often
-    the case that we do not want to use the meanings of these states to
-    distinguish between them.  There are two natural symmetry requirements:
-    \begin{itemize}\nospace
-    \item The model is invariant under any permutation of the bits.
-    \item The model is invariant under any `flip' of a bit.
-    \end{itemize}
-
-    We formulate these two requirements concretely.  Identify a probability
-    distribution with the corresponding function from the space of states $\{0,
-    1\}^n$ to probabilities in the interval $[0, 1]$.  Suppose that we want a
-    model $\ms \subset \Delta$ to satisfy these symmetry requirements, and that
-    some distribution $p$ is in the model $\ms$.  Then for certain permutations
-    $g$ of the space of states $\{0, 1\}^n$, we require that
-    the function
-    \begin{align*}
-        \{0, 1\}^n &\to [0, 1] \\
-        b_1 \cdots b_n &\mapsto f(\inv g(b_1 \cdots b_n))
-    \end{align*}
-    is also a distribution in the model $\ms$.  A shuffling of the bits given
-    by an element of the symmetric group $\sigma \in S_n$ is the permutation
-    \begin{align*}
-        \{0, 1\}^n &\to \{0, 1\}^n \\
-        b_1 \cdots b_n &\mapsto b_{\sigma(1)} \cdots b_{\sigma(n)}.
-    \end{align*}
-    A flip of the $k$th bit is the permutation
-    \begin{align*}
-        \{0, 1\}^n &\to \{0, 1\}^n \\
-        b_1 \cdots 0 \cdots b_n 
-        &\mapsto
-        b_1 \cdots 1 \cdots b_n  \\
-        b_1 \cdots 1 \cdots b_n 
-        &\mapsto
-        b_1 \cdots 0 \cdots b_n
-    \end{align*}
-    where the only changed bit is in the $k$th position.
-
-    These permutations are elements of the symmetric group on $\{0, 1\}^n$.
-    They generate the group known as the hyperoctahedral group $S_2 \wr S_n$.
-    The group acts of the space of all functions on $\{0, 1\}^n$ by permuting
-    basis elements, that is, delta functions.  (Clarify?)  Thus $S_2 \wr S_n$
-    has a natural action by linear transformations on the space $\R^{2^n}$, and
-    then on the simplex $\Delta \subset \R^{2^n}$.  
-    
-    From a geometric perspective, we arrive at this notion of invariance.  With
-    a group action $S_2 \wr S_n \le \mathrm{Aut}(\Delta)$, a model $\ms \subset
-    \Delta$ is invariant under the group action if for any $g \in S_n \wr S_n$
-    we have $g(\ms) = \ms$.
-
-    The fact that $S_2 \wr S_n$ acts linearly on a linear space suggests that
-    representation theory will be useful in understanding the symmetries of
-    possible models.  A difficulty arises in that in the general case neither
-    the simplex $\Delta$ nor a model $\ms \subset \Delta$ can be considered as
-    linear spaces.  In the log-linear case, however, transformed versions of
-    models are linear spaces, and techniques from representation theory are
-    applicable.
-
 \section{Blah}
 
     We restrict our attention, as before, to log-linear models over binary
@@ -712,6 +712,58 @@
 
     With the decomposition of the permutation representation of the
     hyperoctahedral group into irreducible components, we can enumerate.
+
+\chapter{An Enumeration of Models}
+
+\section{Which Eigenspaces}
+
+    Must include the eigenspace of $\lambda = n$.
+
+    there there are $2^n$ possible choices?
+
+\section{Lattice Bases}
+    
+    Two conjections: with and without $(1, \ldots, 1, 1)$.
+
+    Put everything into for with 0s and 1s
+
+\section{The Lattice Ideal}
+
+    Nothing new here?
+
+    One way is the saturation ideal of a lattice basis.
+
+    There are also other ways.
+
+    Test the techniques from the symmetric grobner bases paper?
+
+\section{Computing Maximum-Likelihood}
+
+    Use Singular?
+
+\section{Criteria}
+
+    AIC
+    
+    BIC
+
+\section{Sampling from the Conditional Distribution}
+
+    With Markov Bases and Monte Carlo
+
+
+\section{Which Models are Best?}
+
+    With our data.
+
+    The end
+
+
+\section{Model Selection}
+    The essential tradeoff in model selection is between descriptive power \ldots
+
+    A `larger' model is capable of describing data more accurately, but may also be
+    subject to over-fitting.
 
 
 
