@@ -9,8 +9,10 @@
 \usepackage{makeidx}
 \makeindex
 
-\newcommand*{\X}{\mathfrak{X}}
-\newcommand*{\F}{\mathcal{X}}
+%\newcommand*{\X}{\mathfrak{X}}
+\newcommand*{\x}[1]{\ensuremath{X^{(#1)}}}
+\newcommand*{\xs}{\mathcal X}
+\newcommand*{\F}{\mathcal{F}}
 \newcommand*{\Mod}{\mathcal{M}}
 \newcommand*{\Bin}{\mathcal{B}}
 \newcommand*{\vbar}{\;\big\vert\;}
@@ -25,7 +27,7 @@
 \numberwithin{equation}{chapter}
 \numberwithin{thmcounter}{chapter}
 
-\title{Thesis Draft}
+\title{Log-Linear Models on Homogeneous Spaces}
 \author{Aaron Pribadi}
 \thesisyear{2012}
 \advisor{Michael Orrison}
@@ -50,34 +52,89 @@
 
 \chapter{Introduction}
 
-\section{Binary Values and Statistical Models}
-
-\section{Algebraic Statistics}
-
-    Algebraic statistics is a relatively new field that examines statistical
-    questions using algebraic geometry and commutative algebra.  Once a problem
-    has been cast in the language of algebra, a number of computational tools
-    can be brought to bear.  For example, one of the early papers in the field
-    analyzed contingency tables using Monte Carlo sampling computed with Gröbner
-    bases \citep{DS98}.
-
-    Algebraic statistics also offers a geometric point of view on statistical
-    models; the tendency is toward intrinsically defined objects in lieu of
-    explicit coordinate systems.  In this light, algebraic statistics might be
-    seen as in the tradition of information geometry, a field pioneered in the
-    1980s that applied the techniques of Riemannian geometry to probability
-    models (see for example \citep{Ama}).
-
-    An introduction to the field of algebraic statistics may be found in the
-    collection of lecture notes \citep{DSS08}.  Algebraic statistics has also
-    been applied to computational biology \citep{ASCB}.
 
 
-\chapter{The Geometry of Statistical Models}
-    \section{The Probability Simplex}
+\chapter{}
 
-    We consider probability distributions over finite sets.  The space of all
-    such distributions corresponds to a geometric object.
+    \section{Discrete Multivariate Data}
+    The purpose of statistics is to interpret data.  Our data will be discrete
+    multivariate data.  That is, a datum is of the form
+    \[
+        X = (X_1, \ldots, X_n)
+    \]
+    where $X$ is a random variable with $n$ components, each of which can take
+    on finitely many values.  Discrete multivariate data occurs naturally.  In
+    the simplest non-degenerate case, each component $X_i$ is binary, i.e. takes
+    on one of two values.  A binary value can represent the truth or falsity of
+    some claim, or a yes/no vote on a question.  A component $X_i$ could take on
+    more than two values, if, for example, the observation is placed into a
+    class.  Say, there could be three distinct species of flower under
+    observation.
+
+    \begin{figure}[H]
+    \centering
+    \begin{tabular}{c c}
+        Voting Record & Counts \\
+        \hline
+        {NNNN} & 6 \\
+        {NNNY} & 54 \\
+        {NNYN} & 38 \\
+        {NNYY} & 8 \\
+        $\vdots$ & $\vdots$ \\
+        {YYYY} & 5
+        \\
+        \\
+        & 376 Total
+    \end{tabular}
+    \caption{Voting records for 376 members of the U.S. House of Representatives
+    on selected bills.}
+    \end{figure}
+
+    \begin{figure}[H]
+    \centering
+    \begin{tabular}{c c}
+        Iris Data & Goes Here!!!
+    \end{tabular}
+    \caption{Iris Data -- TODO}
+    \end{figure}
+
+    One fundamental assumption is that if we make repeated observations, then
+    the data are independent and identically distributed random variables
+    (i.i.d.).  That is, if $\x 1, \ldots, \x m$ are $m$ observations, then each
+    random variable is distributed according to the same underling probability
+    distribution $\x i \sim p$.  The basic objective is then to discover or at
+    least estimate the underlying probability distribution $p$ from the observed
+    data.
+
+    If a random variable $X$ takes on a finite and small number of values, then
+    an estimate $\hat p$ for the underlying distribution is easy to compute.
+    The empirical distribution
+    \[
+        \hat p(x) = \frac 1 m \pdel[\big]{\text{the number of $i$ for which $\x
+        i = x$}}
+    \]
+    from observations $\x 1, \ldots \x m$ is usually a good estimate of $p$ when
+    $m$ is much greater than the size of the state space of $X$.
+
+    Discrete multivariate data, however, presents a particular problem.  The
+    number of states grows exponentially in the number of components.  This
+    means that it is easy to have a very large number of states, and it is often
+    the case that the number of observations is smaller than the number of
+    states.  In order to have a good estimate of the underlying probability
+    distribution, it is necessary to restrict the space of probability
+    distributions under consideration, that is, to have a statistical model.
+
+
+    \section{Statistical Models and the Simplex}
+
+    The view we take of statistical models is very geometric.  It is our opinion
+    that this perspective allows statistical problems to be attacked with a
+    large range of useful tools.
+
+    A probability distribution on a finite set $\xs$ might be thought of as a
+    real-valued function $p \in L(\xs)$ subject to the restrictions that
+    $\sum_{x\in \xs} p(x) = 1$ and that $p(x) \ge 0$ for all $x \in \xs$.  The
+    space of all such distributions corresponds to a geometric object.
     
     \begin{definition} 
         \index{simplex}
@@ -85,43 +142,49 @@
         called the \emph{standard simplex}) is the space
         \[
             \Delta_N = 
-            \left\{(x_1, \ldots, x_{N+1}) \vbar \sum_{i=1}^{N+1} x_i= 1, x_i \ge 0 \right\} 
+            \left\{(p_1, \ldots, p_{N+1}) \vbar \sum_{i=1}^{N+1} p_i= 1, p_i \ge 0 \right\} 
             \subset
             \R^{N+1}.
         \]
-        If the appropriate dimension is either clear in context or irrelevant we
-        may simply write $\Delta$, omitting the subscript.
+        If the appropriate dimension is either clear or irrelevant in context,
+        then we may simply write $\Delta$, omitting the subscript.
     \end{definition}
-    A \emph{simplex} in general is the image of a standard simplex under any
-    affine transformation.  Low-dimensional simplices are familiar objects;
+
+    Clearly, there is a one-to-one correspondence between probability
+    distributions on the set $\{1, \ldots, N+1\}$ and points in the simplex
+    $\Delta_N$, where the probability $p(i)$ is equal to the value of the
+    coordinate $p_i$.  We therefore identify the two concepts with each other.
+
+    Geometrically, a simplex may be thought of as a generalization of an
+    equilateral triangle.  Low-dimensional simplices are familiar shapes;
     $\Delta_0$ is a point, $\Delta_1$ is a line segment, $\Delta_2$ is a
     triangle, and $\Delta_3$ is a tetrahedron.
     \begin{figure}[H]
         \centering
-        \scalebox{1}{ \includegraphics[scale=0.5]{images/simplices.png} }
-        \caption{Low-dimensional simplices.}
+        \includegraphics[scale=1]{2-simplex.pdf}
+        \caption{The 2-simplex.}
     \end{figure}
-    \noindent A random variable $X$ with $N+1$ possible values corresponds to a point $x =
-    (x_1, \ldots, x_{N+1})$ contained in the simplex $\Delta_N$ in a natural
-    way; if $X$ takes values in $\{1, \ldots, N+1\}$, we set $P(X = i) = x_i$.
-    We usually identify a probability distribution with its corresponding
-    point in the probability simplex.  
     
-    Statisticians are often concerned with families of probability
-    distributions.  We identify such families with geometric spaces.
+    Sometimes we only want to consider some of the possible probability
+    distributions.  We think of this geometrically.
     \begin{definition}
     By the phrase \emph{statistical model}, we mean a subset $\Mod \subset
-    \Delta$ of a probability simplex.
+    \Delta$ of a probability simplex.  A \emph{parametrized model} with
+    parameter space $\Theta$ is a map $f: \Theta \to \Delta$.  We usually write
+    $p_\theta = f(\theta)$ with $\theta \in \Theta$ for a particular
+    distribution from a parametrized model.
     \end{definition}
-    \noindent A statistical model may be parametrized by a map $f: U \to
-    \Delta$, for some space $U$ of parameters.  Usually, the space of parameters
-    is a subset of a real affine space $\R^d$, and parametrizations are
-    differentiable almost everywhere.  In the context of algebraic statistics,
-    the parametrization is usually a rational function.
+
+    Oftentimes, it is assumed that every statistical model has a
+    parametrization.  It is sometimes useful, however, to take the more abstract
+    perspective.  In most cases of interest the statistical model is 
+    parametrized, and the parameter space is usually an open subset of an
+    Euclidean space $\R^d$.
+
     \begin{example}
-    A random variable $X$ following a binomial distribution with size $N$ and
-    parameter $\lambda \in [0,1]$ takes a value $k \in \{0,\ldots, N\}$ with
-    probability
+    A random variable $X \sim \mathrm{Binom}(N, \lambda)$ following a binomial
+    distribution with size $N$ and parameter $\lambda \in [0,1]$ takes a value
+    $k \in \{0,\ldots, N\}$ with probability
     \[
         P_\lambda[X = k] = {N \choose k} \lambda^k(1-\lambda)^{n-k}.
     \]
@@ -139,25 +202,24 @@
         \vspace*{-0.2cm}
         \scalebox{1}{ \includegraphics[scale=0.7]{images/binomial.pdf} }
         \vspace*{-0.5cm}
-        \caption{The binomial statistical model for $N=2$.}
+        \caption{The binomial statistical model for $N=2$. Make this 3-D?}
     \end{figure}
     \noindent As the parameter $\lambda$ varies over $[0,1]$, the statistical
     model traces out the curve 
     \[
         \lambda \longmapsto \big((1-\lambda)^2, 2\lambda(1-\lambda), \lambda^2\big)
     \]
-    in the simplex $\Delta_2$.  The final coordinate
-    $P[X=2]$ does not need to be displayed, because we can compute it from the
-    first two coordinates.  
+    in the simplex $\Delta_2$.  
     \end{example}
     
 \section{Maximum Likelihood Estimation}
 
-    Suppose that some data are taken from an unknown distribution, and that we
-    want to model the data using some statistical model $\Mod \subset \Delta$.
-    A distribution matches the data well if the data are relatively probable
-    given the distribution.  Throughout this section we use discrete
-    distributions, though our definitions can be made more general.
+    A distribution matches the data well if the data are more probable given the
+    distribution.  Disregarding model complexity, a model is generally better is
+    it contains distributions better able to match the data.  A maximum
+    likelihood estimate is one way to measure how good a model is.  Throughout
+    this section we use discrete distributions, though our definitions can be
+    made more general.
 
     Let $\Mod = \{P_\theta : \theta \in U\}$ be a parametrized statistical
     model. A random variable $X$ distributed according to some $P_\theta$ has
@@ -183,7 +245,7 @@
     The \emph{maximum likelihood estimate} of the true parameter is the
     parameter 
     \[
-        \mle = \argmax_{\theta \in U} L(\theta; Z)
+        \hat \theta = \argmax_{\theta \in U} L(\theta; Z)
     \]
     that maximizes the likelihood (or equivalently the log-likelihood) of the
     data.
@@ -194,216 +256,95 @@
     times.  The estimate  might not even exist, as the model could be a
     non-closed subset of the simplex.  In practice, it is possible that an
     optimal parameter is not necessary and that a merely good one is sufficient.
-    Standard numerical optimization techniques, e.g. those based on gradient
-    descent or Newton's method, can handle many models.  A more precise
-    knowledge of the geometry of a statistical model, however, can make maximum
-    likelihood estimation easier.
 
-\section{Solutions to the Likelihood Equations}
-
-    Do I keep this?
-
-    Here, we give a flavor of how algebro-geometric techniques can be applied to
-    maximum likelihood estimation.  Our exposition follows Section 3.3 of
-    \citep{ASCB} and Section 2.1 of \citep{DSS08}.
-
-    Suppose that $g: U \to \Delta_{N-1}$ is a rational parametrization of a
-    statistical model, where $U$ is an open subset of $\R^d$.  By rational, we
-    mean that each component of $g(\theta) = (g_1(\theta), \ldots, g_N(\theta))$
-    is a rational function with rational coefficients in its argument $\theta
-    \in U \subset \R^d$.  Maximum likelihood estimation then amounts to
-    maximizing the function
-    \[
-        l(\theta) = \sum_{i=1}^N u_i \log g_i(\theta)
-    \] 
-    where $u_i$ is the number of times event $i$ has occurred in the observed
-    data.
-
-    Every local and global maximum $\theta \in U$ is a solution to the
-    likelihood equations
-    \begin{equation}\label{eq:lik}
-        \frac{\partial l}{\partial\theta_j}
-        =
-        \sum_{i=1}^N 
-        \frac{u_i}{g_i} 
-        \cdot
-        \frac{\partial g_i}{\partial \theta_j}
-        = 0
-        \qquad
-        \text{for $j = 1,\ldots,d$}.
-    \end{equation}
-    The likelihood equations in \eqref{eq:lik} are again rational functions of
-    $\theta$.  Solving the equations involves `clearing denominators' and
-    solving the polynomial equations
-    \begin{equation}\label{eq:lik-clear}
-        \sum_{i=1}^N 
-        u_i \cdot g_1 \cdots \widehat{g_i} \cdots g_N
-        \frac{\partial g_i}{\partial \theta_j}
-        = 0
-        \qquad
-        \text{for $j = 1, \ldots, d$}
-    \end{equation}
-    where $\widehat{g_i}$ indicates that the $i$-th factor is omitted.  The
-    equations \eqref{eq:lik-clear}, however, introduce extraneous solutions, for
-    example when $g_a(\theta) = g_b(\theta) = 0$ for any $a \ne b$.
-
-    Algebraic geometry offers a principled way to solve the likelihood
-    equations.  (For a brief introduction to affine and projective varieties, see
-    Section \ref{sec:varieties} of the appendix.)  Consider the ideal $I \subset \R[\theta_1,
-    \ldots, \theta_d]$ generated by the polynomial expressions in \eqref{eq:lik-clear}
-    \[
-        I = \adel[\Bigg]{
-            \sum_{i=1}^N u_i \cdot g_1 \cdots \widehat{g_i} \cdots g_N
-            \frac{\partial g_i}{\partial \theta_j}
-        }_{j=1}^d
-        .
-    \]
-    Let $h$ be the product of all polynomials appearing in the denominators of
-    the rational equations in \eqref{eq:lik}.  The \emph{saturation ideal} of
-    $I$ with respect to $h$ is defined
-    \[
-        (I : h^\infty) = \cdel[\big]{
-            f \in \R[\theta_1, \ldots, \theta_d]
-            \;\big\vert\;
-            fh^k \in I
-            \quad
-            \text{for some non-negative integer $k$}
-        }.
-    \]
-    We can then consider the variety corresponding to the saturation ideal.  The
-    points in $V(I : h^\infty) \cap U$ are all solutions to the likelihood
-    equations.  In the case that there are only finitely many solutions, passing
-    to the saturation ideal removes all extraneous solutions.
-
-    The referenced works \citep{ASCB} and \citep{DSS08} include examples of
-    computing the variety $V(I : h^\infty)$ with the software package
-    \texttt{Singular}.  An overview of the techniques used to solve such
-    polynomial equations, e.g. Gröbner bases, resultants, and elimination, is
-    given in the text \citep{CLO05} on computational algebraic geometry.
-
-\section{Inference}
+\section{The Bias-Variance Tradeoff}
     
-    Stuff?
-% 
-% \section{Implicit Models}
+    The point of estimating an underlying distribution $p$ for some data is a
+    predictive one; we would like $p$ to be able to predict what more data from
+    the same distribution looks like.
 
-    % In the context of algebraic statistics, we usually look at statistical
-    % models that are semialgebraic sets.
-
-    % If a statistical model is a semi algebraic set, then we can pass to its
-    % Zariski closure in affine space, or we can embed it in projective space
-    % and takes its Zariski closure there.
-
-    % A simplex is the locus of a finite collection of polynomial equations
-    % and polynomial inequalities and therefore is a semialgebraic set.
-
-    % Then we can solve the likelihood equations, given the defining ideal?
+    Generally, as a model becomes more complex, i.e. as the model becomes a
+    larger subset of the simplex, variance tends to increase and bias decrease
+    (define).  If the parameter space of a model has many dimensions, and we
+    don't have much data, there is a danger of over-fitting.  With too few
+    parameters and too much data, we can under-fit.
 
 
+    One important measure of the complexity of a model is its dimension.
 
-\chapter{Log-Linear Models}
+    (define AIC and BIC)
 
-\section{Sufficient Statistics}
+    (rewrite this)
 
-\section{Markov Random Fields}
-    \label{sec:rbm-def}
+\section{conclusion/transition}
+    
+    There is a question of what models to consider.  Considerations of linearity
+    and of invariance will point the way to some particularly useful ones.
 
-    The Restricted Boltzmann Machine is an instance of a \emph{graphical model}.
-    A graphical model is a probabilistic model for which a graph (directed or
-    undirected) represents the conditional independence structure between random
-    variables.  Several types of graphical models have become popular for
-    applications in machine learning; Chapter 17 of \citep{EOSL} is an overview
-    of undirected graphical models and additionally contains references to the
-    large body of literature.  From the algebro-geometric point of view,
-    graphical models in general are discussed in Chapter 3 of \citep{DSS08} and
-    directed graphical models, known as \emph{Bayesian networks}, are discussed
-    in \citep{GSS}.  In our exposition we only introduce undirected models.
+\chapter{Log-Linear Models on Symmetric Spaces}
+
+\section{Linearity in Statistical Models}
+
+    We want to consider some subsets of the probability simplex $\Delta$.
+    Because $\Delta$ is embedded in a space of linear functions on the state
+    space, $L(\xs)$, it seems natural to consider the intersection of a linear
+    subspace of $L(\xs)$ with $\Delta$.  Indeed such techniques are common in
+    function-approximation problems, where we would like to use a restricted set
+    of basis functions in order to construct as closely as possible an observed
+    function.  Such approaches are useful here, but another type of model is
+    actually more prevalent in statistics.
 
     \begin{definition}
-        We describe a \emph{Markov random field}, i.e. an undirected graphical
-        model.  Let $G$ be an undirected graph with vertex set $V$.  Let
-        $\{X_\alpha\}_{\alpha \in V}$ be random variables indexed by the
-        vertices.  The joint probability of $(X_\alpha)_{\alpha \in V}$ is said
-        to factor according to $G$ if for any pair of vertices $\beta, \gamma
-        \in V$ that are not adjacent, the random variables $X_\beta, X_\gamma$
-        are conditionally independent given the variables at the other vertices.
-        That is,
+        A \emph{log-linear} model $\ms_V$ is a subset of the simplex of the form
         \[
-            \text{$X$ and $Y$ not adjacent}
-            \Longleftrightarrow
-            X_\beta \perp X_\gamma \mid 
-            \{X_\alpha; \text{for } \alpha \ne \beta, \alpha \ne \gamma\}.
+            \ms_V = \cdel[\big]{p \in \Delta_{N-1} \:: \log p = (\log p_1, \ldots,
+            \log p_N) \in V}
         \]
-        A Markov random field is any such collection of random variables that
-        factor according to an undirected graph.
+        where $V$ is a linear subspace of $\R^N$.
     \end{definition}
 
-    Roughly speaking, the edges in the graph record which variables influence
-    which other variables.  If the graph is relatively sparse, then there are
-    strong restrictions on the interactions between variables.  For example, a
-    totally disconnected graph indicates that the variables are all independent.
-    In contrast, a complete graph places no restrictions at all on the
-    variables' joint distribution.
+    Notice that $V$ must intersect the positive quadrant of $\R^N$, and that
+    $p_i$ must be strictly positive.  In general, distributions from log-linear
+    models are strictly positive, and lie in the interior of the simplex.
+
+    (Explain how a log-linear model gives a linear, bounded dimension sufficient
+    statistic on the observed counts.)
+
+    We would like to know what subspaces $V \subset \R^N$ yield useful models.
+    We want the uniform distribution to be in $\ms_V$, so the `all-ones' vector
+    $(1, \ldots, 1) \in \R^N$ is usually included in $V$.  Otherwise, there are
+    the standard basis vectors $\{(1, 0, \ldots, 0), (0, 1, \ldots, 0), \ldots,
+    (0, 0, \ldots, 1)\}$ of $\R^N$, which correspond to making a particular
+    event more or less likely.  
     
-    With the assumption that distributions are strictly positive, there is an
-    equivalent characterization of a graphical model.
+    If the space of states has additional structure, as is often the case, we
+    can do much better.
 
-    \begin{theorem}[Hammersley-Clifford]
-        The random variables $(X_\alpha)_\alpha$ indexed by the vertices of an
-        undirected graph $G$ factor according to $G$ if and only if their
-        joint probability density factors as
-        \[
-            p(x) = \prod_{S \in C(G)} f_S(x_S)
-        \]
-        where the $S$ are maximal complete subgraphs (cliques) of $G$, $x_S$ is
-        the restriction of $x$ to $S$, and $f_S$ is a function on the variables in
-        $S$.
-    \end{theorem}
 
-    The graphical models that we consider have a particularly simple structure;
-    the variables have binary values and all interactions are pairwise.
-    Following the machine learning literature, we refer to binary-valued random
-    variables and their corresponding vertices as `units'.
+\section{Symmetries for Binary Models}
 
-\section{Hierarchical Log-Linear Models}
-
-\chapter{Algorithms and the Lattice Ideal}
-
-\section{Lattice Bases}
-
-\section{Sampling from a Conditional Distribution}
-
-\section{Birch's Theorem and Maximum Likelihood}
-
-\chapter{Symmetries of Binary Models}
-
-\section{Desirable Symmetries}
-
-    Consider a random variable $X$ with binary states, i.e. taking values in the
-    set $\{0, 1\}^n = \{0\cdots00, 0\cdots01, \ldots, 1\cdots11\}$.  It is often
-    the case that we do not want to use the meanings of these states to
-    distinguish between them.  There are two natural symmetry requirements:
+    Consider a random variable with binary states, i.e. taking values in the set
+    $\{0, 1\}^n = \{0\cdots00, 0\cdots01, \ldots, 1\cdots11\}$.  If we do
+    not have any information about what the value of each bit means, there are
+    two natural symmetry requirements:
     \begin{itemize}\nospace
-    \item The model is invariant under any permutation of the bits.
+    \item The model is invariant under any reordering of the bits.
     \item The model is invariant under any `flip' of a bit.
     \end{itemize}
+    We formulate these two requirements concretely.  
 
-    We formulate these two requirements concretely.  Identify a probability
-    distribution with the corresponding function from the space of states $\{0,
-    1\}^n$ to probabilities in the interval $[0, 1]$.  Suppose that we want a
-    model $\ms \subset \Delta$ to satisfy these symmetry requirements, and that
-    some distribution $p$ is in the model $\ms$.  Then for certain permutations
-    $g$ of the space of states $\{0, 1\}^n$, we require that
-    the function
-    \begin{align*}
-        \{0, 1\}^n &\to [0, 1] \\
-        b_1 \cdots b_n &\mapsto f(\inv g(b_1 \cdots b_n))
-    \end{align*}
-    is also a distribution in the model $\ms$.  A shuffling of the bits given
-    by an element of the symmetric group $\sigma \in S_n$ is the permutation
+    \begin{figure}[H]
+        \centering
+        Put something here!
+        \caption{A permutation of the bits.}
+    \end{figure}
+    
+    The two symmetry requirements each specify a permutation of the states $\{0,
+    1\}^n$.  If $\mu \in S_n$ reorders the bits, the corresponding permutation
+    of the states is
     \begin{align*}
         \{0, 1\}^n &\to \{0, 1\}^n \\
-        b_1 \cdots b_n &\mapsto b_{\sigma(1)} \cdots b_{\sigma(n)}.
+        b_1 \cdots b_n &\mapsto b_{\mu(1)} \cdots b_{\mu(n)}.
     \end{align*}
     A flip of the $k$th bit is the permutation
     \begin{align*}
@@ -415,42 +356,72 @@
         &\mapsto
         b_1 \cdots 0 \cdots b_n
     \end{align*}
-    where the only changed bit is in the $k$th position.
-
-    These permutations are elements of the symmetric group on $\{0, 1\}^n$.
-    They generate the group known as the hyperoctahedral group $S_2 \wr S_n$.
-    The group acts of the space of all functions on $\{0, 1\}^n$ by permuting
-    basis elements, that is, delta functions.  (Clarify?)  Thus $S_2 \wr S_n$
-    has a natural action by linear transformations on the space $\R^{2^n}$, and
-    then on the simplex $\Delta \subset \R^{2^n}$.  
+    where the $k$th position is modified.  
     
-    From a geometric perspective, we arrive at this notion of invariance.  With
-    a group action $S_2 \wr S_n \le \mathrm{Aut}(\Delta)$, a model $\ms \subset
-    \Delta$ is invariant under the group action if for any $g \in S_n \wr S_n$
-    we have $g(\ms) = \ms$.
+    Let $\sigma: \{0, 1\}^n \to \{0, 1\}^n$ be a permutation of the states.
+    Such a permutation `lifts' to an automorphism of $\Delta$, the space of
+    probability distributions.  Let $p: \{0, 1\}^n \to [0, 1]$ be a function
+    from states to some probability for each state; the function $p$ represents
+    a probability distribution, so we say $p \in \Delta$.  Then $\sigma$ acts on
+    $\Delta$ with the formula
+    \begin{equation}
+        (\sigma p)(b_1 \cdots b_n) = p(\inv \sigma(b_1 \cdots b_n)).
+        \label{eq:sigma-p}
+    \end{equation}
+    A model $\ms \subset \Delta$ is said to be invariant under the action of
+    $\sigma$ if $p \in \ms$ implies that $\sigma p \in \ms$.  (Invariance is
+    actually a bit too strong \ldots)
 
-\section{Log-Linear Symmetries}
+    The permutations specified by reorderings and flips of bits are elements of
+    the symmetric group on $\{0, 1\}^n$.  They generate the group known as the
+    hyperoctahedral group $S_2 \wr S_n$.  We will examine the structure of the
+    hyperoctahedral more closely in Section~\ref{sec:hyperoctahedral}.
 
-    The fact that $S_2 \wr S_n$ acts linearly on a linear space suggests that
+    \eqref{eq:sigma-p} specifies a group action of $S_2 \wr S_n$ on $\Delta$.
+    Each automorphism of $\Delta$ given by a group element is invertible, so we
+    can interpret the invariance requirement geometrically as
+    \[
+        \sigma(\ms) = \ms
+        \qquad
+        \text{for all $\sigma \in S_2 \wr S_n$},
+    \]
+    that is, the action of every element of the group maps the model to itself.
+
+\section{Group Representations}
+
+    We could also think of $S_2 \wr S_n$ as acting on the vector space
+    $\R^{2^n}$ in which $\Delta$ is embedded.  The group acts on the
+    vector space by permuting basis elements (here, delta functions), so the
+    action is linear.  The group action is given by a map
+    \[
+        S_2 \wr S_n \to GL(2^n, \R).
+    \]
+    The fact that $S_2 \wr S_n$ acts linearly on $\R^{2^n}$ suggests that
     representation theory will be useful in understanding the symmetries of
-    possible models.  A difficulty arises in that in the general case neither
-    the simplex $\Delta$ nor a model $\ms \subset \Delta$ can be considered as
-    linear spaces.  In the log-linear case, however, transformed versions of
-    models are linear spaces, and techniques from representation theory are
-    applicable.
-
+    possible models.  
+    
     Recall the form of a log-linear model
     \[
-        \ms_A = \cdel[\big]{}
+        \ms_V = \cdel[\big]{p \in \Delta \:: \log p \in V}
     \]
+    where $V \subset \R^{2^n}$ is a linear space.  With appropriate domain and
+    codomain, the $\log$ map is bijective.  It follows that $\ms_V$ is invariant
+    under the action of $S_2 \wr S_n$ on $\Delta$ if and only if it is invariant
+    under the induced action on $\R^{2^n}$.  The group action is a permutation
+    on the coordinates of $\Delta$, and a permutation on the coordinates of
+    $\R^{2^n}$.  This constructs a permutation representation on the space
+    $\R^{2^n}$.  The punchline is that $\ms_V$ is an invariant model if and only
+    if $V$ is an invariant subspace of the permutation representation
+    of $S_2 \wr S_n$ on $\R^{2^n}$.
 
-\chapter{The Hyperoctahedral Group}
+    (rewrite this in view of symmetric spaces \ldots)
 
-\section{Permutations of the Hypercube}
+\section{The Automorphisms of the Hypercube Graph}
+    \label{sec:hyperoctahedral}
 
-    The symmetry group of interest to us is the hyperoctahedral group.  This
-    group may be defined as the automorphism group of the $n$-hypercube or as
-    the wreath product $S_2 \wr S_n$.
+    The group of interest to us is the hyperoctahedral group.  This group may be
+    defined as the automorphism group of the $n$-hypercube or as the wreath
+    product $S_2 \wr S_n$.
 % Coxeter?
     The first formulation is very concrete, so we describe it first. 
 
@@ -564,35 +535,6 @@
         \rtimes T$.
     \end{definition}
 
-\section{Group Representations}
-    
-    The idea of representation theory is to better understand the possible
-    inscrutable structure of a group (or algebra) by transferring over to the
-    domain of linear algebra.  The field of representation theory is very rich,
-    and we only introduce a few foundational concepts from the representation
-    theory of finite groups.
-
-    \begin{definition}
-        A \emph{representation} of a group $G$ is a group homomorphism $\rho: G
-        \to GL(U)$ from $G$ to the group of invertible linear transformations on
-        a vector space $U$.  
-    \end{definition}
-    Here, we make the simplifying assumptions that $G$ is a finite group and
-    that $U$ is a finite dimensional complex vector space.  It is common to
-    identify the group representation $\rho$ with the vector space $U$; we then
-    say that $U$ is the group representation.
-
-    Representations of finite groups behave tractably in large part because they
-    decompose well.
-    \begin{definition}
-        An \emph{irreducible representation} is
-    \end{definition}
-    \begin{theorem}[Maschke]
-        A representation \ldots
-    \end{theorem}
-
-\section{Distance-Transitive Graphs}
-
     The hypercube graph is has a number of nice properties.  In particular, it
     is distance-transitive; this allows us to characterize some of its
     irreducible representations easily.
@@ -693,77 +635,99 @@
     representation of the hyperoctahedral group.
 
 
+\section{Spaces of $k$th order effects}
 
-\section{Blah}
+    The above decomposition of the permutation representation of the
+    hyperoctahedral group on $\{0, 1\}^n$ gives us a way to enumerate the $S_2
+    \wr S_n$ invariant log-linear models.
 
-    We restrict our attention, as before, to log-linear models over binary
-    variables.
+    We label the irreducible representations in $\R^{2^n}$ be their eigenvalues,
+    which take on the $n+1$ values $-n, -n + 2, \ldots, n - 2, n$.  The
+    $U_n$ eigenspace with eigenvalue $\lambda = n$ contains the all-ones vector $(1,1,
+    \ldots, 1)$.  Every other eigenspace is perpendicular to $U_n$, and thus
+    contains vectors that sum to zero.  This means that every invariant
+    log-linear model must contain the irreducible representation $U_n$.  Every
+    invariant space is the direct product of some of the $U_\lambda$.  Excluding
+    $U_n$, there are $n$ irreducible representations, and thus $2^n$ possible
+    invariant models.
 
-    The actions listed above permute the $2^n$ states, and the permutations
-    generate the hyperoctahedral group.  Thus, we are left with the stipulation
-    that the model is invariant under the hyperoctahedral group.
+    (Define hierarchical log-linear models.)
 
-    Geometrically speaking, for our model $\ms \subset \Delta$ and group
-    action $\rho: H_n \to \mathrm{Aut}(\ms)$, we require
+    The hierarchical log-linear model with all size $k$ facets corresponds with
+    the representation $U_n \oplus U_{n-2} \oplus U_{n-2\cdot2}\cdots \oplus U_{2k}$.
+    We can verify this with the computation
     \[
-        \rho(g)(\ms) = \ms
+        \ldots
     \]
-    for any group element $g \in H_n$.
 
-    With the decomposition of the permutation representation of the
-    hyperoctahedral group into irreducible components, we can enumerate.
+\section{Invariant Bases for Symmetric Spaces}
 
-\chapter{An Enumeration of Models}
+\chapter{Model Selection}
 
-\section{Which Eigenspaces}
+    The essential tradeoff in model selection is between descriptive power \ldots
 
-    Must include the eigenspace of $\lambda = n$.
+    A `larger' model is capable of describing data more accurately, but may also be
+    subject to over-fitting.
 
-    there there are $2^n$ possible choices?
 
-\section{Lattice Bases}
+\section{Criteria for Model Selection}
+
+    AIC
+    \[
+        \mathrm{AIC}_N = \hat l_N(i) - \dim(\Theta_i)
+    \]
     
-    Two conjections: with and without $(1, \ldots, 1, 1)$.
+    BIC
+    \[
+        \mathrm{BIC}_N = \hat l_N(i) - \frac{\log n}{2}\dim(\Theta_i)
+    \]
 
-    Put everything into for with 0s and 1s
+    Likelihood ratio statistic
+    \[
+        2\pdel*{\sup_{\theta \in \Theta} l_n(\theta) - \sup_{\theta \in \Theta_0}
+        l_n(\theta)}
+    \]
 
-\section{The Lattice Ideal}
-
-    Nothing new here?
-
-    One way is the saturation ideal of a lattice basis.
-
-    There are also other ways.
-
-    Test the techniques from the symmetric grobner bases paper?
 
 \section{Computing Maximum-Likelihood}
 
-    Use Singular?
+    Iterative proportional scaling algorithm. (Or other gradient methods.)
 
-\section{Criteria}
+    Birch's theorem and convexity of the objective.
 
-    AIC
-    
-    BIC
+\section{Nesting with Order of Effects}
+    Method from pg. 156 of Bishop's Discrete Multivariate analysis.
+
+    With climbing the eigenspaces and all that.
+
+    Motivates hypothesis testing for subspaces.
 
 \section{Sampling from the Conditional Distribution}
 
     With Markov Bases and Monte Carlo
 
+    Markov bases and stuff
+    \begin{theorem}[Fundamental Theorem of Markov Bases]
+        A set of moves $\{b_1, \ldots, b_k\}$ with $b_i \in \Z^N$ is a Markov basis
+        if and only if the corresponding set of binomials $\{p^{b_i^+} -
+        p^{b_i^-}\}$ generates the ideal $I_A$.
+    \end{theorem}
 
-\section{Which Models are Best?}
+\section{The Lattice Ideal}
 
-    With our data.
+    Lattice Basis.
 
-    The end
+    One way is the saturation ideal of a lattice basis.
 
+\section{Spectral Bases for $l_1$ regularization}
 
-\section{Model Selection}
-    The essential tradeoff in model selection is between descriptive power \ldots
+    and the lasso
 
-    A `larger' model is capable of describing data more accurately, but may also be
-    subject to over-fitting.
+    Cite `On Sparse, Spectral and Other Parameterizations of Binary
+    Probabilistic Models' paper.
+
+    Could get spectral bases for other symmetric spaces.
+
 
 
 
@@ -897,7 +861,197 @@
     arbitrary commutative rings.  This road leads to the theory of schemes,
     which we will neither need nor pursue here.
 
+\chapter{Group Representations}
+    
+    The idea of representation theory is to better understand the possible
+    inscrutable structure of a group (or algebra) by transferring over to the
+    domain of linear algebra.  The field of representation theory is very rich,
+    and we only introduce a few foundational concepts from the representation
+    theory of finite groups.
+
+    \begin{definition}
+        A \emph{representation} of a group $G$ is a group homomorphism $\rho: G
+        \to GL(U)$ from $G$ to the group of invertible linear transformations on
+        a vector space $U$.  
+    \end{definition}
+    Here, we make the simplifying assumptions that $G$ is a finite group and
+    that $U$ is a finite dimensional complex vector space.  It is common to
+    identify the group representation $\rho$ with the vector space $U$; we then
+    say that $U$ is the group representation.
+
+    Representations of finite groups behave tractably in large part because they
+    decompose well.
+    \begin{definition}
+        An \emph{irreducible representation} is
+    \end{definition}
+    \begin{theorem}[Maschke]
+        A representation \ldots
+    \end{theorem}
 % \nocitep{*}
+\chapter{Orphaned Sections}
+
+\section{Algebraic Statistics}
+
+    Algebraic statistics is a relatively new field that examines statistical
+    questions using algebraic geometry and commutative algebra.  Once a problem
+    has been cast in the language of algebra, a number of computational tools
+    can be brought to bear.  For example, one of the early papers in the field
+    analyzed contingency tables using Monte Carlo sampling computed with Gröbner
+    bases \citep{DS98}.
+
+    Algebraic statistics also offers a geometric point of view on statistical
+    models; the tendency is toward intrinsically defined objects in lieu of
+    explicit coordinate systems.  In this light, algebraic statistics might be
+    seen as in the tradition of information geometry, a field pioneered in the
+    1980s that applied the techniques of Riemannian geometry to probability
+    models (see for example \citep{Ama}).
+
+    An introduction to the field of algebraic statistics may be found in the
+    collection of lecture notes \citep{DSS08}.  Algebraic statistics has also
+    been applied to computational biology \citep{ASCB}.
+
+\section{Solutions to the Likelihood Equations}
+
+    Do I keep this?
+
+    Here, we give a flavor of how algebro-geometric techniques can be applied to
+    maximum likelihood estimation.  Our exposition follows Section 3.3 of
+    \citep{ASCB} and Section 2.1 of \citep{DSS08}.
+
+    Suppose that $g: U \to \Delta_{N-1}$ is a rational parametrization of a
+    statistical model, where $U$ is an open subset of $\R^d$.  By rational, we
+    mean that each component of $g(\theta) = (g_1(\theta), \ldots, g_N(\theta))$
+    is a rational function with rational coefficients in its argument $\theta
+    \in U \subset \R^d$.  Maximum likelihood estimation then amounts to
+    maximizing the function
+    \[
+        l(\theta) = \sum_{i=1}^N u_i \log g_i(\theta)
+    \] 
+    where $u_i$ is the number of times event $i$ has occurred in the observed
+    data.
+
+    Every local and global maximum $\theta \in U$ is a solution to the
+    likelihood equations
+    \begin{equation}\label{eq:lik}
+        \frac{\partial l}{\partial\theta_j}
+        =
+        \sum_{i=1}^N 
+        \frac{u_i}{g_i} 
+        \cdot
+        \frac{\partial g_i}{\partial \theta_j}
+        = 0
+        \qquad
+        \text{for $j = 1,\ldots,d$}.
+    \end{equation}
+    The likelihood equations in \eqref{eq:lik} are again rational functions of
+    $\theta$.  Solving the equations involves `clearing denominators' and
+    solving the polynomial equations
+    \begin{equation}\label{eq:lik-clear}
+        \sum_{i=1}^N 
+        u_i \cdot g_1 \cdots \widehat{g_i} \cdots g_N
+        \frac{\partial g_i}{\partial \theta_j}
+        = 0
+        \qquad
+        \text{for $j = 1, \ldots, d$}
+    \end{equation}
+    where $\widehat{g_i}$ indicates that the $i$-th factor is omitted.  The
+    equations \eqref{eq:lik-clear}, however, introduce extraneous solutions, for
+    example when $g_a(\theta) = g_b(\theta) = 0$ for any $a \ne b$.
+
+    Algebraic geometry offers a principled way to solve the likelihood
+    equations.  (For a brief introduction to affine and projective varieties, see
+    Section \ref{sec:varieties} of the appendix.)  Consider the ideal $I \subset \R[\theta_1,
+    \ldots, \theta_d]$ generated by the polynomial expressions in \eqref{eq:lik-clear}
+    \[
+        I = \adel[\Bigg]{
+            \sum_{i=1}^N u_i \cdot g_1 \cdots \widehat{g_i} \cdots g_N
+            \frac{\partial g_i}{\partial \theta_j}
+        }_{j=1}^d
+        .
+    \]
+    Let $h$ be the product of all polynomials appearing in the denominators of
+    the rational equations in \eqref{eq:lik}.  The \emph{saturation ideal} of
+    $I$ with respect to $h$ is defined
+    \[
+        (I : h^\infty) = \cdel[\big]{
+            f \in \R[\theta_1, \ldots, \theta_d]
+            \;\big\vert\;
+            fh^k \in I
+            \quad
+            \text{for some non-negative integer $k$}
+        }.
+    \]
+    We can then consider the variety corresponding to the saturation ideal.  The
+    points in $V(I : h^\infty) \cap U$ are all solutions to the likelihood
+    equations.  In the case that there are only finitely many solutions, passing
+    to the saturation ideal removes all extraneous solutions.
+
+    The referenced works \citep{ASCB} and \citep{DSS08} include examples of
+    computing the variety $V(I : h^\infty)$ with the software package
+    \texttt{Singular}.  An overview of the techniques used to solve such
+    polynomial equations, e.g. Gröbner bases, resultants, and elimination, is
+    given in the text \citep{CLO05} on computational algebraic geometry.
+
+\section{Markov Random Fields}
+    \label{sec:rbm-def}
+
+    The Restricted Boltzmann Machine is an instance of a \emph{graphical model}.
+    A graphical model is a probabilistic model for which a graph (directed or
+    undirected) represents the conditional independence structure between random
+    variables.  Several types of graphical models have become popular for
+    applications in machine learning; Chapter 17 of \citep{EOSL} is an overview
+    of undirected graphical models and additionally contains references to the
+    large body of literature.  From the algebro-geometric point of view,
+    graphical models in general are discussed in Chapter 3 of \citep{DSS08} and
+    directed graphical models, known as \emph{Bayesian networks}, are discussed
+    in \citep{GSS}.  In our exposition we only introduce undirected models.
+
+    \begin{definition}
+        We describe a \emph{Markov random field}, i.e. an undirected graphical
+        model.  Let $G$ be an undirected graph with vertex set $V$.  Let
+        $\{X_\alpha\}_{\alpha \in V}$ be random variables indexed by the
+        vertices.  The joint probability of $(X_\alpha)_{\alpha \in V}$ is said
+        to factor according to $G$ if for any pair of vertices $\beta, \gamma
+        \in V$ that are not adjacent, the random variables $X_\beta, X_\gamma$
+        are conditionally independent given the variables at the other vertices.
+        That is,
+        \[
+            \text{$X$ and $Y$ not adjacent}
+            \Longleftrightarrow
+            X_\beta \perp X_\gamma \mid 
+            \{X_\alpha; \text{for } \alpha \ne \beta, \alpha \ne \gamma\}.
+        \]
+        A Markov random field is any such collection of random variables that
+        factor according to an undirected graph.
+    \end{definition}
+
+    Roughly speaking, the edges in the graph record which variables influence
+    which other variables.  If the graph is relatively sparse, then there are
+    strong restrictions on the interactions between variables.  For example, a
+    totally disconnected graph indicates that the variables are all independent.
+    In contrast, a complete graph places no restrictions at all on the
+    variables' joint distribution.
+    
+    With the assumption that distributions are strictly positive, there is an
+    equivalent characterization of a graphical model.
+
+    \begin{theorem}[Hammersley-Clifford]
+        The random variables $(X_\alpha)_\alpha$ indexed by the vertices of an
+        undirected graph $G$ factor according to $G$ if and only if their
+        joint probability density factors as
+        \[
+            p(x) = \prod_{S \in C(G)} f_S(x_S)
+        \]
+        where the $S$ are maximal complete subgraphs (cliques) of $G$, $x_S$ is
+        the restriction of $x$ to $S$, and $f_S$ is a function on the variables in
+        $S$.
+    \end{theorem}
+
+    The graphical models that we consider have a particularly simple structure;
+    the variables have binary values and all interactions are pairwise.
+    Following the machine learning literature, we refer to binary-valued random
+    variables and their corresponding vertices as `units'.
+
 
 \backmatter
 

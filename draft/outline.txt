@@ -1,0 +1,34 @@
+
+Symmetry and models
+    geometry of models
+    discrete multivariate
+    model selection - bias vs variance
+    how to choose models under consideration?
+        linearity and invariance
+        will be explained
+
+
+log-linear models
+    sufficient statistic on counts
+    linearity on counts implies log-linearity of probabilities
+    linear symmetries -> representations
+
+symmetric models
+    what are symmetric models
+    wreath products for discrete multivariate models
+    hyperoctahedral group
+    hypercube graph
+    representations
+
+Model selection, revisited
+    dimension penalties, AIC and BIC
+    hypothesis testing
+        markov bases for conditional distributions
+    (invariant?) bases for sparsity, l_1 regularization
+
+    eigenspaces <-> ith order effects
+    nested spaces for model selection
+        ref bishop for technique of going between i and i+1 order
+
+Mixture models
+    (this is a reach)
