@@ -1,11 +1,11 @@
 all:
-	xelatex *.tex
+	xelatex draft.tex
 stuff:
-	xelatex *.tex
-	bibtex *.aux
-	makeindex *.idx
-	xelatex *.tex
-	xelatex *.tex
+	xelatex draft.tex
+	bibtex draft.aux
+	makeindex draft.idx
+	xelatex draft.tex
+	xelatex draft.tex
 
 clean:
 	rm -f *.aux *.bbl *.blg *.idx *.ilg *.ind *.log *.toc

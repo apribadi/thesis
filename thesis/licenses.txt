@@ -1,0 +1,4 @@
+
+hypercube
+    GNU Free documentation
+

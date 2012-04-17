@@ -9,19 +9,16 @@
 \usepackage{makeidx}
 \makeindex
 
-%\newcommand*{\X}{\mathfrak{X}}
 \newcommand*{\x}[1]{\ensuremath{X^{(#1)}}}
-\newcommand*{\xs}{\mathcal X}
-\newcommand*{\F}{\mathcal{F}}
-\newcommand*{\N}{\mathbb{N}}
-\newcommand*{\Bin}{\mathcal{B}}
+\providecommand*{\xs}{\mathcal X}
+\providecommand*{\ms}{\mathcal M}
+\providecommand*{\ns}{\mathcal N}
+\providecommand*{\N}{\mathbb{N}}
 \newcommand*{\vbar}{\;\big\vert\;}
 \DeclareMathOperator*{\argmax}{arg\ max}
 
 \newcommand*{\mle}{\mathrm{mle}}
 \newcommand*{\emp}{\mathrm{emp}}
-
-\newcommand*{\parop}[1]{\frac{\partial}{\partial #1}}
 
 \numberwithin{equation}{chapter}
 \numberwithin{thmcounter}{chapter}
@@ -42,6 +39,7 @@
 
 
 
+
 \chapter{Abstract}
     This will be an abstract.
 
@@ -54,59 +52,58 @@
 
     \section{Discrete Data}
 
-    Discrete data, for which each observation has only finitely many possible
-    outcomes, takes many forms. (Introduce the main examples: binary data,
-    k-sets, and discrete circle data.)
+    Throughout, we are primarily concerned with the analysis of discrete data,
+    for which each observation has only finitely many possible outcomes.
 
-    One fundamental assumption is that if we make repeated observations, then
-    the observations are independent and identically distributed random
-    variables.  That is, the observations $\x 1, \ldots, \x m$ are random
-    variables, and each is distributed according to the same underlying
-    probability distribution, $\x i \sim p$.  A basic objective is then to
-    discover, or to at least estimate, the underlying probability distribution
-    $p$ given an observed set of values for the $\x i$.
+    One fundamental assumption is that repeated observations are independent and
+    identically distributed random variables.  That is, the observations $\x 1,
+    \ldots, \x m$ are random variables, and each is distributed according to the
+    same underlying probability distribution, $\x i \sim p$.  Given an observed
+    set of values for the $\x i$, a basic objective is to estimate the
+    underlying probability distribution $p$.
 
-    Let each $\x i$ take a value from the state space $\xs$.  Because the
-    order of the observations does not matter, we can summarize the observations
-    with the counts
+    Let each $\x i$ take a value from the sample space $\xs$.  Throughout, we
+    assume that $\xs$ is a finite set.  Because the order of the observations
+    does not matter, we can summarize the observations with the counts
+    \begin{equation*}
+        u(x) = \pdel{\text{the number of $i$ for which $\x i = x$}}
+    \end{equation*}
+    for $x \in \xs$.  If the number of states $|\xs|$ is small relative to the
+    number of samples $m$, then the empirical distribution
     \begin{equation}
-        u(x) = \text{the number of $i$ for which $\x i = x$}
-        \label{eq:counts}
+        p_\emp(x) = \frac{u(x)}{m}
+        \label{eq:empirical}
     \end{equation}
-    for $x \in \xs$.  The number of states $|\xs|$ is small relative to the
-    number of samples $m$, then the easy-to-compute empirical distribution
-    \[
-        p_\emp(x) = \frac 1 m u(x)
-    \]
     is a useful estimate of the true distribution $\x i \sim p$.
 
-    It is sometimes the case, however, that $\xs$ contains a very large number
-    of states.  Without a correspondingly large number of samples, the empirical
-    distribution $p_\emp$ is inadequate.  Such state spaces arise naturally in a
-    variety of situations.  The state space for discrete multivariate data,
-    which consists of observations with multiple components, is a cartesian
-    product $\xs = \xs_1 \times \cdots \times \xs_k$ of several finite
-    collections of classes.  Each component space $\xs_i$ can correspond to
-    the assignment of a label to each observation.  If each variate has
-    approximately the same number of possible values, then the number of states
-    is exponential in the number of variates.  Another example of a large state
-    space is the space of rankings of $n$ items.  These appear in voting
-    scenarios.  If all $n$ items are ranked, then the state space may be viewed
-    as the symmetric group $\xs = S_n$ and there are $n!$ possible outcomes.
-    For the empirical distribution to produce a good estimate of the underlying
+    It is sometimes the case that $|\xs|$ is very large.  Without a
+    correspondingly large number of samples, the empirical distribution $p_\emp$
+    may not adequately capture the underlying distribution $p$.  Such sample
+    spaces arise naturally in a variety of situations.  The sample space for
+    discrete multivariate data, which consists of observations with multiple
+    components, is a cartesian product $\xs = \xs_1 \times \cdots \times \xs_k$
+    of several finite sets.  Each component space $\xs_i$ can correspond to the
+    assignment of some label to each observation.  For example, a person can
+    have an eye color, a hair color, a handedness, a gender, etc.  If each
+    variate has approximately the same number of possible values, then the
+    number of states is exponential in the number of variates.  Another example
+    of a large sample space is the space of rankings of $n$ items.  This could
+    occur if voters were asked to rank candidates in an election.  If all $n$
+    items are ranked, then the sample space has $n!$ possible outcomes.  For the
+    empirical distribution to produce a good estimate of the underlying
     distribution, a prohibitively large number of samples is required.
 
     In order to analyze data with a large number of states, it is often fruitful
-    to restrict the space of distributions under consideration, that is, to have
-    a statistical model.  In each of the examples introduced earlier, the state
-    space had some sort of combinatorial structure.  Indeed, combinatorial
-    processes easily produce large state spaces.  Our goal is to use the
-    structure of the underlying space of states in order to better analyze data.
+    to restrict which distributions we consider.  In each of the examples from
+    above, the sample space has some combinatorial structure.  Our goal is to
+    use the structure of the underlying space of states in order to better
+    analyze data.
 
     \begin{example}
-        The UCI database \ldots contains a large number of datasets used for the
-        evaluation of machine learning techniques.  The data set (cite) contains
-        Congressional voting records on a number of key issues.
+        The UCI database \citep{UCIData} contains a large number of data sets
+        used for the evaluation of machine learning techniques.  The
+        Congressional Voting Records data set contains Congressional voting
+        records on a number of key issues.
         \begin{figure}[H]
             \centering
             \begin{verbatim}
@@ -117,24 +114,24 @@
             5) democrat   y n y n n n y y y y n n n n y y
             \end{verbatim}
             \vspace{-1.5\baselineskip}
-            \caption{A few datapoints from \citep{VotingData}.}
+            \caption{A few points from the Congressional Voting Records
+            data set.}
         \end{figure}
         \noindent Ignoring missing values, e.g. where representatives did not
         vote, each variate has two possible values, either $\{\texttt{democrat},
         \texttt{republican}\}$ or $\{\texttt{yes}, \texttt{no}\}$.  Thus, the
-        state space may be written as $\xs = \{0, 1\}^7$, the set of length-7
-        binary strings.  As $|\xs| = 2^{17} = 131072$ is a large number which
-        could easily be made larger, some assumptions about potential
-        distributions are needed to make sense of the data.
+        sample space may be written as $\xs = \{0, 1\}^7$, the set binary
+        strings with 7 bits.  As $|\xs| = 2^{17} = 131072$ is a large number,
+        some assumptions about potential distributions are needed to make sense
+        of the data.
         \label{ex:voting}
     \end{example}
 
 
     \section{The Simplex and Statistical Models}
 
-    We take a relatively geometric view of statistical models.  This perspective
-    allows statistical problems to be attacked with a large range of useful
-    tools.
+    We take a geometric view of statistical models.  This perspective allows
+    statistical problems to be attacked with a large range of useful tools.
 
     A probability distribution on a finite set $\xs$ can be thought of as a
     real-valued function $p \in L(\xs)$ subject to the restrictions that
@@ -147,8 +144,7 @@
     
     \begin{definition} 
         \index{simplex}
-        The \emph{probability simplex} of dimension $N$ (also
-        called the \emph{standard simplex}) is the subset
+        The \emph{standard simplex} of dimension $N$ is the subset
         \[
             \Delta_N = 
             \left\{(p_1, \ldots, p_{N+1}) \in \R^{N+1} \vbar 
@@ -158,11 +154,6 @@
         or irrelevant, then we may write $\Delta$, omitting the subscript.
     \end{definition}
 
-    There is a one-to-one correspondence between probability distributions on
-    the set $\xs = \{x_1, \ldots, x_{N+1}\}$ and points in the simplex
-    $\Delta_N$, with which the probability $p(i)$ is equal to the value of the
-    coordinate $p_i$.  We therefore identify the two concepts with each other.
-
     The simplex is a generalization of an equilateral triangle.  Low-dimensional
     simplices are familiar shapes; $\Delta_0$ is a point, $\Delta_1$ is a line
     segment, $\Delta_2$ is a triangle, and $\Delta_3$ is a tetrahedron.
@@ -171,7 +162,11 @@
         \includegraphics[scale=1]{2-simplex.pdf}
         \caption{The 2-simplex.}
     \end{figure}
-    \noindent Because the space of all probability distributions is a geometric
+    There is a one-to-one correspondence between probability distributions on
+    the set $\xs = \{x_1, \ldots, x_{N+1}\}$ and points in the simplex
+    $\Delta_N$; the probability $p(i)$ is equal to the value of the coordinate
+    $p_i$.  We therefore identify the two concepts with each other.
+    Because the space of all probability distributions is a geometric
     object, it is easy to talk about specific families of probability
     distributions.
     \begin{definition}
@@ -181,76 +176,112 @@
     write $p_\theta$, with $\theta \in \Theta$, to denote a distribution from a
     parametrized model.
     \end{definition}
-    A zoo of statistical models is large and varied, and the selection of
-    appropriate models is a delicate question.
+    Many statistical models have been studied and employed for the analysis of
+    data, and the selection of an appropriate model is a delicate question.  In
+    Section~\ref{sec:linear-models} we introduce a family of models with
+    convenient properties.
 
-    \begin{example}[Binomial]
-    The distribution $\mathrm{Binom}(N, \lambda)$ models the number of heads
-    produced by $N$ `coin tosses', where $\lambda \in [0,1]$ is the probability
-    of a head on a single toss.  It is defined
+    In an ideal situation, there is a hypothesis for an underlying mechanism
+    producing observable results.  In that case, a particular choice of model is
+    easy to justify.
+
+    \begin{example}[Binomial model]
+    The distribution $\mathrm{Binom}(N, \alpha)$ models the number of heads
+    produced by $N$ independent `coin tosses', where $0 \le \alpha \le 1$ is
+    the probability that a single toss produces a head.  It is defined
     \[
-        p_\lambda(k) = {N \choose k} \lambda^k(1-\lambda)^{n-k}.
+        p_\alpha(k) = {N \choose k} \alpha^k(1-\alpha)^{n-k}.
     \]
-    for $k \in \{0, \ldots, N\}$.  The map $\lambda \mapsto p_\lambda$
+    for $k \in \{0, \ldots, N\}$.  The map $\alpha \mapsto p_\alpha$
     determines a parametrized statistical model.  The statistical model is a
     curve, i.e. a one-dimensional subset, of the simplex.  
 
-    Take $N=2$, which simulates two coin flips.  The three coordinates of a
-    point in the model measure the probabilities that zero, one, and two heads
-    will occur, respectively.
+    The model $\mathrm{Binom}(2, \alpha)$ simulates two coin flips.  The three
+    coordinates of a point in the model measure the probabilities that zero,
+    one, and two heads will occur, respectively.
     \begin{figure}[H]
         \centering
         \vspace*{-0.2cm}
         \scalebox{1}{ \includegraphics[scale=0.7]{images/binomial.pdf} }
         \vspace*{-0.5cm}
-        \caption{The binomial statistical model for $N=2$. Make this 3-D?}
+        \caption{The binomial model for $N=2$. Make this 3-D?}
         \label{fig:binomial}
     \end{figure}
-    \noindent As the parameter $\lambda$ varies over $[0,1]$, the statistical
+    \noindent As the parameter $\alpha$ varies over $[0,1]$, the statistical
     model traces out the curve 
     \[
-        \lambda \longmapsto \big((1-\lambda)^2, 2\lambda(1-\lambda), \lambda^2\big)
+        \alpha \longmapsto \big((1-\alpha)^2, 2\alpha(1-\alpha), \alpha^2\big)
     \]
     in the simplex $\Delta_2$ (see Figure~\ref{fig:binomial}).  
+
+    If we knew that a coin was being flipped twice, and did not know the odds of
+    the coin, then the model $\alpha \mapsto \mathrm{Binom}(N, \alpha)$ would be
+    an appropriate choice for analysis.
     \end{example}
 
     \begin{example}[Independence]
-        The independence model is often employed, partially because it is easy
-        to interpret.  For a distribution $p$ on $\xs = \xs_1 \times \cdots \times
-        \xs_k$, the variates $\xs_i$ are said to be independent if $p$ factors
-        as
+        The independence model on a sample space $\xs = \xs_1 \times \cdots
+        \times \xs_k$ assumes that each variate is independent.  For a
+        distribution $p$ on $\xs$, the variates are said to be independent if
+        $p$ factors as
         \[
-            p(x) = p_1(x_1) \cdots p_k(x_k)
+            p(x) = p_1(x) \cdots p_k(x)
+            \qquad
+            \text{where}
+            \qquad
+            p_i(x) = \sum_{\stackrel{y \in \xs}{x_i = y_i}} p(y)
         \]
-        where $x = (x_1, \ldots, x_k) \in \xs$ and each $p_i$ is a function only
-        of $\xs_i$.  The map 
+        for all $x = (x_1, \ldots, x_k) \in \xs$.  Each factor $p_i(x)$ is a
+        function only of the $i$th component $x_i$.  Despite this simplistic
+        assumption, the independence model is surprisingly effective in many
+        situations, e.g. for naive Bayes classifiers.  
+        
+        The map 
         \begin{align*}
         \Delta_{|\xs_1|-1} \times \cdots \Delta_{|\xs_k|-1} 
         &\to \Delta_{|\xs| - 1} \\
         (p_1, \ldots, p_k) &\mapsto p_1 \cdots p_k
         \end{align*}
-        gives a parametrization of the independence model in terms of its
-        component distributions.  Counting dimensions shows that the
-        independence model is very limiting.  The parameter space has dimension
-        $(|\xs_1| - 1) + \cdots + (|\xs_k| - 1)$ whereas the space of all
-        distributions on $\xs$ has dimension $|\xs_1| \cdots |\xs_k| - 1$.
+        gives a parametrization of the independence model.  Counting dimensions
+        indicates that the independence model imposes strict limitations on
+        potential distributions.  The parameter space has dimension
+        \[
+            \dim 
+            (\Delta_{|\xs_1|-1} \times \cdots \Delta_{|\xs_k|-1})
+            =
+            |\xs_1| + \cdots + |\xs_k| - k
+        \]
+        whereas the space of all distributions on $\xs$ has dimension 
+        \[
+            \dim(\Delta_{|\xs| - 1})
+            =
+            |\xs_1| \cdots |\xs_k| - 1.
+        \]
         If the variates are binary, as in Example~\ref{ex:voting}, then the
         model has dimension $k$ and the whole simplex has dimension $2^k - 1$.
+        
+        The independence model is employed in part because it is easy to
+        interpret.  In effect it states that the variates do not affect each
+        other.
         \label{ex:independence1}
     \end{example}
     
-\section{Maximum Likelihood and Model Complexity}
+\section{Likelihood and Model Complexity}
+    In the analysis of data, there is a tension between how well an explanation
+    fits the observed data, and how well such an explanation can be expected to
+    generalize to new data.  While we do not explore all nuances of this topic,
+    we do introduce a few fundamental concepts.
 
     One way to measure how well a distribution matches data is to ask the
-    question, ``How likely is the data, given the distribution?''  A model suits
-    the data if it contains distributions that align with the data.  A maximum
-    likelihood estimate quantifies the suitability of a model.
+    question, ``How likely is the data, given the distribution?''  A maximum
+    likelihood estimate quantifies whether a model contains distributions that
+    match well.
 
     Let $\ms = \{p_\theta : \theta \in \Theta\}$ be a parametrized statistical
-    model.  Suppose that some data $Z = \{z_1, \ldots, z_n\}$ are observed.  It
+    model.  Suppose that some data $Z = \{z_1, \ldots, z_m\}$ are observed.  It
     is generally assumed that the data has been drawn from independent and
-    identically distributed samples following some unknown true distribution
-    from $\ms$.
+    identically distributed samples following an unknown true distribution from
+    the model.from the model.
     
     \begin{definition}
     The \emph{likelihood function} of $\theta \in \Theta$ given the data $Z$ is
@@ -258,12 +289,13 @@
         L(\theta; Z) = \prod_{i=1}^n p_\theta(z_i).
     \]
     It is the probability that the observed data $Z$ would occur if the samples
-    followed $p_\theta$.  The \emph{log-likelihood function} is
+    followed $p_\theta$.  Oftentimes, the \emph{negative log-likelihood}
     \[
-        l(\theta; Z) = \log L(\theta; Z) = \sum_{i=1}^n \log p_\theta(z_i).
+        -l(\theta; Z) = -\log L(\theta; Z) = -\sum_{i=1}^n \log p_\theta(z_i).
     \]
-    The log-likelihood is useful because the contributions to $l(\theta; Z)$ from
-    the observations $z_i$ are additive.
+    is used in lieu of the likelihood.  The negative log-likelihood is useful
+    because the contributions to $l(\theta; Z)$ from the observations $z_i$ are
+    additive and each acts as a `penalty' or `loss'.
     \end{definition}
     \begin{definition}
     The \emph{maximum likelihood estimate} of the true parameter is the
@@ -271,30 +303,32 @@
     \[
         \theta_\mle = \argmax_{\theta \in \Theta} L(\theta; Z)
     \]
-    that maximizes the likelihood (or equivalently the log-likelihood) of the
-    data.  In some cases, we identify the parameter $\theta$ with the
-    distribution $p_\theta$ and use the term `maximum likelihood estimate' to
-    refer to the distribution $p_\mle \in \ms$ that maximizes the likelihood.
+    that maximizes the likelihood of the data, or that equivalently minimizes
+    the negative log-likelihood of the data.  In some cases, we identify the
+    parameter $\theta$ with the distribution $p_\theta$ and use the term
+    `maximum likelihood estimate' to refer to the distribution $p_\mle$ from the
+    model that maximizes the likelihood.
     \end{definition}
 
     \begin{note}
         The fact that a maximum likelihood estimate might not exist is tacitly
         ignored.  Indeed $\{L(\theta; Z) \mid \theta \in \Theta\}$ might be an
         open set, and the map $\theta \mapsto L(\theta; Z)$ might not be
-        surjective.  In applications to real data, it is often the case that a
+        surjective.  In applications with real data, it is often the case that a
         precise maximum likelihood estimate is not necessary, and that an
         approximate value is sufficient.
     \end{note}
 
-    The distribution $p_{\theta_\mle}$ from the maximum likelihood estimate is
-    the best one possible from the model given the data.  The size of the model
-    determines how good of a distribution is possible.
+    The distribution $p_\mle$ from the maximum likelihood estimate is the best
+    one possible from the model.  Notice that is $\ms \subset \ns$ are two
+    statistical models, then the maximal likelihood from $\ms$ is less than or
+    equal to that from $\ns$.  Thus `size' of the model determines how good of a
+    distribution is possible.
     \begin{example}
-        Suppose that the model does not restrict distributions at all, that is,
+        Suppose that the model does not restrict distributions at all, i.e.
         that the model is the whole simplex.  Then the maximum likelihood
-        estimate is the empirical distribution $p_\emp(x) = u(x) / \sum_{u \in
-        \xs} u(y)$, where as before $u: \xs \to \N$ is the data summarized as
-        counts.
+        estimate is the empirical distribution $p_\emp(x) = u(x) / \sum_{y \in
+        \xs} u(y)$ as in \eqref{eq:empirical}.
     \end{example}
     \begin{example}[Independence]
         Recall the independence model from Example~\ref{ex:independence1}.  The
@@ -308,93 +342,124 @@
         estimate of each variate separately with its empirical distribution, and
         take the product distribution.
     \end{example}
-    There is a trade-off between model complexity and goodness of fit.  There
-    are two common methods to reduce model complexity.
+
+    A larger model is deemed to contain more `complex' distributions.  The
+    trade-off is that a larger model allows for probability distributions that
+    fit the observed data better, but that might not generalize as well to
+    subsequent observations.  This trade-off between model complexity and
+    predictive power can be approached in a number of ways, and is explored in
+    standard literature.  Chapter 7 of \citep{EOSL} is one reference.  
+    
+    There are at least two common methods to limit model complexity.
     \begin{itemize}
     \item We can require that the estimated distribution $p$ is contained within
     some model $\ms \subset \Delta$.
-    \item Instead of maximizing the log-likelihood $l(p)$, we can instead
-    maximize the log-likelihood with a penalty $l(p) - \pi(p)$, where $\pi$ is a
-    function in some way measures how complex $p$ is.
+    \item We can minimize $-l(p) + \pi(p)$, the negative log-likelihood with an
+    additional penalty term measuring the complexity of $p$.
     \end{itemize}
-    
-    The trade-off is that a larger model or a weaker complexity penalty allows
-    for probability distributions that fit the observed better, but that might
-    not generalize well to more data from the same distribution.  Two complexity
-    penalties are the AIC and BIC, defined
+    Two criteria with complexity penalties are the Akaike information criterion
+    and the Bayesian information criterion, defined
     \begin{align*}
-        \mathrm{AIC} & \\
-        \mathrm{BIC} & 
+        \mathrm{AIC} &= 2\pdel*{-l(p) + d} \\
+        \mathrm{BIC} &= 2\pdel*{-l(p) + \frac{d \log(m)}{2}}
     \end{align*}
-    These have different motivations, which we will not cover here.
+    where $d$ is the dimension of the parameter space $\Theta$ and $m$ is the
+    number of samples.  These have different motivations, which are described in
+    the above reference.
 
 \section{Linear and Log-Linear Models}
+    \label{sec:linear-models}
     
     The selection of distributions can be treated as a problem in function
-    estimation.  That is, the data provides an empirical distribution $p_\emp
-    \in L(X)$, and we wish to find another function $\hat p \in L(X)$ that
-    approximates $p_\emp$ well, subject to certain restrictions.  
+    estimation.  From the data we construct the empirical distribution \mbox{$p_\emp
+    \in L(X)$}, and we wish to find another function $p \in L(X)$ that
+    approximates $p_\emp$ subject to some set of restrictions.  
     
-    The first thing that comes to mind is to use the linear structure of $L(X)$.
-    One could expand $p_\emp$ in terms of some basis $\{v_1, \ldots, v_N$ of
-    $L(X)$, $p_\emp = \sum_{i=1}^N \lambda_i$.  Then, one could select only some
-    terms from the expansion to make up $\hat p$, either picking the largest
-    terms, or, if the basis has some natural ordering, simply truncating the
-    series.
+    The structure of $L(X)$ as a linear space suggests one method of
+    approximation.  One can expand $p_\emp$ in terms of a basis $B = \{v_1,
+    \ldots, v_n\}$ of $L(X)$, $p_\emp = \sum_{i=1}^n \lambda_i v_i$.  Any subset
+    $C \subset B$ of the basis elements yields an approximation $\sum_{v_i \in
+    C} \lambda_i v_i$ of $p_\emp$ from the subspace spanned by $C$.  One can
+    select the terms with the largest coefficients $\lambda_i$, or, if the basis
+    has some natural ordering, can simply truncate the series.
+
+    This method of approximation has at least one drawback, namely that negative
+    probabilities are possible.  Dealing instead with log-probabilities is often
+    fruitful.  In fact, log-linear models, i.e. discrete exponential families,
+    are especially prevalent in the analysis of discrete multivariate data.
+    Chapter 18 of \citep{AOS} is a good reference.
+    \begin{definition}
+        A \emph{log-linear} model $\ms_{V,h}$ is a statistical model of the form
+        \[
+            \ms_{V,h} = \cdel[\big]{p \in \Delta_{n-1} \:: \log p = (\log p_1, \ldots,
+            \log p_n) \in V + h}
+        \]
+        where $h \in \R^n$, $V$ is a linear subspace of $\R^n$, and $V + h$ is
+        an affine subspace.
+    \end{definition}
+
+    The usual definition of an exponential family (which need not be over a
+    finite sample space) is as follows.
+    \begin{definition}
+        An \emph{exponential family} over a sample space $\xs$ parametrized by
+        $\Theta$ contains distributions of the form
+        \[
+            p_\theta(x) = 
+            \frac 1 {Z(\theta)}
+            \exp\pdel*{
+                \displaystyle \sum_{i=1}^d \eta_i(\theta)T_i(x) + h(x)
+            }
+        \]
+        where $\eta : \Theta \to \R^d$, $T:\xs \to \R^d$, and $h: \xs \to \R$
+        are known functions, and $Z:\Theta \to \R$ is a normalizing constant
+        known as the partition function.
+    \end{definition}
+    An exponential family is a log-linear model when $\xs$ is finite and $\eta$
+    is the identity map $\R^d \to \R^d$, as $p_\theta$ is constrained to lie in
+    the affine space
+    \[
+        \mathrm{span}\cdel*{
+            (T_i(x_1), \ldots, T_i(x_n)) \:: i \in \{1, \ldots, d\}
+        } + h
+    \]
+    where $h$ is interpreted as a vector in $\R^n$.  
+
+    \begin{example}[Independence]
+        The independence model with strictly positive probabilities is a
+        log-linear model.  We compute this explicitly for the case where the
+        sample space is $\xs = \{0, 1\}^2$ and we wish the two bits to be
+        independent.  One can verify that a distribution $p$ on $\xs$ is in the
+        independence model if and only if $\log p$ is in the row span of the
+        matrix
+        \[
+            \kbordermatrix{
+                & 00 & 01 & 10 & 11 \\
+                &  1 &  1 &  0 &  0 \\
+                &  0 &  0 &  1 &  1 \\
+                &  1 &  0 &  1 &  0 \\
+                &  0 &  1 &  0 &  1
+            }.
+        \]
+        Notice that the matrix has rank 3, and that the independence model is a
+        subset of the full simplex.
+    \end{example}
+
+
+\section{Sparsity, Regularization, and the Log-Linear Lasso}
 
     Selecting a distribution that lies in some small subspace (out of some
     pre-selected collection of subspaces) gives what is known as a `sparse'
-    representation.  In a linear regression scenario \ldots.
-    In what they  call the ``bet on sparsity'', \citep{EOSL} explain the
-    performance of spare techniques with the heuristic:
+    representation.  Useful techniques have been developed for linear
+    regression, where one wishes to find a relation $y = Ax$, where $x \in
+    \R^N$, $y \in \R$, and $A$ is a linear transformation.  In the linear
+    regression scenario, a sparse solution maps some of the coordinates of
+    $\R^N$ to zero.  Methods that encourage sparsity have been found, in
+    practice, to perform well.  In what they  call the ``bet on sparsity'',
+    \citep{EOSL} explain the performance of spare techniques with the heuristic:
     \begin{quote}
         Use a procedure that does well in sparse problems, since no procedure
         does well in dense problems.
     \end{quote}
-
-    Approximating $p_\emp \in L(X)$ by basis functions has a problem, however,
-    because negative probabilities are possible.  For this and other reasons,
-    dealing instead with log-probabilities is fruitful.  In fact, log-linear
-    models (the discrete relatives of exponential families) are especially
-    prevalent in the analysis of discrete data.
-    \begin{definition}
-        A \emph{log-linear} model $\ms_V$ is a statistical model of the form
-        \[
-            \ms_V = \cdel[\big]{p \in \Delta_{N-1} \:: \log p = (\log p_1, \ldots,
-            \log p_N) \in V}
-        \]
-        where $V$ is a linear subspace of $\R^N$.
-    \end{definition}
-
-    \begin{definition}
-        A \emph{sufficient statistic} of a parametrized model is a linear
-        function $T$ of the data $u : \xs \to \N$ such that the log-likelihood
-        factors as
-        \[
-            l(u \mid \theta) = f(T(u), \theta) + g(u)
-        \]
-        that is, that in order to estimate the value of the parameter, we do not
-        need the data, only the sufficient statistic.
-    \end{definition}
-
-    The essential point is that
-    \[
-        l(z \mid p) = \log p(z_1) + \cdots + p(z_m) 
-    \]
-    so log probabilities are additive with respect to counts of observations.
-    If we want to use linear statistics on our data, then we must consider log
-    probabilities. (rewrite)
-
-    (Show that log-linear models have sufficient statistics.)
-
-    \begin{example}[Independence]
-        The independence model is a log-linear model
-    \end{example}
-
-    Thus linear subspaces of the log-probabilities are a natural choice for
-    models.
-
-\section{The Log-Linear Lasso}
 
     The inspiration for many useful techniques comes from linear regression.
     That is, in a multivariate situation $\xs = \xs_1 \times \cdots \times
@@ -441,11 +506,25 @@
 
 
 
-
-
-\chapter{Structured State Spaces}
+\chapter{Structured Sample Spaces}
 
 \section{Invariance Principles}
+    
+    The array of possible models and regularization procedures is large enough
+    that some guiding principles are sorely needed.  In many cases, inherent
+    symmetries of the sample space are such a guide.  We shall say that we wish
+    our statistical procedures to be invariant under reparametrization.  That
+    is, if there is a permutation $\sigma: \xs \to \xs$ of the sample space that
+    preserves the structure of the sample space, then we want the result of the
+    statistical procedure performed on the transformed $\sigma(\xs)$ to be the
+    same as if it were performed on $\xs$.
+
+    Under the log-linear framework described in Section~\ref{sec:linear-models},
+    the permutation $\sigma$ induces a linear automorphism of $L(\xs)$.  If some
+    data $\{z_1, \ldots, z_1\}$
+    if 
+
+    Even with the rest
 
 \section{Homogeneous Spaces}
     Both the counts $u: \xs \to \N$ and the log-probabilities $\log p$ lie in
@@ -904,6 +983,31 @@
     the variables have binary values and all interactions are pairwise.
     Following the machine learning literature, we refer to binary-valued random
     variables and their corresponding vertices as `units'.
+
+\section{Sufficient Statistic}
+    \begin{definition}
+        A \emph{sufficient statistic} of a parametrized model is a linear
+        function $T$ of the data $u : \xs \to \N$ such that the log-likelihood
+        factors as
+        \[
+            l(\theta; u) = f(T(u), \theta) + g(u)
+        \]
+        that is, that in order to estimate the value of the parameter, we do not
+        need the data, only the sufficient statistic.
+    \end{definition}
+
+    \begin{theorem}[Pitman-Koopman-Darmois]
+        Exponential families are the `largest' possible with \ldots
+    \end{theorem}
+
+    The essential point is that
+    \[
+        l(p; z) = \log p(z_1) + \cdots + \log p(z_m) 
+    \]
+    so log-probabilities are additive with respect to counts of observations.
+    If we want to summarize our data through a linear transformation of the
+    counts, then we must work with log-probabilities.  Thus linear subspaces of
+    the log-probabilities are a natural choice for models.
 
 
 \backmatter
