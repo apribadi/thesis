@@ -23,7 +23,7 @@
 \numberwithin{equation}{chapter}
 \numberwithin{thmcounter}{chapter}
 
-\title{Log-Linear Models on Homogeneous Spaces}
+\title{Algebraic Methods for Log-Linear Models}
 \author{Aaron Pribadi}
 \thesisyear{2012}
 \advisor{Michael Orrison}
@@ -38,8 +38,6 @@
 \tableofcontents
 
 
-
-
 \chapter{Abstract}
     This will be an abstract.
 
@@ -48,14 +46,58 @@
 
 \mainmatter
 
-\chapter{Discrete Models and Linear Spaces}
+\chapter{Introduction}
+
+    Discrete data allows us to model the world in almost the simplest way
+    possible.  Observations then label things and put them into categories:
+    ``This ice cream is green and has sprinkles.''  These procedures appear on
+    the surface to be very simple, but the simplicity conceals a deep well of
+    difficult problems of intensely practical importance.  The flood of data
+    that we cannot yet use as well as we would like increases every year.
+    Problems surrounding
+    \begin{itemize}\noparspace
+    \item genomic sequences,
+    \item image recognition,
+    \item natural language processing
+    \item voting data,
+    \item product recommendation,
+    \end{itemize}
+    and so on are active areas of research driven by real-world concerns.
+
+    Questions arising from the analysis of discrete data pose many challenges,
+    but at the same time offer rich mathematical structures.  There are two
+    complementary hopes.  The first is that ideas from `pure' mathematics,
+    particularly geometry and algebra, can offer guiding principles and
+    effective techniques for the analysis of data.  The second is that practical
+    problems will in turn suggest avenues for further exploration of intrinsic
+    interest.
+
+    We take a look at log-linear models, a particular class of models that
+    interact particularly well with ideas from geometry and algebra.  While
+    these models make simplistic assumptions, many standard techniques from the
+    analysis of discrete data already fall under its umbrella.  As the name
+    suggests, log-linear models are in some sense linear.  A linear structure,
+    as is often the case, is a shortcut to tractability.  Furthermore, linearity
+    allows concerns about symmetry and invariance to be more readily exploited.
+    Within this framework, ideas from representation theory and even algebraic
+    geometry can be brought to bear on questions of model selection.
+
+    Blah blah
+
+\chapter{Discrete Models}
 
     \section{Discrete Data}
 
-    Throughout, we are primarily concerned with the analysis of discrete data,
-    for which each observation has only finitely many possible outcomes.
+    A random variable (from an elementary standpoint) is either 
+    \begin{itemize}\noparspace
+    \item discrete, when its sample space is countable, or
+    \item continuous, when its sample space is a subset of $\R^n$.
+    \end{itemize}
+    The first case is the one that we consider.  In particular, we usually take
+    the relevant sample spaces to be finite.  Because we can then deal with
+    finite-dimensional spaces, this simplifies many ideas.
 
-    One fundamental assumption is that repeated observations are independent and
+    Another fundamental assumption is that repeated observations are independent and
     identically distributed random variables.  That is, the observations $\x 1,
     \ldots, \x m$ are random variables, and each is distributed according to the
     same underlying probability distribution, $\x i \sim p$.  Given an observed
@@ -79,29 +121,45 @@
     It is sometimes the case that $|\xs|$ is very large.  Without a
     correspondingly large number of samples, the empirical distribution $p_\emp$
     may not adequately capture the underlying distribution $p$.  Such sample
-    spaces arise naturally in a variety of situations.  The sample space for
-    discrete multivariate data, which consists of observations with multiple
-    components, is a cartesian product $\xs = \xs_1 \times \cdots \times \xs_k$
-    of several finite sets.  Each component space $\xs_i$ can correspond to the
-    assignment of some label to each observation.  For example, a person can
-    have an eye color, a hair color, a handedness, a gender, etc.  If each
-    variate has approximately the same number of possible values, then the
-    number of states is exponential in the number of variates.  Another example
-    of a large sample space is the space of rankings of $n$ items.  This could
-    occur if voters were asked to rank candidates in an election.  If all $n$
-    items are ranked, then the sample space has $n!$ possible outcomes.  For the
-    empirical distribution to produce a good estimate of the underlying
+    spaces arise naturally in a variety of situations, especially when
+    combinatorial processes are involved.
+    \begin{itemize}
+    \item Multivariate data occurs when multiple things are observed at once.
+    The sample space is a cartesian product
+    \[
+        \xs = \xs_1 \times \cdots \times \xs_k
+    \]
+    of several finite sets.  The component space $\xs_i$ for each variate can be
+    the assignment of a label to each observation.  For example, a person can
+    have an eye color, a handedness, a gender, a political affiliation, and many
+    more characteristics.
+    
+    If each variate has approximately the same number of possible values, then
+    the size of the sample space is exponential in the number of variates.  
+
+    An excellent and comprehensive reference for the statistical analysis of
+    multivariate data is the book by \citet{DMA}.
+
+    \item Group-valued data occurs when discussing the arrangements of a system.
+    For example, voters in an election could be asked to rank $n$ candidates.
+    The sample space is then the symmetric group $\xs = S_n$.  If there is no
+    special base point of the sample space to call the identity of the group,
+    another choice is to consider the sample space as a principal homogeneous
+    space.
+
+    Clearly, it is rather easy to construct simple examples with large numbers
+    of possible outcomes, e.g. $n!$ for the symmetric group.
+    \end{itemize}
+    For the empirical distribution to produce a good estimate of the underlying
     distribution, a prohibitively large number of samples is required.
 
     In order to analyze data with a large number of states, it is often fruitful
-    to restrict which distributions we consider.  In each of the examples from
-    above, the sample space has some combinatorial structure.  Our goal is to
-    use the structure of the underlying space of states in order to better
-    analyze data.
+    to restrict which distributions we consider.  One goal is to use the
+    structure of the underlying space of states in order to better analyze data.
 
-    \begin{example}
+    \begin{example}[Binary Voting]
         The UCI database \citep{UCIData} contains a large number of data sets
-        used for the evaluation of machine learning techniques.  The
+        useful for the evaluation of machine learning techniques.  The
         Congressional Voting Records data set contains Congressional voting
         records on a number of key issues.
         \begin{figure}[H]
@@ -124,14 +182,18 @@
         strings with 7 bits.  As $|\xs| = 2^{17} = 131072$ is a large number,
         some assumptions about potential distributions are needed to make sense
         of the data.
-        \label{ex:voting}
+        \label{ex:binary-voting}
     \end{example}
 
 
     \section{The Simplex and Statistical Models}
 
-    We take a geometric view of statistical models.  This perspective allows
-    statistical problems to be attacked with a large range of useful tools.
+    We take a geometric view of statistical models.  The formulation of
+    statistical objects in terms borrowed from other parts of mathematics allows
+    statistical problems to be attacked with a large range of useful tools.  The
+    adoption of this perspective is in large part influenced by the lecture
+    notes by \citet{DSS08}, which summarizes recent progress in using the tools
+    of algebraic geometry for statistics.
 
     A probability distribution on a finite set $\xs$ can be thought of as a
     real-valued function $p \in L(\xs)$ subject to the restrictions that
@@ -144,31 +206,34 @@
     
     \begin{definition} 
         \index{simplex}
-        The \emph{standard simplex} of dimension $N$ is the subset
+        The \emph{standard simplex} of dimension $n$ is the subset
         \[
-            \Delta_N = 
-            \left\{(p_1, \ldots, p_{N+1}) \in \R^{N+1} \vbar 
-            \sum_{i=1}^{N+1} p_i= 1, p_i \ge 0 \right\} 
+            \Delta_n = 
+            \left\{(p_1, \ldots, p_{n+1}) \in \R^{n+1} \vbar 
+            \sum_{i=1}^{n+1} p_i= 1, p_i \ge 0 \right\} 
         \]
-        of $\R^{N+1}$.  If the appropriate dimension is either clear in context
+        of $\R^{n+1}$.  If the appropriate dimension is either clear in context
         or irrelevant, then we may write $\Delta$, omitting the subscript.
     \end{definition}
 
     The simplex is a generalization of an equilateral triangle.  Low-dimensional
     simplices are familiar shapes; $\Delta_0$ is a point, $\Delta_1$ is a line
     segment, $\Delta_2$ is a triangle, and $\Delta_3$ is a tetrahedron.
+
     \begin{figure}[H]
         \centering
         \includegraphics[scale=1]{2-simplex.pdf}
         \caption{The 2-simplex.}
     \end{figure}
+
     There is a one-to-one correspondence between probability distributions on
-    the set $\xs = \{x_1, \ldots, x_{N+1}\}$ and points in the simplex
-    $\Delta_N$; the probability $p(i)$ is equal to the value of the coordinate
+    the set $\xs = \{x_1, \ldots, x_{n+1}\}$ and points in the simplex
+    $\Delta_n$; the probability $p(i)$ is equal to the value of the coordinate
     $p_i$.  We therefore identify the two concepts with each other.
     Because the space of all probability distributions is a geometric
     object, it is easy to talk about specific families of probability
     distributions.
+
     \begin{definition}
     A \emph{statistical model} is a subset $\ms \subset \Delta$ of the
     probability simplex.  A \emph{parametrized model} $\ms$ with parameter space
@@ -176,50 +241,55 @@
     write $p_\theta$, with $\theta \in \Theta$, to denote a distribution from a
     parametrized model.
     \end{definition}
+
     Many statistical models have been studied and employed for the analysis of
     data, and the selection of an appropriate model is a delicate question.  In
     Section~\ref{sec:linear-models} we introduce a family of models with
     convenient properties.
 
     In an ideal situation, there is a hypothesis for an underlying mechanism
-    producing observable results.  In that case, a particular choice of model is
-    easy to justify.
+    producing the observable results.  In that case, a particular choice of
+    model is easy to justify.
 
-    \begin{example}[Binomial model]
-    The distribution $\mathrm{Binom}(N, \alpha)$ models the number of heads
-    produced by $N$ independent `coin tosses', where $0 \le \alpha \le 1$ is
-    the probability that a single toss produces a head.  It is defined
-    \[
-        p_\alpha(k) = {N \choose k} \alpha^k(1-\alpha)^{n-k}.
-    \]
-    for $k \in \{0, \ldots, N\}$.  The map $\alpha \mapsto p_\alpha$
-    determines a parametrized statistical model.  The statistical model is a
-    curve, i.e. a one-dimensional subset, of the simplex.  
+    \begin{example}[Binomial Model]
 
-    The model $\mathrm{Binom}(2, \alpha)$ simulates two coin flips.  The three
-    coordinates of a point in the model measure the probabilities that zero,
-    one, and two heads will occur, respectively.
-    \begin{figure}[H]
-        \centering
-        \vspace*{-0.2cm}
-        \scalebox{1}{ \includegraphics[scale=0.7]{images/binomial.pdf} }
-        \vspace*{-0.5cm}
-        \caption{The binomial model for $N=2$. Make this 3-D?}
-        \label{fig:binomial}
-    \end{figure}
-    \noindent As the parameter $\alpha$ varies over $[0,1]$, the statistical
-    model traces out the curve 
-    \[
-        \alpha \longmapsto \big((1-\alpha)^2, 2\alpha(1-\alpha), \alpha^2\big)
-    \]
-    in the simplex $\Delta_2$ (see Figure~\ref{fig:binomial}).  
+        The distribution $\mathrm{Binom}(N, \alpha)$ models the number of heads
+        produced by $N$ independent `coin tosses', where \mbox{$0 \le \alpha \le
+        1$} is the probability that a single toss produces a head.  It is
+        defined by the probability density function
+        \[
+            p_\alpha(k) = {N \choose k} \alpha^k(1-\alpha)^{n-k}.
+        \]
+        for $k \in \{0, \ldots, N\}$.  The map $\alpha \mapsto p_\alpha$
+        determines a parametrized statistical model.  The statistical model is a
+        curve, i.e. a one-dimensional subset of the simplex.  
 
-    If we knew that a coin was being flipped twice, and did not know the odds of
-    the coin, then the model $\alpha \mapsto \mathrm{Binom}(N, \alpha)$ would be
-    an appropriate choice for analysis.
+        The model $\mathrm{Binom}(2, \alpha)$ simulates two coin flips.  The
+        three coordinates of a point in the model measure the probabilities that
+        zero, one, and two heads will occur, respectively.
+
+        \begin{figure}[H]
+            \centering
+            \vspace*{-0.2cm}
+            \scalebox{1}{ \includegraphics[scale=0.7]{images/binomial.pdf} }
+            \vspace*{-0.5cm}
+            \caption{The binomial model for $N=2$. Make this 3-D?}
+            \label{fig:binomial}
+        \end{figure}
+
+        \noindent As the parameter $\alpha$ varies over $[0,1]$, the statistical
+        model traces out the curve 
+        \[
+            \alpha \longmapsto \big((1-\alpha)^2, 2\alpha(1-\alpha), \alpha^2\big)
+        \]
+        in the simplex $\Delta_2$ (see Figure~\ref{fig:binomial}).  
+
+        If we knew that a coin was being flipped twice and did not know the
+        odds of the coin, then the model $\alpha \mapsto \mathrm{Binom}(N,
+        \alpha)$ would be an appropriate choice for the situation.
     \end{example}
 
-    \begin{example}[Independence]
+    \begin{example}[Multivariate Independence]
         The independence model on a sample space $\xs = \xs_1 \times \cdots
         \times \xs_k$ assumes that each variate is independent.  For a
         distribution $p$ on $\xs$, the variates are said to be independent if
@@ -229,10 +299,10 @@
             \qquad
             \text{where}
             \qquad
-            p_i(x) = \sum_{\stackrel{y \in \xs}{x_i = y_i}} p(y)
+            p_i(x) = \sum_{y_i = x_i} p(y) % \stackrel{y \in \xs}{x_i = y_i}} p(y)
         \]
         for all $x = (x_1, \ldots, x_k) \in \xs$.  Each factor $p_i(x)$ is a
-        function only of the $i$th component $x_i$.  Despite this simplistic
+        function only of the $i$th component of $x$.  Despite this simplistic
         assumption, the independence model is surprisingly effective in many
         situations, e.g. for naive Bayes classifiers.  
         
@@ -242,9 +312,10 @@
         &\to \Delta_{|\xs| - 1} \\
         (p_1, \ldots, p_k) &\mapsto p_1 \cdots p_k
         \end{align*}
-        gives a parametrization of the independence model.  Counting dimensions
-        indicates that the independence model imposes strict limitations on
-        potential distributions.  The parameter space has dimension
+        gives a one-to-one parametrization of the independence model.  Counting
+        dimensions indicates that the independence model imposes strict
+        limitations on potential distributions.  The parameter space has
+        dimension
         \[
             \dim 
             (\Delta_{|\xs_1|-1} \times \cdots \Delta_{|\xs_k|-1})
@@ -257,20 +328,17 @@
             =
             |\xs_1| \cdots |\xs_k| - 1.
         \]
-        If the variates are binary, as in Example~\ref{ex:voting}, then the
+        If the variates are binary, as in Example~\ref{ex:binary-voting}, then the
         model has dimension $k$ and the whole simplex has dimension $2^k - 1$.
-        
-        The independence model is employed in part because it is easy to
-        interpret.  In effect it states that the variates do not affect each
-        other.
+        The latter grows much more rapidly with increasing $k$ than the former.
         \label{ex:independence1}
     \end{example}
     
 \section{Likelihood and Model Complexity}
     In the analysis of data, there is a tension between how well an explanation
     fits the observed data, and how well such an explanation can be expected to
-    generalize to new data.  While we do not explore all nuances of this topic,
-    we do introduce a few fundamental concepts.
+    generalize to new data.  While we do not explore all nuances of this
+    trade-off, we do introduce a few fundamental concepts.
 
     One way to measure how well a distribution matches data is to ask the
     question, ``How likely is the data, given the distribution?''  A maximum
@@ -290,11 +358,12 @@
     \]
     It is the probability that the observed data $Z$ would occur if the samples
     followed $p_\theta$.  Oftentimes, the \emph{negative log-likelihood}
-    \[
+    \begin{equation}
         -l(\theta; Z) = -\log L(\theta; Z) = -\sum_{i=1}^n \log p_\theta(z_i).
-    \]
+        \label{eq:negloglik}
+    \end{equation}
     is used in lieu of the likelihood.  The negative log-likelihood is useful
-    because the contributions to $l(\theta; Z)$ from the observations $z_i$ are
+    because the contributions to $-l(\theta; Z)$ from the observations $z_i$ are
     additive and each acts as a `penalty' or `loss'.
     \end{definition}
     \begin{definition}
@@ -303,34 +372,36 @@
     \[
         \theta_\mle = \argmax_{\theta \in \Theta} L(\theta; Z)
     \]
-    that maximizes the likelihood of the data, or that equivalently minimizes
+    that maximizes the likelihood of the data, or equivalently that minimizes
     the negative log-likelihood of the data.  In some cases, we identify the
-    parameter $\theta$ with the distribution $p_\theta$ and use the term
-    `maximum likelihood estimate' to refer to the distribution $p_\mle$ from the
-    model that maximizes the likelihood.
+    parameter $\theta$ with the distribution $p_\theta$. The term `maximum
+    likelihood estimate' then refers to the distribution $p_\mle$ that maximizes
+    the likelihood, given a choice of model.
     \end{definition}
 
     \begin{note}
-        The fact that a maximum likelihood estimate might not exist is tacitly
-        ignored.  Indeed $\{L(\theta; Z) \mid \theta \in \Theta\}$ might be an
-        open set, and the map $\theta \mapsto L(\theta; Z)$ might not be
-        surjective.  In applications with real data, it is often the case that a
-        precise maximum likelihood estimate is not necessary, and that an
-        approximate value is sufficient.
+        The fact that a maximum likelihood estimate might not exist or might not
+        be unique is tacitly ignored.  Indeed $\{L(\theta; Z) \mid \theta \in
+        \Theta\}$ might be an open set, and the map $\theta \mapsto L(\theta;
+        Z)$ might not be surjective.  In applications with real data, it is
+        often the case that a precise maximum likelihood estimate is not
+        necessary, and that an approximate value is sufficient.
     \end{note}
 
     The distribution $p_\mle$ from the maximum likelihood estimate is the best
-    one possible from the model.  Notice that is $\ms \subset \ns$ are two
-    statistical models, then the maximal likelihood from $\ms$ is less than or
-    equal to that from $\ns$.  Thus `size' of the model determines how good of a
-    distribution is possible.
+    one possible from the model.  Notice that if $\ms \subset \ns$ are two
+    nested statistical models, then the maximal likelihood from $\ms$ is less
+    than or equal to that from $\ns$.  Thus the size of the model determines how
+    good of a distribution is possible.
+
     \begin{example}
         Suppose that the model does not restrict distributions at all, i.e.
         that the model is the whole simplex.  Then the maximum likelihood
-        estimate is the empirical distribution $p_\emp(x) = u(x) / \sum_{y \in
-        \xs} u(y)$ as in \eqref{eq:empirical}.
+        estimate is the empirical distribution $p_\emp$ as in
+        \eqref{eq:empirical}.
     \end{example}
-    \begin{example}[Independence]
+
+    \begin{example}[Multivariate Independence]
         Recall the independence model from Example~\ref{ex:independence1}.  The
         maximum likelihood estimate for the independence model is
         \[
@@ -348,7 +419,8 @@
     fit the observed data better, but that might not generalize as well to
     subsequent observations.  This trade-off between model complexity and
     predictive power can be approached in a number of ways, and is explored in
-    standard literature.  Chapter 7 of \citep{EOSL} is one reference.  
+    the standard literature.  Chapter 7 of the book \citet{EOSL} is one
+    reference.  
     
     There are at least two common methods to limit model complexity.
     \begin{itemize}
@@ -360,14 +432,15 @@
     Two criteria with complexity penalties are the Akaike information criterion
     and the Bayesian information criterion, defined
     \begin{align*}
-        \mathrm{AIC} &= 2\pdel*{-l(p) + d} \\
-        \mathrm{BIC} &= 2\pdel*{-l(p) + \frac{d \log(m)}{2}}
+        \mathrm{AIC} &= -2\,l(p_\mle) + 2d \\
+        \mathrm{BIC} &= -2\,l(p_\mle) + (\log m) d
     \end{align*}
-    where $d$ is the dimension of the parameter space $\Theta$ and $m$ is the
-    number of samples.  These have different motivations, which are described in
-    the above reference.
+    where $-l(p_\mle)$ is the log-likelihood of the maximum likelihood estimate
+    as in \eqref{eq:negloglik}, $d$ is the dimension of the parameter space
+    $\Theta$, and $m$ is the number of samples.  These two criteria have
+    different motivations, which are described in the above reference.
 
-\section{Linear and Log-Linear Models}
+\section{Log-Linear Models}
     \label{sec:linear-models}
     
     The selection of distributions can be treated as a problem in function
@@ -387,7 +460,6 @@
     probabilities are possible.  Dealing instead with log-probabilities is often
     fruitful.  In fact, log-linear models, i.e. discrete exponential families,
     are especially prevalent in the analysis of discrete multivariate data.
-    Chapter 18 of \citep{AOS} is a good reference.
     \begin{definition}
         A \emph{log-linear} model $\ms_{V,h}$ is a statistical model of the form
         \[
@@ -424,7 +496,7 @@
     \]
     where $h$ is interpreted as a vector in $\R^n$.  
 
-    \begin{example}[Independence]
+    \begin{example}[Binary Multivariate Independence]
         The independence model with strictly positive probabilities is a
         log-linear model.  We compute this explicitly for the case where the
         sample space is $\xs = \{0, 1\}^2$ and we wish the two bits to be
@@ -440,99 +512,141 @@
                 &  0 &  1 &  0 &  1
             }.
         \]
-        Notice that the matrix has rank 3, and that the independence model is a
-        subset of the full simplex.
+        Notice that the matrix has rank 3, so that the independence model is a
+        proper subset of the full simplex.
     \end{example}
 
+\section{Sparsity and Regularization}
 
-\section{Sparsity, Regularization, and the Log-Linear Lasso}
+    Why are we so keen on cutting down the number of dimensions?  The reason,
+    which arises in optimization and statistics, is colorfully termed the \emph{curse
+    of dimensionality}.  It is easiest to illustrate problem in another closely
+    related setting.
 
-    Selecting a distribution that lies in some small subspace (out of some
-    pre-selected collection of subspaces) gives what is known as a `sparse'
-    representation.  Useful techniques have been developed for linear
-    regression, where one wishes to find a relation $y = Ax$, where $x \in
-    \R^N$, $y \in \R$, and $A$ is a linear transformation.  In the linear
-    regression scenario, a sparse solution maps some of the coordinates of
-    $\R^N$ to zero.  Methods that encourage sparsity have been found, in
-    practice, to perform well.  In what they  call the ``bet on sparsity'',
-    \citep{EOSL} explain the performance of spare techniques with the heuristic:
+    \begin{example}[Sampling and the Curse of Dimensionality]
+        We describe a classification problem with $p$ real-valued features.
+        Concretely, say that we want to label points in the $p$-dimensional cube
+        $[0, 1]^p$ either \texttt{blue} or \texttt{orange}.  We can sample some
+        points in the cube to check their color.  A reasonable assumption is
+        that if a point $u$ is \texttt{blue}, then another nearby point $v$
+        (where $\|u - v\|$ is small) is probably also \texttt{blue}.  This is
+        known as a nearest-neighbor classification algorithm.  
+        
+        When $p$ becomes large, the volume of a neighborhood around a point
+        becomes very small relative to the total volume of the space.  If, say,
+        we wanted samples placed on a grid with separations of about $0.1$, then
+        we would need about $10^p$ samples.  Filling the whole space requires
+        exponentially many samples.
+    \end{example}
+
+    In statistical learning, this is also known as the `$p \gg N$' problem,
+    where $p$ is the number of features and $N$ is the number of samples.  One
+    method for battling the curse of dimensionality is to encourage
+    \emph{sparsity}.  Roughly, this means that in a linear problem with many
+    parameters, we want the majority of the parameters to be $0$.  
+    
+    \begin{example}[Linear Regression]
+        The term `sparse' arises from linear regression.  In that setting one
+        wishes to find a relation $y = Ax$, where $x \in \R^N$, $y \in \R$, and
+        $A$ is a linear transformation.  A sparse solution is one where many
+        entries of the matrix $A$ are zero, i.e. where $A$ is a sparse matrix.
+    \end{example}
+    
+    Methods that encourage sparsity have been found to perform well in practice.
+    In what they call the ``bet on sparsity'', \citeauthor{EOSL} introduce a
+    heuristic that explains the importance of sparse methods:
     \begin{quote}
         Use a procedure that does well in sparse problems, since no procedure
         does well in dense problems.
     \end{quote}
+    \noindent Essentially, we must assume that we can find important
+    low-dimensional spaces, because otherwise estimation of parameters becomes
+    very difficult.
 
-    The inspiration for many useful techniques comes from linear regression.
-    That is, in a multivariate situation $\xs = \xs_1 \times \cdots \times
-    \xs_k$ with a distinguished variate $xs_{k+1}$, where $\xs_i \cong \R$,
-    there is an attempt to estimate $\xs_{k+1}$ via a linear map $\xs \to
-    \xs_{k+1}$.  Binary categorical variates can be had by restricting the
-    domain to $\{-1, +1\} \subset \R$.
-
-    Given a basis
-
-    We can take the other approach, of using a penalization term for model
-    complexity.  Motivated by log-linear models, we can view fitting a
-    distribution as a problem of a linear fit.
-
-    Let $\{b_i\}_{i=1}^N$ with $N = |\xs|$ be a basis for the vector space
-    $L(\xs)$ equipped with the inner product
+    We outline one approach to sparse modeling, the vividly named Lasso, first
+    introduced in a paper by \citet{LASSO}.  Consider a model with real
+    parameters $\beta_1, \ldots, \beta_n$.  As before the setting is one of
+    linear regression, fitting $y = \sum_{i=1}^n \beta_i x_i$.  The idea is to
+    minimize
     \[
-        \adel{f, g} = \frac 1 N \sum_{x \in \xs} f(x) g(x)
+        \sum_{j=1}^m \pdel*{y_j - \sum_{i=1}^n \beta_i x_i}^2 + \lambda \sum_{i=1}^n
+        |\beta_i|
     \]
-    for $f, g \in L(\xs)$.  All distributions $p \in \Delta$ are of the form
+    given data $\{(x^{(j)}, y^{(j})\}_{j=1}^m$ and some hyperparameter $\lambda
+    > 0$.  That is, it minimizes the residual sum of squares with an additional
+    penalty term which is a factor of the $L_1$-norm of the parameter vector.
+    As the value of $\lambda$ is increased, this approach causes some parameters
+    to go to exactly zero, yielding a sparse model.  The usage of the $L_1$ norm
+    as a penalty is also known as $L_1$ regularization.  The procedure derived
+    from using $L_2$ regularization instead is known as ridge regression; in
+    contrast, it does not bring select parameters to zero, but instead reduces
+    all parameters at the same time.
+
+    The approach of $L_1$ regularization has also been applied directly to
+    log-linear models, in the paper by \citet{SPEC}.  In it, they use a basis
+    $\{b_1, \ldots, b_n\}$ for $L(\xs)$ and minimize
     \[
-        p_\theta = \exp\pdel*{\sum_{i=1}^N \theta_i b_i}
+        - \sum_{j=1}^m \log \pdel*{\sum_{i=1}^n \beta_i b(z_j)} + \lambda
+        \sum_{i=1}^n |\beta_i| 
     \]
-    where the exponential map is component-wise and $\theta \in \R^N$.  The
-    log-linear lasso maximizes the penalized log-likelihood
-    \[
-        s(p) = l(u \mid p) - \lambda \sum_i |\theta_i|
-    \]
-    for some hyperparameter $\lambda$ that can be tuned.  The lasso is also
-    called $l_1$-regularization, as the penalty is the $l_1$-norm of the
-    parameter.
+    with data $z_1, \ldots, z_m$ and hyperparameter $\lambda$ fitted by
+    cross-validation.
 
-    This penalty encourages a sparse representation of the model.  That is, with
-    small amounts of data, some parameters will be forced to be exactly zero, so
-    the corresponding basis vectors will not take part.  This is in contrast to
-    $l_2$ regularization which takes the $l_2$ norm and does not force
-    parameters to zero.
-
-    $l_1$ regularization has been useful in practice.  (find good citation)
-
-    However, the thing to note is that the regularization depends on the choice
-    of basis, so one would like to have a natural choice for the basis of
-    $L(\xs)$.
-
+    One thing to keep in mind is that the Lasso and other methods for finding
+    sparse models depend on selecting either subspaces of $L(\xs)$ or even a
+    full basis beforehand.  Because there are many possible choices for such
+    subspaces, one would like to know that the outcome of the procedure is not
+    too dependent on arbitrary choices, or that the choice of subspaces is
+    somehow natural.
 
 
 \chapter{Structured Sample Spaces}
 
-\section{Invariance Principles}
+\section{An Invariance Principle}
     
     The array of possible models and regularization procedures is large enough
-    that some guiding principles are sorely needed.  In many cases, inherent
-    symmetries of the sample space are such a guide.  We shall say that we wish
-    our statistical procedures to be invariant under reparametrization.  That
-    is, if there is a permutation $\sigma: \xs \to \xs$ of the sample space that
-    preserves the structure of the sample space, then we want the result of the
-    statistical procedure performed on the transformed $\sigma(\xs)$ to be the
-    same as if it were performed on $\xs$.
+    that some guiding principles are sorely needed.  Symmetries of the sample
+    space suggest some requirements.  We shall say that we wish our statistical
+    procedures to be invariant under reparametrization.  
 
-    Under the log-linear framework described in Section~\ref{sec:linear-models},
-    the permutation $\sigma$ induces a linear automorphism of $L(\xs)$.  If some
-    data $\{z_1, \ldots, z_1\}$
-    if 
+    More precisely, depending on the nature of the sample space $\xs$, there are
+    permutations $\sigma: \xs \to \xs$ that preserve the structure of $\xs$.
+    Such permutations form the automorphism group of the sample space.  In
+    essence, the automorphism group describes the admissible ways to re-label
+    the data.
 
-    Even with the rest
+    \begin{example}[Binary Multivariate Data]
+        Suppose that as in Example~\ref{ex:binary-voting} the data consist of
+        voting records of individuals on $n$ binary issues.  The sample space is
+        $\{0, 1\}^2$.  A natural choice for the automorphism group is the
+        hyperoctahedral group.  The case of binary multivariate data will be our
+        primary example, and we will subsequently examine it more closely.
+    \end{example}
+    
+    That is, if there is a permutation $\sigma: \xs \to \xs$ of the sample space
+    that preserves the structure of the sample space, then we want the result of
+    the statistical procedure performed on the transformed $\sigma(\xs)$ to be
+    the same as if it were performed on $\xs$.
 
-\section{Homogeneous Spaces}
     Both the counts $u: \xs \to \N$ and the log-probabilities $\log p$ lie in
     the linear space $L(\xs)$.  When $|\xs|$ is very large, it is useful to
     break up $L(\xs)$ into constituent parts.  This can be a decomposition into
     subspaces, or, if possible, a natural choice of basis.  This
     decomposition should rely on the underlying structure of the space of states
     $\xs$.
+
+    Under the log-linear framework described in Section~\ref{sec:linear-models},
+    the permutation $\sigma$ induces a linear automorphism of $L(\xs)$.  If some
+    data $\{z_1, \ldots, z_m\}$ indicates that a subspace $V \subset L(\xs)$ is
+    of particular importance, then the same procedure with the data
+    $\{\sigma(z_1), \ldots, \sigma(x_m)\}$ should similarly indicate the
+    subspace $\sigma(V)$.
+
+    Furthermore, if some subspace of $L(\xs)$  is intrinsically important for a
+    sample space but without any reference to particular data, that subspace
+    should be invariant under permutations $\sigma$.
+
+\section{Homogeneous Spaces}
 
     Often, $\xs$ exhibits large amounts of symmetry.  In the best case, every
     point in $\xs$ is the same, in some precise way.  A useful geometric
@@ -549,35 +663,6 @@
     The choice of group action is usually motivated by the meaning of the set
     $\xs$.  We often want some sort of invariance property, where, for example,
     the order in which we label things to not matter.
-
-\section{Isotypic Decomposition}
-    
-    The idea of representation theory is to better understand the structure of a
-    group (or algebra) by transferring the problem to the domain of linear
-    algebra.  The field of representation theory is very rich, and we only
-    introduce a few foundational concepts from the representation theory of
-    finite groups.
-
-    \begin{definition}
-        A \emph{representation} of a group $G$ is a group homomorphism $\rho: G
-        \to GL(U)$ from $G$ to the group of invertible linear transformations on
-        a vector space $U$.  
-    \end{definition}
-    Here, we make the simplifying assumptions that $G$ is a finite group and
-    that $U$ is a finite dimensional complex vector space.  It is common to
-    identify the group representation $\rho$ with the vector space $U$; we then
-    say that $U$ is the group representation.
-
-    Representations of finite groups behave tractably in large part because they
-    decompose well.
-    \begin{definition}
-        An \emph{irreducible representation} is
-    \end{definition}
-    \begin{theorem}[Maschke]
-        A representation \ldots
-    \end{theorem}
-
-\section{Gelfand-Tsetlin Bases}
 
 \section{Binary Models}
 
@@ -765,6 +850,36 @@
         \rtimes T$.
     \end{definition}
 
+\section{Isotypic Decomposition}
+    
+    The idea of representation theory is to better understand the structure of a
+    group (or algebra) by transferring the problem to the domain of linear
+    algebra.  The field of representation theory is very rich, and we only
+    introduce a few foundational concepts from the representation theory of
+    finite groups.
+
+    \begin{definition}
+        A \emph{representation} of a group $G$ is a group homomorphism $\rho: G
+        \to GL(U)$ from $G$ to the group of invertible linear transformations on
+        a vector space $U$.  
+    \end{definition}
+    Here, we make the simplifying assumptions that $G$ is a finite group and
+    that $U$ is a finite dimensional complex vector space.  It is common to
+    identify the group representation $\rho$ with the vector space $U$; we then
+    say that $U$ is the group representation.
+
+    Representations of finite groups behave tractably in large part because they
+    decompose well.
+    \begin{definition}
+        An \emph{irreducible representation} is
+    \end{definition}
+    \begin{theorem}[Maschke]
+        A representation \ldots
+    \end{theorem}
+
+\section{Gelfand-Tsetlin Bases}
+
+
     The hypercube graph is has a number of nice properties.  In particular, it
     is distance-transitive; this allows us to characterize some of its
     irreducible representations easily.
@@ -901,6 +1016,7 @@
 
 
 % \nocitep{*}
+
 \chapter{Orphaned Sections}
 
 \section{Algebraic Statistics}
@@ -1015,7 +1131,7 @@
 \bibliographystyle{hmcmath}
 \bibliography{thesis}
 
-\printindex
+%\printindex
 
 
 \end{document}
