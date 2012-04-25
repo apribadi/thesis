@@ -15,6 +15,7 @@
 \providecommand*{\ns}{\mathcal N}
 \providecommand*{\N}{\mathbb{N}}
 \newcommand*{\vbar}{\;\big\vert\;}
+\newcommand*{\STB}{\::}
 \DeclareMathOperator*{\argmax}{arg\ max}
 
 \newcommand*{\mle}{\mathrm{mle}}
@@ -38,6 +39,7 @@
 \tableofcontents
 
 
+
 \chapter{Abstract}
     This will be an abstract.
 
@@ -48,13 +50,16 @@
 
 \chapter{Introduction}
 
-    Discrete data allows us to model the world in almost the simplest way
-    possible.  Observations then label things and put them into categories:
-    ``This ice cream is green and has sprinkles.''  These procedures appear on
-    the surface to be very simple, but the simplicity conceals a deep well of
-    difficult problems of intensely practical importance.  The flood of data
-    that we cannot yet use as well as we would like increases every year.
-    Problems surrounding
+    Discrete observations model the world in almost the simplest way possible.
+    Things are labelled and put them into categories: ``This ice cream is green
+    and has sprinkles.''  Given enough observations, one can begin to make
+    predictions.
+    
+    On the surface this procedure appears to be quite simple, but a deep well of
+    difficult problems of intensely practical importance lies beneath.  The
+    pervasive introduction of digital storage and computation has only increased
+    the flood of data readily available.  In many cases, we cannot use the data
+    as well as we would like.  Problems surrounding
     \begin{itemize}\noparspace
     \item genomic sequences,
     \item image recognition,
@@ -65,24 +70,33 @@
     and so on are active areas of research driven by real-world concerns.
 
     Questions arising from the analysis of discrete data pose many challenges,
-    but at the same time offer rich mathematical structures.  There are two
-    complementary hopes.  The first is that ideas from `pure' mathematics,
-    particularly geometry and algebra, can offer guiding principles and
-    effective techniques for the analysis of data.  The second is that practical
-    problems will in turn suggest avenues for further exploration of intrinsic
-    interest.
+    but at the same time offer rich mathematical structures.  One hope is that
+    ideas from `pure' mathematics, particularly geometry and algebra, can offer
+    guiding principles and effective techniques for the analysis of data.
+    Another hope is that the avenues suggested by the needs of practical
+    problems will be of intrinsic mathematical interest.
+    
+    We examine log-linear models, a type which interacts especially well with
+    ideas from geometry and algebra.  Even though log-linear models conform to a
+    rigid format, many standard techniques from the analysis of discrete data
+    fall under its umbrella.  As is often the case, the presence of a linear
+    structure in such models offers a shortcut to tractability.  The linear
+    structure furthermore allows concerns of symmetry and invariance to be more
+    readily exploited.  Within this framework, algebraic ideas can be brought to
+    bear on model selection.
 
-    We take a look at log-linear models, a particular class of models that
-    interact particularly well with ideas from geometry and algebra.  While
-    these models make simplistic assumptions, many standard techniques from the
-    analysis of discrete data already fall under its umbrella.  As the name
-    suggests, log-linear models are in some sense linear.  A linear structure,
-    as is often the case, is a shortcut to tractability.  Furthermore, linearity
-    allows concerns about symmetry and invariance to be more readily exploited.
-    Within this framework, ideas from representation theory and even algebraic
-    geometry can be brought to bear on questions of model selection.
-
-    Blah blah
+    We pay special attention to models on the sample space $\{0, 1\}^n$ of
+    binary strings of a fixed length.  In some sense, this space is the most
+    straightforward way to encode finite data compactly.  This sample space also
+    has a large amount of symmetry, and is a homogeneous space with respect to
+    its natural automorphism group.  We introduce a general parametrization for
+    log-linear models on a finite homogeneous space $\xs$ for which the
+    representation $L(\xs)$ is multiplicity-free.  This parametrization respects
+    the isotypic decomposition of $L(\xs)$.  We then construct this
+    parametrization explicitly for the case $\xs = \{0, 1\}^n$.  Such a
+    parametrization is one of several for $\{0, 1\}^n$, and may offer certain
+    advantages over other options when used in algorithms for finding sparse
+    models.
 
 \chapter{Discrete Models}
 
@@ -93,9 +107,9 @@
     \item discrete, when its sample space is countable, or
     \item continuous, when its sample space is a subset of $\R^n$.
     \end{itemize}
-    The first case is the one that we consider.  In particular, we usually take
-    the relevant sample spaces to be finite.  Because we can then deal with
-    finite-dimensional spaces, this simplifies many ideas.
+    We consider the first case.  In particular, we usually take the relevant
+    sample space to be finite.  Because we can then deal with
+    finite-dimensional spaces, this assumption simplifies many ideas.
 
     Another fundamental assumption is that repeated observations are independent and
     identically distributed random variables.  That is, the observations $\x 1,
@@ -104,14 +118,14 @@
     set of values for the $\x i$, a basic objective is to estimate the
     underlying probability distribution $p$.
 
-    Let each $\x i$ take a value from the sample space $\xs$.  Throughout, we
-    assume that $\xs$ is a finite set.  Because the order of the observations
-    does not matter, we can summarize the observations with the counts
+    Let each $\x i$ take an observed value from the finite sample space $\xs$.
+    Because the order of the observations does not matter, we can summarize the
+    series of observations with the counts
     \begin{equation*}
         u(x) = \pdel{\text{the number of $i$ for which $\x i = x$}}
     \end{equation*}
-    for $x \in \xs$.  If the number of states $|\xs|$ is small relative to the
-    number of samples $m$, then the empirical distribution
+    for $x \in \xs$.  If the number of possible outcomes $|\xs|$ is small
+    relative to the number of samples $m$, then the empirical distribution
     \begin{equation}
         p_\emp(x) = \frac{u(x)}{m}
         \label{eq:empirical}
@@ -129,37 +143,39 @@
     \[
         \xs = \xs_1 \times \cdots \times \xs_k
     \]
-    of several finite sets.  The component space $\xs_i$ for each variate can be
-    the assignment of a label to each observation.  For example, a person can
-    have an eye color, a handedness, a gender, a political affiliation, and many
-    more characteristics.
+    of several finite sets.  If $k$ labels are assigned to an observation, then
+    the component space $\xs_i$ could be the set of possible values for the
+    $i$th label.  For example, a person can have an eye color, a handedness, a
+    gender, a political affiliation, and many more characteristics. In that
+    case, $\xs_1$ would be a set of colors, et cetera.
     
     If each variate has approximately the same number of possible values, then
     the size of the sample space is exponential in the number of variates.  
 
-    An excellent and comprehensive reference for the statistical analysis of
-    multivariate data is the book by \citet{DMA}.
+    A comprehensive reference for the statistical analysis of multivariate data
+    is the book by \citet{DMA}.
 
-    \item Group-valued data occurs when discussing the arrangements of a system.
+    \item Group-valued data occurs when discussing arrangements of a system.
     For example, voters in an election could be asked to rank $n$ candidates.
-    The sample space is then the symmetric group $\xs = S_n$.  If there is no
-    special base point of the sample space to call the identity of the group,
-    another choice is to consider the sample space as a principal homogeneous
-    space.
+    The sample space is then the symmetric group $\xs = S_n$.  Clearly, it is
+    rather easy to construct simple examples with large numbers of possible
+    outcomes, e.g. $n!$ for the symmetric group.
+    
+    When there is no `special' base point of the sample space to call the
+    identity of the group, another choice is to consider the sample space as a
+    homogeneous space.
 
-    Clearly, it is rather easy to construct simple examples with large numbers
-    of possible outcomes, e.g. $n!$ for the symmetric group.
     \end{itemize}
     For the empirical distribution to produce a good estimate of the underlying
     distribution, a prohibitively large number of samples is required.
 
     In order to analyze data with a large number of states, it is often fruitful
-    to restrict which distributions we consider.  One goal is to use the
-    structure of the underlying space of states in order to better analyze data.
+    to restrict which distributions we consider.  Ideally, we would use the
+    structure of the underlying sample space in order to better analyze data.
 
-    \begin{example}[Binary Voting]
-        The UCI database \citep{UCIData} contains a large number of data sets
-        useful for the evaluation of machine learning techniques.  The
+    \begin{example}[Binary Multivariate Data]
+        The UCI database contains a large number of data sets useful for the
+        evaluation of machine learning techniques \citep{UCIData}.  The
         Congressional Voting Records data set contains Congressional voting
         records on a number of key issues.
         \begin{figure}[H]
@@ -172,16 +188,20 @@
             5) democrat   y n y n n n y y y y n n n n y y
             \end{verbatim}
             \vspace{-1.5\baselineskip}
-            \caption{A few points from the Congressional Voting Records
+            \caption{A few lines from the Congressional Voting Records
             data set.}
         \end{figure}
-        \noindent Ignoring missing values, e.g. where representatives did not
-        vote, each variate has two possible values, either $\{\texttt{democrat},
-        \texttt{republican}\}$ or $\{\texttt{yes}, \texttt{no}\}$.  Thus, the
-        sample space may be written as $\xs = \{0, 1\}^7$, the set binary
-        strings with 7 bits.  As $|\xs| = 2^{17} = 131072$ is a large number,
-        some assumptions about potential distributions are needed to make sense
-        of the data.
+        \noindent For this data set, each variate has two possible values,
+        either the set $\{\texttt{yes}, \texttt{no}\}$ or $\{\texttt{democrat},
+        \texttt{republican}\}$.  (This ignores missing values, e.g.  where a
+        representative did not vote.)  The sample space may be written as $\xs =
+        \{0, 1\}^7$, the set of binary strings with 7 bits.  
+        
+        In this example, the size of the sample space is quite large, $\|xs| =
+        2^{17} = 131072$.  There are $435$ samples in the data set.  In order to
+        make sense of the data, some assumptions about potential distributions
+        are needed.  One possible assumption is that each variate is independent
+        from the others.  This, however, would be perhaps too simplistic.
         \label{ex:binary-voting}
     \end{example}
 
@@ -192,7 +212,7 @@
     statistical objects in terms borrowed from other parts of mathematics allows
     statistical problems to be attacked with a large range of useful tools.  The
     adoption of this perspective is in large part influenced by the lecture
-    notes by \citet{DSS08}, which summarizes recent progress in using the tools
+    notes by \citet{DSS08}, which summarize recent progress in using the tools
     of algebraic geometry for statistics.
 
     A probability distribution on a finite set $\xs$ can be thought of as a
@@ -342,14 +362,14 @@
 
     One way to measure how well a distribution matches data is to ask the
     question, ``How likely is the data, given the distribution?''  A maximum
-    likelihood estimate quantifies whether a model contains distributions that
-    match well.
+    likelihood estimate quantifies whether a model contains distributions
+    suitable in that way.
 
     Let $\ms = \{p_\theta : \theta \in \Theta\}$ be a parametrized statistical
     model.  Suppose that some data $Z = \{z_1, \ldots, z_m\}$ are observed.  It
     is generally assumed that the data has been drawn from independent and
     identically distributed samples following an unknown true distribution from
-    the model.from the model.
+    the model.
     
     \begin{definition}
     The \emph{likelihood function} of $\theta \in \Theta$ given the data $Z$ is
@@ -379,14 +399,12 @@
     the likelihood, given a choice of model.
     \end{definition}
 
-    \begin{note}
-        The fact that a maximum likelihood estimate might not exist or might not
-        be unique is tacitly ignored.  Indeed $\{L(\theta; Z) \mid \theta \in
-        \Theta\}$ might be an open set, and the map $\theta \mapsto L(\theta;
-        Z)$ might not be surjective.  In applications with real data, it is
-        often the case that a precise maximum likelihood estimate is not
-        necessary, and that an approximate value is sufficient.
-    \end{note}
+    The fact that a maximum likelihood estimate might not exist or might not be
+    unique is tacitly ignored.  Indeed $\{L(\theta; Z) \mid \theta \in \Theta\}$
+    might be an open set, and the map $\theta \mapsto L(\theta; Z)$ might not be
+    surjective.  In applications with real data, it is often the case that a
+    precise maximum likelihood estimate is not necessary, and that an
+    approximate value is sufficient.
 
     The distribution $p_\mle$ from the maximum likelihood estimate is the best
     one possible from the model.  Notice that if $\ms \subset \ns$ are two
@@ -419,15 +437,16 @@
     fit the observed data better, but that might not generalize as well to
     subsequent observations.  This trade-off between model complexity and
     predictive power can be approached in a number of ways, and is explored in
-    the standard literature.  Chapter 7 of the book \citet{EOSL} is one
+    the standard literature.  Chapter 7 of the book by \citet{EOSL} is one
     reference.  
     
-    There are at least two common methods to limit model complexity.
+    There are at least two common methods to limit model complexity, which under
+    certain circumstances produce the similar results.
     \begin{itemize}
     \item We can require that the estimated distribution $p$ is contained within
-    some model $\ms \subset \Delta$.
-    \item We can minimize $-l(p) + \pi(p)$, the negative log-likelihood with an
-    additional penalty term measuring the complexity of $p$.
+    some small model $\ms \subset \Delta$.
+    \item We can minimize $-l(p) + \pi(p)$, i.e. the negative log-likelihood
+    with an additional penalty term measuring the complexity of $p$.
     \end{itemize}
     Two criteria with complexity penalties are the Akaike information criterion
     and the Bayesian information criterion, defined
@@ -435,10 +454,11 @@
         \mathrm{AIC} &= -2\,l(p_\mle) + 2d \\
         \mathrm{BIC} &= -2\,l(p_\mle) + (\log m) d
     \end{align*}
-    where $-l(p_\mle)$ is the log-likelihood of the maximum likelihood estimate
-    as in \eqref{eq:negloglik}, $d$ is the dimension of the parameter space
-    $\Theta$, and $m$ is the number of samples.  These two criteria have
-    different motivations, which are described in the above reference.
+    where $-l(p_\mle)$ is the negative log-likelihood of the maximum likelihood
+    estimate as in \eqref{eq:negloglik}, $d$ is the dimension of the parameter
+    space $\Theta$, and $m$ is the number of samples.  These two criteria have
+    different motivations, which are described in the above reference.  Notice,
+    however, that the dimension of the model is used as the measure of its size.
 
 \section{Log-Linear Models}
     \label{sec:linear-models}
@@ -451,15 +471,16 @@
     The structure of $L(X)$ as a linear space suggests one method of
     approximation.  One can expand $p_\emp$ in terms of a basis $B = \{v_1,
     \ldots, v_n\}$ of $L(X)$, $p_\emp = \sum_{i=1}^n \lambda_i v_i$.  Any subset
-    $C \subset B$ of the basis elements yields an approximation $\sum_{v_i \in
-    C} \lambda_i v_i$ of $p_\emp$ from the subspace spanned by $C$.  One can
-    select the terms with the largest coefficients $\lambda_i$, or, if the basis
-    has some natural ordering, can simply truncate the series.
+    of the basis elements yields an approximation of $p_\emp$ from the
+    projection to the subspace spanned by our subset.  One can select the terms
+    with the largest coefficients $\lambda_i$, or, if the basis has some natural
+    ordering, one can simply truncate the series.
 
     This method of approximation has at least one drawback, namely that negative
     probabilities are possible.  Dealing instead with log-probabilities is often
     fruitful.  In fact, log-linear models, i.e. discrete exponential families,
-    are especially prevalent in the analysis of discrete multivariate data.
+    are especially prevalent in the analysis of discrete multivariate data; see,
+    for example, \citet{DMA}.
     \begin{definition}
         A \emph{log-linear} model $\ms_{V,h}$ is a statistical model of the form
         \[
@@ -470,6 +491,8 @@
         an affine subspace.
     \end{definition}
 
+    In many useful situations $h = 0$, so the log-linear model is associated
+    with a vector subspace of $L(\xs)$.
     The usual definition of an exponential family (which need not be over a
     finite sample space) is as follows.
     \begin{definition}
@@ -496,13 +519,12 @@
     \]
     where $h$ is interpreted as a vector in $\R^n$.  
 
-    \begin{example}[Binary Multivariate Independence]
+    \begin{example}[Binary Independence]
         The independence model with strictly positive probabilities is a
         log-linear model.  We compute this explicitly for the case where the
-        sample space is $\xs = \{0, 1\}^2$ and we wish the two bits to be
-        independent.  One can verify that a distribution $p$ on $\xs$ is in the
-        independence model if and only if $\log p$ is in the row span of the
-        matrix
+        sample space is $\xs = \{0, 1\}^2$.  One can verify that the two bits
+        are independent for a distribution $p$ on $\xs$ if and only if 
+        the row span of the matrix
         \[
             \kbordermatrix{
                 & 00 & 01 & 10 & 11 \\
@@ -510,18 +532,36 @@
                 &  0 &  0 &  1 &  1 \\
                 &  1 &  0 &  1 &  0 \\
                 &  0 &  1 &  0 &  1
-            }.
+            }
         \]
-        Notice that the matrix has rank 3, so that the independence model is a
-        proper subset of the full simplex.
+        contains $\log p$.  Notice that the matrix has rank 3, so that the
+        independence model is a proper subset of the full simplex.
     \end{example}
 
-\section{Sparsity and Regularization}
+    There is another form in which log-linear models are often presented.
+    Define an `energy' function $H: \xs \to \R$.  The corresponding
+    \emph{Boltzmann} distribution is defined
+    \[
+        p(x) = \frac 1 Z \exp(-H(x))
+    \]
+    where
+    \[
+        Z = \sum_{x \in \xs} \exp(-H(x))
+    \]
+    is a normalizing constant known as the partition function.  If the possible
+    values for $H$ in a model are all linear combinations of some basis
+    functions, then the model is log-linear.  This form is motivated by examples
+    from statistical mechanics, where the probability of a state is proportional
+    to $e^{-E/(k_BT)}$, where $E$ is the energy of the state, $T$ is the
+    temperature, and $k_B$ is the Boltzmann constant.
 
-    Why are we so keen on cutting down the number of dimensions?  The reason,
-    which arises in optimization and statistics, is colorfully termed the \emph{curse
-    of dimensionality}.  It is easiest to illustrate problem in another closely
-    related setting.
+\section{Sparsity and Regularization}
+    \label{sec:regularization}
+
+    Why are we so keen to cut down the number of dimensions?  The reason, which
+    arises in optimization and statistics, is colorfully termed the \emph{curse
+    of dimensionality}.  It is easiest to illustrate the problem in another
+    closely related setting.
 
     \begin{example}[Sampling and the Curse of Dimensionality]
         We describe a classification problem with $p$ real-valued features.
@@ -543,7 +583,7 @@
     where $p$ is the number of features and $N$ is the number of samples.  One
     method for battling the curse of dimensionality is to encourage
     \emph{sparsity}.  Roughly, this means that in a linear problem with many
-    parameters, we want the majority of the parameters to be $0$.  
+    parameters, we want the majority of the parameters to be zero.
     
     \begin{example}[Linear Regression]
         The term `sparse' arises from linear regression.  In that setting one
@@ -553,34 +593,33 @@
     \end{example}
     
     Methods that encourage sparsity have been found to perform well in practice.
-    In what they call the ``bet on sparsity'', \citeauthor{EOSL} introduce a
+    In what they call the ``bet on sparsity'', \citet{EOSL} introduce a
     heuristic that explains the importance of sparse methods:
     \begin{quote}
         Use a procedure that does well in sparse problems, since no procedure
         does well in dense problems.
     \end{quote}
-    \noindent Essentially, we must assume that we can find important
-    low-dimensional spaces, because otherwise estimation of parameters becomes
-    very difficult.
+    \noindent We must assume that we can find important low-dimensional spaces,
+    because otherwise estimation of parameters becomes very difficult.
 
-    We outline one approach to sparse modeling, the vividly named Lasso, first
+    We outline one approach to sparse modeling, the colorfully named Lasso, first
     introduced in a paper by \citet{LASSO}.  Consider a model with real
     parameters $\beta_1, \ldots, \beta_n$.  As before the setting is one of
-    linear regression, fitting $y = \sum_{i=1}^n \beta_i x_i$.  The idea is to
+    linear regression, fitting $y = \sum_{i=1}^n \beta_i x_i$.  The objective is to
     minimize
     \[
-        \sum_{j=1}^m \pdel*{y_j - \sum_{i=1}^n \beta_i x_i}^2 + \lambda \sum_{i=1}^n
-        |\beta_i|
+        \sum_{j=1}^m \pdel*{y^{(j)} - \sum_{i=1}^n \beta_i x_i^{(j)}}^2 +
+        \lambda \sum_{i=1}^n |\beta_i|
     \]
     given data $\{(x^{(j)}, y^{(j})\}_{j=1}^m$ and some hyperparameter $\lambda
     > 0$.  That is, it minimizes the residual sum of squares with an additional
-    penalty term which is a factor of the $L_1$-norm of the parameter vector.
+    penalty term which is a multiple of the $L_1$-norm of the parameter vector.
     As the value of $\lambda$ is increased, this approach causes some parameters
-    to go to exactly zero, yielding a sparse model.  The usage of the $L_1$ norm
-    as a penalty is also known as $L_1$ regularization.  The procedure derived
-    from using $L_2$ regularization instead is known as ridge regression; in
-    contrast, it does not bring select parameters to zero, but instead reduces
-    all parameters at the same time.
+    $\beta_i$ to go to exactly zero, yielding a sparse model.  The usage of the
+    $L_1$ norm as a penalty is also known as $L_1$ regularization.  The
+    procedure derived from using $L_2$ regularization instead is known as ridge
+    regression; in contrast, it does not bring select parameters to zero, but
+    instead reduces all parameters at the same time.
 
     The approach of $L_1$ regularization has also been applied directly to
     log-linear models, in the paper by \citet{SPEC}.  In it, they use a basis
@@ -590,158 +629,251 @@
         \sum_{i=1}^n |\beta_i| 
     \]
     with data $z_1, \ldots, z_m$ and hyperparameter $\lambda$ fitted by
-    cross-validation.
+    cross-validation.  That is, they minimize the negative log-likelihood with
+    an $L_1$ penalty term.  This, again, yields a sparse representation.
 
-    One thing to keep in mind is that the Lasso and other methods for finding
-    sparse models depend on selecting either subspaces of $L(\xs)$ or even a
-    full basis beforehand.  Because there are many possible choices for such
-    subspaces, one would like to know that the outcome of the procedure is not
-    too dependent on arbitrary choices, or that the choice of subspaces is
-    somehow natural.
+    One should keep in mind that methods for finding sparse models often depend
+    on selecting certain subspaces of $L(\xs)$ beforehand; $L_1$ regularization
+    relies even on the selection of a full set of basis vectors.  Because there
+    are many possible choices for such subspaces, one would like to know that
+    the outcome of the procedure is not too dependent on choices made
+    arbitrarily, and that the selection of subspaces is somehow natural.
 
 
-\chapter{Structured Sample Spaces}
+\chapter{Decompositions of $L(\xs)$}
 
 \section{An Invariance Principle}
     
     The array of possible models and regularization procedures is large enough
-    that some guiding principles are sorely needed.  Symmetries of the sample
-    space suggest some requirements.  We shall say that we wish our statistical
-    procedures to be invariant under reparametrization.  
+    that some guiding principles are urgently needed.  Symmetries of the sample
+    space, if they exist, suggest some constraints.  We shall say that we wish
+    our statistical procedures to be invariant under reparametrization.  
 
     More precisely, depending on the nature of the sample space $\xs$, there are
     permutations $\sigma: \xs \to \xs$ that preserve the structure of $\xs$.
-    Such permutations form the automorphism group of the sample space.  In
-    essence, the automorphism group describes the admissible ways to re-label
-    the data.
+    Such permutations form the automorphism group $G$ of the sample space.
+    Essentially, the automorphism group describes the admissible ways to re-label
+    the data.  A statistical procedure is invariant under $\sigma \in G$ if
+    performing the procedure produces the same result as transforming the data
+    by $\sigma$, performing the procedure, and pulling back the results by
+    $\inv\sigma$.
 
     \begin{example}[Binary Multivariate Data]
         Suppose that as in Example~\ref{ex:binary-voting} the data consist of
         voting records of individuals on $n$ binary issues.  The sample space is
-        $\{0, 1\}^2$.  A natural choice for the automorphism group is the
-        hyperoctahedral group.  The case of binary multivariate data will be our
-        primary example, and we will subsequently examine it more closely.
+        $\{0, 1\}^n$.  A natural choice for the automorphism group is the
+        hyperoctahedral group.  
+        
+        The case of binary multivariate data is our primary example, so we will
+        in later sections examine the interaction between binary data and the
+        hyperoctahedral group more closely.
     \end{example}
     
-    That is, if there is a permutation $\sigma: \xs \to \xs$ of the sample space
-    that preserves the structure of the sample space, then we want the result of
-    the statistical procedure performed on the transformed $\sigma(\xs)$ to be
-    the same as if it were performed on $\xs$.
-
-    Both the counts $u: \xs \to \N$ and the log-probabilities $\log p$ lie in
-    the linear space $L(\xs)$.  When $|\xs|$ is very large, it is useful to
-    break up $L(\xs)$ into constituent parts.  This can be a decomposition into
-    subspaces, or, if possible, a natural choice of basis.  This
-    decomposition should rely on the underlying structure of the space of states
-    $\xs$.
-
     Under the log-linear framework described in Section~\ref{sec:linear-models},
-    the permutation $\sigma$ induces a linear automorphism of $L(\xs)$.  If some
-    data $\{z_1, \ldots, z_m\}$ indicates that a subspace $V \subset L(\xs)$ is
-    of particular importance, then the same procedure with the data
-    $\{\sigma(z_1), \ldots, \sigma(x_m)\}$ should similarly indicate the
-    subspace $\sigma(V)$.
+    a model consists of a subspace of $L(\xs)$ that is sufficient to adequately
+    describe the data.  Suppose that one wishes to say that a particular
+    subspace of $L(\xs)$ is important in general, i.e. that for the majority of
+    data one encounters for the sample space $\xs$, this subspace is necessary.
+    This claim occurs in practice.
 
-    Furthermore, if some subspace of $L(\xs)$  is intrinsically important for a
-    sample space but without any reference to particular data, that subspace
-    should be invariant under permutations $\sigma$.
+    \begin{example}[Binary Multivariate Data]
+        Let $\xs = \{0, 1\}^n$.  The space $L(\xs)$ contains subspaces of $k$th
+        order effects.  The space of $k$th order effects is
+        \[
+            \mathrm{span}\cdel*{v_{S,f} \STB S \subset \{1, \ldots, n\}, |S| \le
+            k, f : S \to \{0, 1\}}
+        \]
+        where 
+        \[
+            v_S (b_1 \cdots b_n) = \begin{cases}
+                1 & \text{if $b_i = f(i)$ for all $i \in S$} \\
+                0 & \text{otherwise}
+            \end{cases}.
+        \]
+        The log-linear model associated with the space of $k$th order effects
+        only `cares' about the interaction between at most $k$ variates.  Zeroth
+        order effects produce only the uniform distribution.  First order
+        effects produce the independence model (Example~\ref{ex:independence1}).
+        The low order spaces are considered more essential than higher order
+        ones.
+    \end{example}
 
-\section{Homogeneous Spaces}
+    Every permutation from the automorphism group of $\xs$ induces a linear
+    automorphism of $L(\xs)$.  Thus the automorphism group has an induced group
+    action on $L(\xs)$.  If a subspace of $L(\xs)$ is truly generically
+    important, then it must be invariant under the action of the automorphism
+    group.  The good news is that one can get a handle on the invariant
+    subspaces of $L(\xs)$.
 
-    Often, $\xs$ exhibits large amounts of symmetry.  In the best case, every
-    point in $\xs$ is the same, in some precise way.  A useful geometric
-    formulation is that of a homogeneous space.
+
+\section{The Isotypic Decomposition}
+    The action of the automorphism group of $\xs$ on $L(\xs)$ is a
+    \emph{permutation representation}.  In order to explain this term, we
+    introduce a few ideas from representation theory.
+    
+    The goal of representation theory is to better understand the structure of a
+    group (or other algebraic object) by transferring the problem to the domain
+    of linear algebra.  The field of representation theory is very rich, so we
+    limit ourselves to a few foundational concepts from the representation
+    theory of finite groups.
+
+    \begin{definition}
+        A \emph{representation} of a group $G$ is a group homomorphism $\rho: G
+        \to GL(V)$ from $G$ to the group of invertible linear transformations on
+        a vector space $V$.  
+    \end{definition}
+    This group homomorphism `represents' group elements as invertible matrices.
+    Here, we make the simplifying assumptions that $G$ is a finite group and
+    that $V$ is a finite dimensional complex vector space.  It is common to
+    identify the group representation $\rho$ with the vector space $V$; one then
+    says that $V$ is the group representation.
+
+    Representations of finite groups are well-behaved in large part because they
+    can be broken up into constituent parts.
+    \begin{definition}
+        An \emph{irreducible representation} is a representation $V$ with no
+        non-trivial (i.e. not $\{0\}$ or $V$) subspaces invariant under the
+        group action.
+    \end{definition}
+    \begin{theorem}[Maschke]
+        A complex finite dimensional representation of a finite group can be
+        written as a direct sum of irreducible representations.
+    \end{theorem}
+    \begin{theorem}
+        A finite group has only finitely many irreducible complex
+        representations, up to isomorphism.
+    \end{theorem}
+    As a result, every complex representation can be written in a particular way.
+    
+    \begin{definition}
+        The \emph{isotypic decomposition} of a complex representation $V$ of a
+        finite group $G$ is the direct sum
+        \[
+            V = \bigoplus_{\rho \in \widehat{G}}  m_\rho W_\rho
+        \]
+        where $\widehat G$ is the collection of irreducible representation of
+        $G$ and $m_\rho W_\rho$ is the direct sum of $m_\rho$ copies of the
+        representation $\rho$.  If each $m_\rho$ is either $0$ or $1$, then the
+        representation is called \emph{multiplicity-free}.
+    \end{definition}
+
+    Let $L(\xs)$ be the space of complex-valued functions on $\xs$, and let $G$
+    be the automorphism group of $\xs$.  There is a permutation representation
+    of $G$ on $L(\xs)$ given by the group action
+    \[
+        (\sigma f)(x) = f(\inv \sigma x)
+    \]
+    for $\sigma \in G$, $f \in L(\xs)$, and $x \in \xs$.  Thus the symmetry
+    group $G$ defines a decomposition of $L(\xs)$ into a direct sum of invariant
+    subspaces.
+
+    One subtlety is that this decomposition holds for complex representations,
+    whereas for probabilities we wish to deal with vectors over the real field.
+    In cases of practical interest, however, it is common for this decomposition
+    to also hold over the real field.
+
+    %\begin{example}[Binary Multivariate Data]
+        %It is possible for the isotypic decomposition to 
+    %\end{example}
+
+\section{Homogeneous Spaces and $K$-Invariant Vectors}
+
+    Sometimes $\xs$ exhibits an exceptional amount of symmetry.  In the best
+    case, `every point in $\xs$ is the same'.  The following formulation makes
+    this last statement precise.
     \begin{definition}
         A \emph{homogeneous space} is a space $\xs$ together with a transitive
         action of a group $G$ on $\xs$.
     \end{definition}
+    Homogeneous spaces usually turn up in the context of the action of a Lie
+    group on a smooth manifold, in which case the group is required to act by
+    diffeomorphisms.  For our purposes, we take $\xs$ to be finite and $G$ to be
+    the automorphism group of $\xs$.
+
     Given a choice of any point $x_0 \in \xs$, let $K$ be the stabilizer of
-    $x_0$.  Then we can identify the set $\xs$ with the coset space $G / K$.
-    Homogeneous spaces usually turn up in the context of Lie groups, with which
-    the group action has additional restrictions.
-
-    The choice of group action is usually motivated by the meaning of the set
-    $\xs$.  We often want some sort of invariance property, where, for example,
-    the order in which we label things to not matter.
-
-\section{Binary Models}
-
-    Let $\xs = \{0, 1\}$ be the space of states consisting of binary strings.
-    \[
-        \{0, 1\}^n = \{0\cdots00, 0\cdots01, \ldots, 1\cdots11\}
-    \]
+    $x_0$.  Then we can identify the set $\xs$ with the coset space $G / K$.  If
+    a different point $y = g x_0$ is selected, with $g \in G$, then the
+    stabilizer of $y$ is related to $K$ by an inner automorphism.  Specifically,
+    the stabilizer of $y$ is $g K\inv g$.  
     
-    If we do not have any information about what the value of each bit means,
-    there are two types of natural actions:
-    \begin{itemize}\nospace
-    \item Reordering of the bits.
-    \item `Flipping' a bit.
+    \begin{definition}
+        Let $\xs = G / K$ be a homogeneous space.  If $L(\xs)$ is
+        multiplicity-free, then we call $(G, K)$ a \emph{Gelfand pair}.
+    \end{definition}
+    There are in fact several equivalent characterizations of Gelfand pairs,
+    the statements of which we do not fully explain \citep{Gelf}.
+    \begin{itemize}\noparspace
+    \item Convolution in the space $L(K\backslash G/K)$ of $K$-bi-invariant functions
+    is commutative.
+    \item $\mathrm{Hom}_G(L(\xs), L(\xs))$, the algebra of operators
+    intertwining the permutation representation, is commutative.
+    \item For all irreducible representations $(\rho, V)$ of $G$, we have
+    $\dim V^K \le 1$, where $V^K$ is the subspace of all $K$-invariant
+    vectors in $V$. 
     \end{itemize}
-    We formulate these two requirements concretely.  
 
-    \begin{figure}[H]
-        \centering
-        Put something here!
-        \caption{A permutation of the bits.}
-    \end{figure}
-    
-    The two symmetry requirements each specify a permutation of the states $\{0,
-    1\}^n$.  If $\mu \in S_n$ reorders the bits, the corresponding permutation
-    of the states is
-    \begin{align*}
-        \{0, 1\}^n &\to \{0, 1\}^n \\
-        b_1 \cdots b_n &\mapsto b_{\mu(1)} \cdots b_{\mu(n)}.
-    \end{align*}
-    A flip of the $k$th bit is the permutation
-    \begin{align*}
-        \{0, 1\}^n &\to \{0, 1\}^n \\
-        b_1 \cdots 0 \cdots b_n 
-        &\mapsto
-        b_1 \cdots 1 \cdots b_n  \\
-        b_1 \cdots 1 \cdots b_n 
-        &\mapsto
-        b_1 \cdots 0 \cdots b_n
-    \end{align*}
-    where the $k$th position is modified.  
-    
-    Let $\sigma: \{0, 1\}^n \to \{0, 1\}^n$ be a permutation of the states.
-    Such a permutation `lifts' to an automorphism of $\Delta$, the space of
-    probability distributions.  Let $p: \{0, 1\}^n \to [0, 1]$ be a function
-    from states to some probability for each state; the function $p$ represents
-    a probability distribution, so we say $p \in \Delta$.  Then $\sigma$ acts on
-    $\Delta$ with the formula
-    \begin{equation}
-        (\sigma p)(b_1 \cdots b_n) = p(\inv \sigma(b_1 \cdots b_n)).
-        \label{eq:sigma-p}
-    \end{equation}
-    A model $\ms \subset \Delta$ is said to be invariant under the action of
-    $\sigma$ if $p \in \ms$ implies that $\sigma p \in \ms$.  (Invariance is
-    actually a bit too strong \ldots)
+    In this setting, finding subspaces of $L(\xs)$ falls under the purview of
+    the field of harmonic analysis.  We make use of the paper by \citet{Harm} on
+    the subject.  Specifically, given this setup, we can find distinguished
+    vectors in the isotypic spaces of $L(\xs)$.  The following theorem is an
+    result in Section~2.5 of their paper.
+    \begin{theorem}[\citet{Harm}]
+        Let $(G, K)$ be a Gelfand pair, so that $L(G/K)$ is multiplicity-free.
+        Let $V$ be an irreducible representation of $G$ contained in $L(G/K)$.
+        Let $V^K = \cdel*{v \in V \STB k \cdot v \in V \text{ for all $k \in
+        K$}}$ be the space of $K$-invariant vectors in $V$.  Then $\dim V^K =
+        1$.
+    \end{theorem}
+    \noindent Thus each bijection $\xs \cong G / K$ yields a unique
+    $K$-invariant vector, up to scaling.
 
-    The permutations specified by reorderings and flips of bits are elements of
-    the symmetric group on $\{0, 1\}^n$.  They generate the group known as the
-    hyperoctahedral group $S_2 \wr S_n$.  We will examine the structure of the
-    hyperoctahedral more closely in Section~\ref{sec:hyperoctahedral}.
+    Recall that different selections of base point $x_0$ yield different
+    stabilizers $K = \mathrm{fix}_G(x_0)$, related by inner automorphisms.  We
+    claim that the $K$-invariant vectors for all possible $K$ form spanning sets
+    for each irreducible representation in $L(\xs)$.  We state this precisely,
+    and give a proof.
+    \begin{theorem}
+        Let $G$ be a group acting transitively on a set $\xs$.  Let $L(\xs)$ be
+        the space of complex-valued functions on $\xs$; it is a representation
+        of $G$ with the induced action.  Fix $x_0 \in \xs$, and let $K =
+        \mathrm{fix}_G (x_0)$ be the stabilizer of $x_0$.  Assume that $L(\xs)$
+        is multiplicity-free, i.e. that $(G, K)$ is a Gelfand pair.  Let $L(\xs)
+        = W_1 \oplus \cdots \oplus W_k$ be the isotypic decomposition of
+        $L(\xs)$.  Fix any $1 \le j \le k$.  For each $g \in G$, there exists a
+        $g K\inv g$-invariant vector $f_{j, g}$ in $W_j$, unique up to scaling.
+        Then $\{f_{j, g} \STB g \in G\}$ is a spanning set for $W_j$.
+    \end{theorem}
+    \begin{proof}
+        Let $f$ be a $K$-invariant vector in $W_j$.  Because $W_j$ is an
+        irreducible representation of $G$, it is sufficient to show that
+        \[
+            G f = \{g f \STB g \in G\} \subset \mathrm{span}\{f_{j, g} \STB g
+            \in G\}.
+        \]
+        But for any $k \in K$,
+        \begin{IEEEeqnarray*}{rClCl}
+            ((g k \inv g)(g f))(x)
+            &=&
+            f(\inv g \inv{(g k \inv g)} x)
+            &=&
+            f(\inv g g \inv k \inv g x) \\
+            &=&
+            f(\inv k \inv g x) 
+            &=&
+            f(\inv g x) \\
+            &=&
+            (gf)(x)
+        \end{IEEEeqnarray*}
+        so $gf$ is $g K \inv g$-invariant.  The result follows.
+        \label{thm:thm}
+    \end{proof}
 
-    \eqref{eq:sigma-p} specifies a group action of $S_2 \wr S_n$ on $\Delta$.
-    Each automorphism of $\Delta$ given by a group element is invertible, so we
-    can interpret the invariance requirement geometrically as
-    \[
-        \sigma(\ms) = \ms
-        \qquad
-        \text{for all $\sigma \in S_2 \wr S_n$},
-    \]
-    that is, the action of every element of the group maps the model to itself.
+\chapter{Binary Multivariate Data}
 
-
-    The group of interest to us is the hyperoctahedral group.  This group may be
-    defined as the automorphism group of the $n$-hypercube or as the wreath
-    product $S_2 \wr S_n$.
-% Coxeter?
-    The first formulation is very concrete, so we describe it first. 
-
-    Each joint state of the $n$ binary random variables can be represented as a
-    binary string of length $n$.  That is, the states are
+\section{The Hyperoctahedral Group}
+    Let us devote our attention to the case of binary multivariate data.  As
+    before, let the sample space be $\xs = \{0, 1\}^n$, the set of length $n$
+    binary strings.
     \[
         \underbrace{
         \underbrace{0\cdots00}_\text{$n$ bits}\;,\;
@@ -751,30 +883,62 @@
         1\cdots11
         }_\text{$2^n$ binary strings}.
     \]
+    If we do not assign particular meanings to any of the bits beforehand, then
+    certain re-labellings of the sample space do not change its structure.  In
+    particular, there are two natural operations:
+    \begin{itemize}\nospace
+    \item reordering the bits, and
+    \item flipping a bit.
+    \end{itemize}
+    Each operation specifies permutation of $\xs = \{0, 1\}^n$.  If $\mu \in
+    S_n$ is a reordering of the bits, the corresponding permutation of the
+    $\xs$  is
+    \begin{align*}
+        b_1 \cdots b_n &\mapsto b_{\mu(1)} \cdots b_{\mu(n)}.
+    \end{align*}
+    A flip of the $k$th bit is the permutation
+    \begin{align*}
+        b_1 \cdots 0 \cdots b_n 
+        &\mapsto
+        b_1 \cdots 1 \cdots b_n  \\
+        b_1 \cdots 1 \cdots b_n 
+        &\mapsto
+        b_1 \cdots 0 \cdots b_n
+    \end{align*}
+    where the $k$th position is modified.  
+    
+    The permutations specified by reorderings and flips of bits are elements of
+    an ambient group, the symmetric group on $\{0, 1\}^n$.  They generate the
+    subgroup known as the hyperoctahedral group $S_2 \wr S_n$.  This group may
+    be defined as the automorphism group of the $n$-hypercube or as the wreath
+    product (the notation $S_2 \wr S_n$ comes from the second definition).  The
+    first formulation is more concrete, so we use it.
+
+    First we define a metric on the set of binary strings.
     \begin{definition}
     The \emph{Hamming distance} between two binary strings is the number of
     positions in which the two strings differ.  
     \end{definition}
-    For example, the following binary strings of length 4 have Hamming distances
-    of 0, 1, and 2.
+    For example, the following pairs binary strings have Hamming distances
+    of 0, 1, and 2, respectively.
     \begin{align*}
-        0010 &\xleftrightarrow{\quad\text{Hamming distance $0$}\quad} 0010 \\
-        0010 &\xleftrightarrow{\quad\text{Hamming distance $1$}\quad} 0110 \\
-        0010 &\xleftrightarrow{\quad\text{Hamming distance $2$}\quad} 0100
+        0010 &\xleftrightarrow{\quad\text{distance $0$}\quad} 0010 \\
+        0010 &\xleftrightarrow{\quad\text{distance $1$}\quad} 0110 \\
+        0010 &\xleftrightarrow{\quad\text{distance $2$}\quad} 0100
     \end{align*}
-    The hypercube graph uses the Hamming distance to determine its edges.
+    It is straightforward to verify that the Hamming distance is in fact a
+    metric.  The edges of the hypercube graph are determined by the Hamming
+    metric.
     \begin{definition}\index{hypercube}
-        The \emph{$n$-hypercube} graph has as its vertices the length-$n$ binary
-        strings.  There is an edge between two vertices if and only if
-        their Hamming distance from each other is 1, that is, if they differ in
+        The \emph{$n$-hypercube} graph has as its vertices the set $\{0, 1\}^n$.
+        Two vertices form an edge if and only if their Hamming distance from
+        each other is exactly 1, that is, if the two binary strings differ in
         exactly one bit.
     \end{definition}
     The graph distance between any two vertices of the hypercube graph, i.e. the
-    minimal number of edges between those two vertices, is the same as their
-    Hamming distance.  A look at a picture of a hypercube graph
-    (Figure~\ref{fig:hypercube}) makes it clear as to why it is called a
-    hypercube.
-
+    minimal number of edges in a walk between those two vertices, is the same as
+    their Hamming distance.  A look at a picture of a hypercube graph
+    (Figure~\ref{fig:hypercube}) makes the origin of the graph's name clear.
 
     \begin{figure}[h]
         \centering
@@ -803,17 +967,14 @@
         \label{fig:hypercube}
     \end{figure}
     
-    Speaking generally, the symmetries of an object correspond with a group
-    action that preserves the structure of the object.  The structure of a graph
-    is determined entirely by its edges.
+    The structure of a graph is determined entirely by its edges, so we get the
+    following definition of a graph automorphism.
     \begin{definition}
         A \emph{graph automorphism} is a permutation of the vertices of a graph
-        that preserves the edges.  That is, a permutation $\sigma: V \to V$ is a
-        graph automorphism if for every $(u, v) \in E$, we have $(\sigma(u),
-        \sigma(v)) \in E$.
-        The \emph{automorphism group} of a graph is the set of all
-        automorphisms of a graph with the group operation being composition of
-        permutations.
+        that preserves its edges.  That is, if a graph has vertices $S$ and
+        edges $E \subset S \times S$, a permutation $\sigma: S \to S$ is a graph
+        automorphism if for every edge $(u, v)$, we have $(\sigma(u), \sigma(v))
+        \in E$.  The automorphisms of a graph form a group under composition.
     \end{definition}
 
     \begin{definition}
@@ -821,88 +982,38 @@
         $n$-hypercube.
     \end{definition}
 
-    The wreath product is a construction on two permutation groups.
-    Essentially, one permutation group shuffles copies of another permutation
-    group.  In our example, $S_n$ permutes the binary variables, each of which
-    has two states.  The copies of $S_2$ are each attached to one of the
-    variables, and flip the values $0$ and $1$.  These copies of $S_2$ are then
-    shuffled by the action of $S_n$.  We present a formal definition of the
-    wreath product.
-    \begin{definition}[\citet{Cam99}]
-        Let $H$ and $K$ be permutation groups on the sets $\Gamma$ and $\Delta$
-        respectively.  Let $\Omega = \Gamma \times \Delta$.  Think of $\Omega$
-        as a fiber bundle over the set $\Delta$, with projection map $(\gamma,
-        \delta) \mapsto \delta$; each fiber \mbox{$\Gamma_\delta = \{(\gamma, \delta)
-        \mid \gamma \in \Gamma\}$} for fixed $\delta \in \Delta$ is isomorphic to
-        $\Gamma$.  Let $B$ be the cartesian product of $|\Delta|$ copies of $H$,
-        one acting on each fiber as $H$ acts on $\Gamma$.  Thus $B$ is the set
-        of functions from $\Delta$ to $H$ with pointwise operations; the action
-        on $\Gamma \times \Delta$ is given by
-        \[
-            f\cdot(\gamma, \delta) = (f(\delta) \cdot \gamma, \delta)
-        \]
-        where ($\cdot$) is used to denote group actions.  Let $T$ be a copy of
-        the group $K$ permuting the fibers:
-        \[
-            k \cdot (\gamma, \delta) = (\gamma, k \cdot \delta).
-        \]
-        Then wreath product $H \wr K$ is defined to be the semidirect product $B
-        \rtimes T$.
-    \end{definition}
-
-\section{Isotypic Decomposition}
-    
-    The idea of representation theory is to better understand the structure of a
-    group (or algebra) by transferring the problem to the domain of linear
-    algebra.  The field of representation theory is very rich, and we only
-    introduce a few foundational concepts from the representation theory of
-    finite groups.
-
-    \begin{definition}
-        A \emph{representation} of a group $G$ is a group homomorphism $\rho: G
-        \to GL(U)$ from $G$ to the group of invertible linear transformations on
-        a vector space $U$.  
-    \end{definition}
-    Here, we make the simplifying assumptions that $G$ is a finite group and
-    that $U$ is a finite dimensional complex vector space.  It is common to
-    identify the group representation $\rho$ with the vector space $U$; we then
-    say that $U$ is the group representation.
-
-    Representations of finite groups behave tractably in large part because they
-    decompose well.
-    \begin{definition}
-        An \emph{irreducible representation} is
-    \end{definition}
-    \begin{theorem}[Maschke]
-        A representation \ldots
-    \end{theorem}
-
-\section{Gelfand-Tsetlin Bases}
-
-
-    The hypercube graph is has a number of nice properties.  In particular, it
-    is distance-transitive; this allows us to characterize some of its
-    irreducible representations easily.
+\section{A Construction of the Isotypic Decomposition}
+    The hypercube graph has a number of nice properties.  In particular, it is
+    distance-transitive. 
     \begin{definition}
         A \emph{distance-transitive} graph is a graph such that given any two
         vertices $u_1$ and $v_1$ at distance $d$ and any other two vertices
         $u_2$ and $v_2$ also at distance $d$, there exists some automorphism
         $\sigma$ of the graph with $\sigma(u_1) = u_2$ and $\sigma(v_1) = v_2$.
     \end{definition}
+    The fact that the hypercube graph is distance-transitive allows us to
+    compute the isotypic decomposition of $L(\xs)$.  Recall that $\xs = \{0,
+    1\}^n$ is the set of vertices of the hypercube graph and that the relevant
+    group $S_2 \wr S_n$ is the automorphism group of the graph.  Furthermore,
+    $L(\xs)$ is a representation of $S_2 \wr S_n$ with an action induced by the
+    action on $\xs$.
 
-    Let $(V, E)$ be a graph with automorphism group $G$.  Let \mbox{$U = \{ f : V \to
-    \C\}$} be the vector space of complex-valued functions on the vertices of the
-    graph.  The group $G$ has a permutation representation on $U$ defined for $f
-    \in U$ and $x \in V$ as
-    \begin{gather*}
-        \sigma(f)(x) = f(\inv\sigma(x))
-    \intertext{or, equivalently defined on delta functions as}
-        \sigma(\delta_x) = \delta_{\sigma(x)}.
-    \end{gather*}
-    The permutation representation of the automorphism group of a
-    distance-transitive graph decomposes into the eigenspaces of a particular
-    matrix.  The information characterizing a graph may be encoded in an
-    adjacency matrix.  The adjacency matrix of the $2$-hypercube is show below.
+    The representation $L(\xs)$ for a distance-transitive graph decomposes into
+    the eigenspaces of a particular matrix.  
+    \begin{definition}
+        The \emph{Laplacian matrix} of a graph with vertices $\{v_1, \ldots,
+        v_m\}$ is the $m\times m$ matrix $L = (l_{i,j})_{i,j=1}^m$ defined by
+        \[
+            l_{i,j} = \begin{cases}
+                \mathrm{deg}(v_i) & \text{if $i=j$} \\
+                -1 & \text{if $i \ne j$ and $v_i$ is adjacent to $v_j$} \\
+                0 & \text{otherwise}
+            \end{cases}.
+        \]
+        It is also the difference between the degree matrix and the adjacency
+        matrix of the graph.
+    \end{definition}
+    The Laplacian matrix of the $2$-hypercube graph is show below.
     \[
         \raisebox{-2.75em}{
         \begin{tikzpicture}
@@ -914,216 +1025,266 @@
             \draw (\from) -- (\to);
         \end{tikzpicture}
         }
-        \quad\text{has adjacency matrix}\qquad
+        \qquad\longrightarrow\qquad
         \kbordermatrix{
                & 00 & 01 & 10 & 11 \\
-            00 &  0 &  1 &  1 &  0 \\
-            01 &  1 &  0 &  0 &  1 \\
-            10 &  1 &  0 &  0 &  1 \\
-            11 &  0 &  1 &  1 &  0 \\
+            00 &  2 & -1 & -1 &  0 \\
+            01 & -1 &  2 &  0 & -1 \\
+            10 & -1 &  0 &  2 & -1 \\
+            11 &  0 & -1 & -1 &  2 \\
         }
     \]
-    Of course, the adjacency matrix of a graph may be viewed as a linear
-    transformation on $U$.
+    Of course, the Laplacian matrix may be viewed as a linear transformation on
+    $L(\xs)$.
 
-    The following theorem makes precise the relationship between the
-    decomposition of $U$ into irreducible representations with the eigenspaces
-    of the adjacency matrix of the graph.
+    The following theorem makes precise the relationship between the Laplacian
+    matrix and the isotypic decomposition of $L(\xs)$ in the case of a
+    distance-transitive graph.  The following theorem is a close corollary of a result
+    by \citeauthor{Sta84}, produced by translating a result for the adjacency
+    matrix into a result for the Laplacian matrix.  Because a distance
+    transitive graph is regular, the eigenspaces of the Laplacian matrix and of
+    the adjacency matrix are the same.  If each vertex has degree $d$, then an
+    eigenspace with eigenvalue $\lambda$ with respect to the Laplacian matrix
+    has eigenvalue $d - \lambda$ with respect to the adjacency matrix.
     \begin{theorem}[\citet{Sta84}]
-        Let $G$ be the automorphism group of a distance-transitive graph.  Let
-        $U$ be the permutation representation of $G$ on the complex-valued
-        functions on the vertices of the graph.  Then $U$ decomposes as
+        Let $\xs$ be the vertices of a distance transitive graph, and let $G$ be
+        the automorphism group of the graph, so that $L(\xs)$, the space of
+        complex-valued functions on $\xs$, is a representation of $G$.  Then the
+        isotypic decomposition of $L(\xs)$ is multiplicity-free, and is given by
         \[
-            U = U_{\lambda_1} \oplus \cdots \oplus U_{\lambda_k}
+            L(\xs) = W_{\lambda_1} \oplus \cdots \oplus W_{\lambda_k}
         \]
-        where the $\lambda_i$ are distinct eigenvalues of the adjacency matrix,
-        $U_{\lambda_i}$ is the eigenspace corresponding to $\lambda_i$, and the
-        $U_{\lambda_i}$ are also distinct irreducible representations of $G$.
+        where the $\lambda_i$ are distinct eigenvalues of the Laplacian matrix,
+        $W_{\lambda_i}$ is the eigenspace corresponding to $\lambda_i$.  In
+        particular, the eigenspaces of the Laplacian matrix are irreducible
+        representations of $G$.
+        \label{thm:dist-trans}
     \end{theorem}
 
-    The adjacency matrices and eigenspaces for the $n$-hypercubes have a
-    recursive structure.
+    The eigenspaces for the Laplacian and adjacency matrices of the
+    $n$-hypercube graphs have a recursively defined basis.
     \begin{theorem}[\cite{CW06}]
-        The adjacency matrix $Q_n$ for the $n$-hypercube, with vertices ordered
-        lexicographically, is given by the following recursively defined block
-        matrix
-        \[
-            Q_0 = \begin{bmatrix} \;0\; \end{bmatrix}
-            \qquad
-            \text{and}
-            \qquad
-            Q_n = \begin{bmatrix}
-                Q_{n-1} & I \\
-                I & Q_{n-1}
-            \end{bmatrix}
-            \qquad
-            \text{for $n \ge 1$}
-        \]
-        where $I$ is the $2^{n-1}\times 2^{n-1}$ identity matrix.
-    \end{theorem}
-
-    \begin{theorem}[\cite{CW06}]
-        If $v$ is an eigenvector of $Q_{n-1}$ with eigenvalue $\lambda$ then the
+        Let $Q_n$ be the adjacency matrix of the $n$-hypercube graph.  If $v$
+        is an eigenvector of $Q_{n-1}$ with eigenvalue $\lambda$, then the
         concatenated vectors $\adel{v_1, \ldots, v_{2^{n-1}},v_1, \ldots,
         v_{2^{n-1}}}$ and $\adel{v_1, \ldots, v_{2^{n-1}}, -v_1, \ldots,
         -v_{2^{n-1}}}$ are eigenvectors of $Q_n$ with eigenvalues $\lambda +1$
         and $\lambda - 1$ respectively.
+        \label{thm:eigs}
     \end{theorem}
 
-    \begin{theorem}[\cite{CW06}]
-        The eigenvectors of $Q_n$ are the Walsh functions of dimension $2^n$.
-        The eigenvalues are given by $\lambda_k = 2k - n$ for $k \in \{0,
-        \ldots, n\}$, and have multiplicity $\binom{n}{k}$.
-    \end{theorem}
+    \begin{corollary}
+        The eigenvalues of the Laplacian matrix of the $n$-hypercube graph are
+        $\{0, 2, 4, \ldots, 2n\}$.
+        \label{cor:eigs}
+    \end{corollary}
 
-    These theorems give us a full characterization of the permutation
-    representation of the hyperoctahedral group.
+    \begin{corollary}
+        An eigenbasis of $L(\xs)$ with respect to the Laplacian matrix of the
+        $n$-hypercube graph is given by the so-called Walsh functions on $\{0,
+        1\}^n$.
+        \label{cor:walsh}
+    \end{corollary}
 
-    The above decomposition of the permutation representation of the
-    hyperoctahedral group on $\{0, 1\}^n$ gives us a way to enumerate the $S_2
-    \wr S_n$ invariant log-linear models.
+    These results given an explicit algorithm to compute the isotypic
+    decomposition of $L(\xs)$ for $\xs = \{0, 1\}^n$.
 
-    We label the irreducible representations in $\R^{2^n}$ be their eigenvalues,
-    which take on the $n+1$ values $-n, -n + 2, \ldots, n - 2, n$.  The
-    $U_n$ eigenspace with eigenvalue $\lambda = n$ contains the all-ones vector $(1,1,
-    \ldots, 1)$.  Every other eigenspace is perpendicular to $U_n$, and thus
-    contains vectors that sum to zero.  This means that every invariant
-    log-linear model must contain the irreducible representation $U_n$.  Every
-    invariant space is the direct product of some of the $U_\lambda$.  Excluding
-    $U_n$, there are $n$ irreducible representations, and thus $2^n$ possible
-    invariant models.
-
-    (Define hierarchical log-linear models.)
-
-    The hierarchical log-linear model with all size $k$ facets corresponds with
-    the representation $U_n \oplus U_{n-2} \oplus U_{n-2\cdot2}\cdots \oplus U_{2k}$.
-    We can verify this with the computation
+\section{A Parametrization for Binary Log-Linear Models}
+    
+    We now give a parametrization for $L(\xs)$ in accordance with
+    Theorem~\ref{thm:thm}.  We do explicit computations for $n=3$, but the
+    construction generalizes.  
+    
+    From Theorem~\ref{thm:dist-trans} and Corollary~\ref{cor:eigs}, the isotypic
+    decomposition of $L(\xs)$ is
     \[
-        \ldots
+        L(\xs) = W_0 \oplus W_0 \oplus \cdots \oplus W_{2n}
+    \]
+    where $W_{2j}$ is the eigenspace of the Laplacian matrix with eigenvalue
+    $2j$.  From Theorem~\ref{thm:eigs}, the irreducible representations in
+    $L(\xs)$ have the following bases.  A function $f: \{0, 1\}^n$ is
+    represented as a column vector containing the values of $f$ evaluated on
+    each binary string in lexicographic order.
+    \[
+        W_0 = \adel*{
+        \begin{rmatrix}
+            1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1
+        \end{rmatrix}
+        }
+        \qquad
+        W_2 = \adel*{
+        \begin{rmatrix}
+            1 \\ -1 \\ 1 \\ -1 \\ 1 \\ -1 \\ 1 \\ -1
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            1 \\ 1 \\ -1 \\ -1 \\ 1 \\ 1 \\ -1 \\ -1
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            1 \\ 1 \\ 1 \\ 1 \\ -1 \\ -1 \\ -1 \\ -1
+        \end{rmatrix}
+        }
+    \]
+    \[
+        W_4 = \adel*{
+        \begin{rmatrix}
+            1 \\ -1 \\ -1 \\ 1 \\ 1 \\ -1 \\ -1 \\ 1
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            1 \\ -1 \\ 1 \\ -1 \\ -1 \\ 1 \\ -1 \\ 1
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            1 \\ 1 \\ -1 \\ -1 \\ -1 \\ -1 \\ 1 \\ 1
+        \end{rmatrix}
+        }
+        \qquad
+        W_6 = \adel*{
+        \begin{rmatrix}
+            1 \\ -1 \\ -1 \\ 1 \\ -1 \\ 1 \\ 1 \\ -1
+        \end{rmatrix}
+        }
+        \qquad
     \]
 
-\section{k-Subsets}
+    Let the base point in $\xs$ be $x_0 = 00 \cdots 0$.  Then the stabilizer $K
+    = \mathrm{fix}_G(x_0)$ in $S_2 \wr S_n$ is the copy of $S_n$ in $S_2 \wr
+    S_n$ that rearranges the bits but does not flip any bit.  Notice that under
+    the action of $S_n$, vectors in any one of the above bases are mapped to
+    another vector in the basis.  It follows that the sum of the vectors in any
+    basis is $K$-invariant.  Thus
+    \[
+        \begin{rmatrix}
+            1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1
+        \end{rmatrix}
+        \in W_0,
+        \quad
+        \begin{rmatrix}
+            3 \\ 1 \\ 1 \\ -1 \\ 1 \\ -1 \\ -1 \\ -3
+        \end{rmatrix}
+        \in W_2,
+        \quad
+        \begin{rmatrix}
+            3 \\ -1 \\ -1 \\ -1 \\ -1 \\ -1 \\ -1 \\ 3
+        \end{rmatrix}
+        \in W_4,
+        \quad
+        \text{and }
+        \begin{rmatrix}
+            1 \\ -1 \\ -1 \\ 1 \\ -1 \\ 1 \\ 1 \\ -1
+        \end{rmatrix}
+        \in W_6
+    \]
+    are $K$-invariant vectors.  Under the action of $S_2 \wr S_n$, and
+    identifying vectors which are scalar multiples of each other, we get
+    the following spanning sets.
+    \begin{gather}
+        W_0 = \adel*{
+        \begin{rmatrix}
+            1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1
+        \end{rmatrix}
+        }
+        \qquad
+        W_2 = \adel*{
+        \begin{rmatrix}
+            3 \\ 1 \\ 1 \\ -1 \\ 1 \\ -1 \\ -1 \\ -3
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            1 \\ 3 \\ -1 \\ 1 \\ -1 \\ 1 \\ -3 \\ -1
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            1 \\ -1 \\ 3 \\ 1 \\ -1 \\ -3 \\ 1 \\ -1
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            1 \\ -1 \\ -1 \\ -3 \\ 3 \\ 1 \\ 1 \\ -1
+        \end{rmatrix}
+        } 
+        \label{eq:spanning}
+        \\
+        \nonumber
+        W_4 = \adel*{
+        \begin{rmatrix}
+            3 \\ -1 \\ -1 \\ -1 \\ -1 \\ -1 \\ -1 \\ 3 
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            -1 \\ 3 \\ -1 \\ -1 \\ -1 \\ -1 \\ 3 \\ -1
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            -1 \\ -1 \\ 3 \\ -1 \\ -1 \\ 3 \\ -1 \\ -1
+        \end{rmatrix}
+        ,
+        \begin{rmatrix}
+            -1 \\ -1 \\ -1 \\ 3 \\ 3 \\ -1 \\ -1 \\ -1
+        \end{rmatrix}
+        }
+        \qquad
+        W_6 = \adel*{
+        \begin{rmatrix}
+            1 \\ -1 \\ -1 \\ 1 \\ -1 \\ 1 \\ 1 \\ -1
+        \end{rmatrix}
+        }
+        \qquad
+    \end{gather}
 
-    Let $n$ and $k$ be positive integers.  Let the space of states $\xs$ be the
-    collection of all subsets of size $k$ of $\{1, \ldots, n\}$.
+\section{Other Parametrizations}
 
-    This space of states turns up in approval voting, where voters are asked to
-    select their $k$ favorite candidates out of $n$ choices.
+    Some of the motivation for identifying another spanning set comes from the
+    paper by \citet{SPEC}.  In that paper, the authors consider a number of
+    spanning sets for $L(\xs)$ where $\xs = \{0, 1\}^n$.  With these spanning
+    sets, the authors fit log-linear models with $L_1$ regularization to binary
+    data, as described in Section~\ref{sec:regularization} of this paper.
 
+    The spanning sets considered in the paper by \citet{SPEC}, along with their
+    names for them, are as follows.
+
+    The \emph{full parametrization} contains functions of the form
+    \[
+        f_{S, g}(b_1 \cdots b_n) = \begin{cases}
+            1 & \text{when $b_i = g(i)$ for all $i \in S$} \\
+            0 & \text{otherwise}
+        \end{cases}
+    \]
+    where $S$ is any subset of $\{1, \ldots, n\}$ and $g$ is any function $S \to
+    \{0, 1\}^{|S|}$.  This parametrization contains $3^n$ functions.
+
+    The \emph{canonical parametrization} contains functions of the form
+    \[
+        f_S(b_1 \cdots b_n) = \begin{cases}
+            1 & \text{when $b_i = 1$ for all $i \in S$} \\
+            0 & \text{otherwise}
+        \end{cases}.
+    \]
+    for all $S \subset \{1, \ldots, n\}$.  This parametrization contains $2^n$
+    functions.
+
+    The \emph{spectral parametrization} contains the $2^n$ Walsh functions on
+    $\{0, 1\}^n$ as in Theorem~\ref{thm:eigs} and Corollary~\ref{cor:walsh}.
+
+    Our spanning set as in Equation~\ref{eq:spanning} shares with the spectral
+    parametrization the properties that the set is invariant (as a set) under
+    the action of $S_2 \wr S_n$ and that appropriate subsets of the set generate
+    the irreducible representations in $L(\xs)$.  Additionally, our spanning set
+    seems well-suited to weighting single points heavily while only selecting a
+    few subspaces.
+
+\chapter{Conclusion}
+
+\section{Future Directions}
+
+\section{For Further Reading}
 
 
 \appendix
 
 
 % \nocitep{*}
-
-\chapter{Orphaned Sections}
-
-\section{Algebraic Statistics}
-
-    Algebraic statistics is a relatively new field that examines statistical
-    questions using algebraic geometry and commutative algebra.  Once a problem
-    has been cast in the language of algebra, a number of computational tools
-    can be brought to bear.  For example, one of the early papers in the field
-    analyzed contingency tables using Monte Carlo sampling computed with Gröbner
-    bases \citep{DS98}.
-
-    Algebraic statistics also offers a geometric point of view on statistical
-    models; the tendency is toward intrinsically defined objects in lieu of
-    explicit coordinate systems.  In this light, algebraic statistics might be
-    seen as in the tradition of information geometry, a field pioneered in the
-    1980s that applied the techniques of Riemannian geometry to probability
-    models (see for example \citep{Ama}).
-
-    An introduction to the field of algebraic statistics may be found in the
-    collection of lecture notes \citep{DSS08}.  Algebraic statistics has also
-    been applied to computational biology \citep{ASCB}.
-
-
-\section{Markov Random Fields}
-    \label{sec:rbm-def}
-
-    The Restricted Boltzmann Machine is an instance of a \emph{graphical model}.
-    A graphical model is a probabilistic model for which a graph (directed or
-    undirected) represents the conditional independence structure between random
-    variables.  Several types of graphical models have become popular for
-    applications in machine learning; Chapter 17 of \citep{EOSL} is an overview
-    of undirected graphical models and additionally contains references to the
-    large body of literature.  From the algebro-geometric point of view,
-    graphical models in general are discussed in Chapter 3 of \citep{DSS08} and
-    directed graphical models, known as \emph{Bayesian networks}, are discussed
-    in \citep{GSS}.  In our exposition we only introduce undirected models.
-
-    \begin{definition}
-        We describe a \emph{Markov random field}, i.e. an undirected graphical
-        model.  Let $G$ be an undirected graph with vertex set $V$.  Let
-        $\{X_\alpha\}_{\alpha \in V}$ be random variables indexed by the
-        vertices.  The joint probability of $(X_\alpha)_{\alpha \in V}$ is said
-        to factor according to $G$ if for any pair of vertices $\beta, \gamma
-        \in V$ that are not adjacent, the random variables $X_\beta, X_\gamma$
-        are conditionally independent given the variables at the other vertices.
-        That is,
-        \[
-            \text{$X$ and $Y$ not adjacent}
-            \Longleftrightarrow
-            X_\beta \perp X_\gamma \mid 
-            \{X_\alpha; \text{for } \alpha \ne \beta, \alpha \ne \gamma\}.
-        \]
-        A Markov random field is any such collection of random variables that
-        factor according to an undirected graph.
-    \end{definition}
-
-    Roughly speaking, the edges in the graph record which variables influence
-    which other variables.  If the graph is relatively sparse, then there are
-    strong restrictions on the interactions between variables.  For example, a
-    totally disconnected graph indicates that the variables are all independent.
-    In contrast, a complete graph places no restrictions at all on the
-    variables' joint distribution.
-    
-    With the assumption that distributions are strictly positive, there is an
-    equivalent characterization of a graphical model.
-
-    \begin{theorem}[Hammersley-Clifford]
-        The random variables $(X_\alpha)_\alpha$ indexed by the vertices of an
-        undirected graph $G$ factor according to $G$ if and only if their
-        joint probability density factors as
-        \[
-            p(x) = \prod_{S \in C(G)} f_S(x_S)
-        \]
-        where the $S$ are maximal complete subgraphs (cliques) of $G$, $x_S$ is
-        the restriction of $x$ to $S$, and $f_S$ is a function on the variables in
-        $S$.
-    \end{theorem}
-
-    The graphical models that we consider have a particularly simple structure;
-    the variables have binary values and all interactions are pairwise.
-    Following the machine learning literature, we refer to binary-valued random
-    variables and their corresponding vertices as `units'.
-
-\section{Sufficient Statistic}
-    \begin{definition}
-        A \emph{sufficient statistic} of a parametrized model is a linear
-        function $T$ of the data $u : \xs \to \N$ such that the log-likelihood
-        factors as
-        \[
-            l(\theta; u) = f(T(u), \theta) + g(u)
-        \]
-        that is, that in order to estimate the value of the parameter, we do not
-        need the data, only the sufficient statistic.
-    \end{definition}
-
-    \begin{theorem}[Pitman-Koopman-Darmois]
-        Exponential families are the `largest' possible with \ldots
-    \end{theorem}
-
-    The essential point is that
-    \[
-        l(p; z) = \log p(z_1) + \cdots + \log p(z_m) 
-    \]
-    so log-probabilities are additive with respect to counts of observations.
-    If we want to summarize our data through a linear transformation of the
-    counts, then we must work with log-probabilities.  Thus linear subspaces of
-    the log-probabilities are a natural choice for models.
 
 
 \backmatter
@@ -1135,3 +1296,7 @@
 
 
 \end{document}
+
+
+
+
