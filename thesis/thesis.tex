@@ -40,6 +40,7 @@
 
 
 
+
 \chapter{Abstract}
     This will be an abstract.
 
@@ -55,54 +56,71 @@
     and has sprinkles.''  Given enough observations, one can begin to make
     predictions.
     
-    On the surface this procedure appears to be quite simple, but a deep well of
-    difficult problems of intensely practical importance lies beneath.  The
-    pervasive introduction of digital storage and computation has only increased
-    the flood of data readily available.  In many cases, we cannot use the data
-    as well as we would like.  Problems surrounding
+    Though on the surface this procedure appears to be quite simple, there
+    exists a deep well of difficult problems of intensely practical importance.
+    The pervasive introduction of digital storage and computation has only
+    increased the flood of data readily available.  In many cases, we cannot use
+    the data as well as we would like.  Problems surrounding 
     \begin{itemize}\noparspace
     \item genomic sequences,
-    \item image recognition,
-    \item natural language processing
-    \item voting data,
-    \item product recommendation,
+    \item image recognition, 
+    \item natural language processing,
+    \item voting data, 
+    \item product recommendation, 
     \end{itemize}
     and so on are active areas of research driven by real-world concerns.
 
-    Questions arising from the analysis of discrete data pose many challenges,
-    but at the same time offer rich mathematical structures.  One hope is that
-    ideas from `pure' mathematics, particularly geometry and algebra, can offer
-    guiding principles and effective techniques for the analysis of data.
-    Another hope is that the avenues suggested by the needs of practical
-    problems will be of intrinsic mathematical interest.
+    Questions arising from the analysis of discrete data pose challenges, but at
+    the same time offer rich mathematical structures.  Our hope is that ideas
+    from `pure' mathematics, particularly geometry and algebra, can offer
+    guiding principles and effective techniques for the analysis of data.  In
+    return, avenues suggested by the needs of practical problems are often of
+    intrinsic mathematical interest.
     
-    We examine log-linear models, a type which interacts especially well with
-    ideas from geometry and algebra.  Even though log-linear models conform to a
-    rigid format, many standard techniques from the analysis of discrete data
-    fall under its umbrella.  As is often the case, the presence of a linear
-    structure in such models offers a shortcut to tractability.  The linear
-    structure furthermore allows concerns of symmetry and invariance to be more
-    readily exploited.  Within this framework, algebraic ideas can be brought to
-    bear on model selection.
+    In this thesis, we examine log-linear models for discrete data.  Methods
+    from both representation theory and algebraic geometry have been employed
+    for model selection with log-linear models.  Our ideas are similar to those
+    in the book by \citet{GRPS} which also discusses decomposing a space of
+    log-linear models with help from a group action.  The inspiration for our
+    approach, however, was the recent appearance of what has been termed
+    `algebraic statistics', the effort to apply techniques from algebraic
+    geometry to statistics.  The lecture notes by \citet{DSS08} are currently
+    the best introduction to the subject.  
+    
+    The approach to statistics taken here is influenced by the machine learning
+    community; it emphasizes algorithmic methods, handling large amounts of
+    data, and models which make few assumptions about the underlying random
+    process.  An excellent introduction is the book by the statisticians
+    \citet{EOSL}.  
+    
+    Log-linear models are important because they conform to a rigid structure
+    while at the same time encompassing standard techniques for the analysis of
+    discrete data.  As is often the case, the presence of a linear structure
+    makes many questions more tractable.  The linear structure also allows
+    concerns of symmetry and invariance to be more readily exploited.  The
+    essential idea is objects that are important across different data sets on
+    the same sample space should be invariant under the space's automorphism
+    group.
 
     We pay special attention to models on the sample space $\{0, 1\}^n$ of
-    binary strings of a fixed length.  In some sense, this space is the most
-    straightforward way to encode finite data compactly.  This sample space also
-    has a large amount of symmetry, and is a homogeneous space with respect to
-    its natural automorphism group.  We introduce a general parametrization for
-    log-linear models on a finite homogeneous space $\xs$ for which the
-    representation $L(\xs)$ is multiplicity-free.  This parametrization respects
-    the isotypic decomposition of $L(\xs)$.  We then construct this
-    parametrization explicitly for the case $\xs = \{0, 1\}^n$.  Such a
-    parametrization is one of several for $\{0, 1\}^n$, and may offer certain
-    advantages over other options when used in algorithms for finding sparse
-    models.
+    binary strings of a fixed length.  This space is a straightforward way to
+    represent finite data compactly, and as such is often employed as a generic
+    encoding.  This space also has a large amount of symmetry, and is a
+    homogeneous space with respect to its natural automorphism group.  We
+    introduce a general parametrization for log-linear models on a finite
+    homogeneous space $\xs$, under the assumption that the representation
+    $L(\xs)$ is multiplicity-free.  This parametrization respects the isotypic
+    decomposition of $L(\xs)$.  We then construct this parametrization
+    explicitly for the case $\xs = \{0, 1\}^n$.  Such a parametrization is one
+    of several for $\{0, 1\}^n$, and can be used in algorithms for finding
+    sparse models.
+
 
 \chapter{Discrete Models}
 
     \section{Discrete Data}
 
-    A random variable (from an elementary standpoint) is either 
+    A random variable is either (from an elementary standpoint) 
     \begin{itemize}\noparspace
     \item discrete, when its sample space is countable, or
     \item continuous, when its sample space is a subset of $\R^n$.
@@ -555,6 +573,19 @@
     to $e^{-E/(k_BT)}$, where $E$ is the energy of the state, $T$ is the
     temperature, and $k_B$ is the Boltzmann constant.
 
+    \begin{example}
+        A \emph{Boltzmann machine} on $\{0, 1\}^n$ has a distribution of the
+        form
+        \[
+            p(x) \propto \exp\pdel*{-\sum_{i < j} \beta_{ij} x_i x_j  - \sum_i
+            \gamma_i x_i}.
+        \]
+        The Boltzmann machine and derived models have recently had many
+        important machine learning applications \citep{Hin07}.
+        % For instance, the \emph{restricted Boltzmann machine}
+    \end{example}
+    % Example: Boltzmann machine
+
 \section{Sparsity and Regularization}
     \label{sec:regularization}
 
@@ -622,7 +653,8 @@
     instead reduces all parameters at the same time.
 
     The approach of $L_1$ regularization has also been applied directly to
-    log-linear models, in the paper by \citet{SPEC}.  In it, they use a basis
+    log-linear models, in the paper by \citet{SPEC}.  In it, they use a spanning
+    set
     $\{b_1, \ldots, b_n\}$ for $L(\xs)$ and minimize
     \[
         - \sum_{j=1}^m \log \pdel*{\sum_{i=1}^n \beta_i b(z_j)} + \lambda
@@ -828,10 +860,10 @@
     $K$-invariant vector, up to scaling.
 
     Recall that different selections of base point $x_0$ yield different
-    stabilizers $K = \mathrm{fix}_G(x_0)$, related by inner automorphisms.  We
-    claim that the $K$-invariant vectors for all possible $K$ form spanning sets
-    for each irreducible representation in $L(\xs)$.  We state this precisely,
-    and give a proof.
+    stabilizers $\mathrm{fix}_G(x_0)$, related by inner automorphisms.  We claim
+    that the vectors invariant under some $\mathrm{fix}_G(x_0)$, form spanning
+    sets for each irreducible representation in $L(\xs)$.  We state this
+    precisely, and give a proof.
     \begin{theorem}
         Let $G$ be a group acting transitively on a set $\xs$.  Let $L(\xs)$ be
         the space of complex-valued functions on $\xs$; it is a representation
@@ -867,6 +899,11 @@
         so $gf$ is $g K \inv g$-invariant.  The result follows.
         \label{thm:thm}
     \end{proof}
+    The significance of this theorem is that we have a spanning set of $L(\xs)$
+    which depends (up to scaling) only on $\xs$ and its automorphism group, and
+    which respects the isotypic decomposition.  From such a spanning set, sparse
+    log-linear models may be recovered using, for example, the $L_1$
+    regularization procedure explained in Section~\ref{sec:regularization}.
 
 \chapter{Binary Multivariate Data}
 
@@ -982,7 +1019,7 @@
         $n$-hypercube.
     \end{definition}
 
-\section{A Construction of the Isotypic Decomposition}
+\section{Constructing the Isotypic Decomposition}
     The hypercube graph has a number of nice properties.  In particular, it is
     distance-transitive. 
     \begin{definition}
@@ -1274,12 +1311,42 @@
     seems well-suited to weighting single points heavily while only selecting a
     few subspaces.
 
+
+
 \chapter{Conclusion}
 
-\section{Future Directions}
+    We have put forward an approach to finding sparse log-linear models on
+    sample spaces which contain significant structure.  The advantage of an
+    algebraic approach is that it reduces the number of arbitrary choices
+    necessary for a model selection algorithm.
 
-\section{For Further Reading}
+    The effect of Theorem~\ref{thm:thm} is that we can construct a spanning set
+    of $L(\xs)$ that is natural in the sense that it depends only on $\xs$ and
+    its automorphism group.  It is possible that $\{0, 1\}^n$ is not the best
+    setting for this type of construction.  If the stabilizer of a base point is
+    a smaller group, then there are more $K$-invariant vectors.  In that case, a
+    chain of groups with each adjacent pair satisfying the Gelfand condition
+    yields a basis for the $K$-invariant vectors.  It is possible even that the
+    stabilizer will be the trivial group, in which case an actual basis for all
+    of $L(\xs)$ is recovered.  One potential issue with such an approach is that
+    the basis will depend on the choice of subgroup chain; an option would be,
+    for instance, to consider all possible chains.
 
+    Future work could more closely examine the results of this approach on other
+    sample spaces.  For example, the symmetric group, its corresponding
+    homogeneous space, and some of its quotient spaces have applications in
+    voting theory.  While the interaction between representation theory and
+    statistics has been examined before in this setting, applications to model
+    construction from the statistical learning perspective have not been, to the
+    author's knowledge.
+
+    The investigation into binary models was launched by questions about the
+    geometry of a certain mixture model of log-linear binary models, known as
+    the restricted Boltzmann machine.  The interaction between mixtures and
+    log-linearity in general remains poorly understood.  One hopes that symmetry
+    can offer some help.
+
+    Mixture models?
 
 \appendix
 
@@ -1296,6 +1363,8 @@
 
 
 \end{document}
+
+
 
 
 

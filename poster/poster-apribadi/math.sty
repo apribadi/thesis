@@ -1,0 +1,81 @@
+% Built to work with pset
+\ProvidesPackage{math}
+
+% AMS packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+% Extra packages
+\usepackage{mathtools}                    % includes shortintertext and more!
+\usepackage[retainorgcmds]{IEEEtrantools} % nicer equation align
+\usepackage{tikz}                         % commutative diagrams
+\usetikzlibrary{matrix,arrows}
+
+% amsthm
+\theoremstyle{plain}
+\newtheorem{thmcounter}{} % uniform counter
+
+\newtheorem{theorem}[thmcounter]{Theorem}
+\newtheorem{proposition}[thmcounter]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[thmcounter]{Definition}
+\newtheorem{example}[thmcounter]{Example}
+\newtheorem{note}[thmcounter]{Note}
+
+
+% starred newcommand behaves better for short commands (use by default)
+
+% math symbols
+\newcommand*{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand*{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand*{\C}{\ensuremath{\mathbb{C}}}
+\newcommand*{\R}{\ensuremath{\mathbb{R}}}
+\newcommand*{\A}{\ensuremath{\mathbb{A}}}
+\newcommand*{\inv}[1]{#1^{-1}}
+\newcommand*{\dual}[1]{#1^{\ast}}
+\newcommand*{\dd}{\,d}
+\newcommand*{\cinf}{C^\infty}
+\newcommand*{\g}{\mathfrak{g}}
+\newcommand*{\GL}{\mathfrak{GL}}
+\newcommand*{\gl}{\mathfrak{gl}}
+\newcommand*{\Proj}{\mathbb{P}}
+\newcommand*{\iso}{\cong}
+\newcommand*{\qedsc}{\textsc{qed}}
+
+% scripty things
+\newcommand*{\ms}{\mathcal{M}}
+\newcommand*{\as}{\mathcal{A}}
+\newcommand*{\xs}{\mathcal{X}}
+
+% Math operators; see the package amsmath for documentation.
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\D}{D}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Span}{Span}
+
+% Suboptimal names.
+\DeclareMathOperator{\image}{Im}
+\DeclareMathOperator{\kernel}{Ker}
+\DeclareMathOperator{\character}{char}
+\DeclareMathOperator{\real}{Re}
+\DeclareMathOperator{\imag}{Im}
+\DeclareMathOperator{\rowspan}{rowspan}
+
+% Math brackets
+% See the package mathtools for documentation.
+% Has optional argument \Xdel[size_cmd]{...}, with size_cmd = \big, \Big, \bigg, \Bigg
+% Also defines \Xdel* macro, giving \left and \right modifiers.
+\DeclarePairedDelimiter\sdel{[}{]}
+\DeclarePairedDelimiter\adel{\langle}{\rangle}
+\DeclarePairedDelimiter\cdel{\{}{\}}
+\DeclarePairedDelimiter\pdel{\lparen}{\rparen}
+\DeclarePairedDelimiter\vdel{\vert}{\vert}

@@ -1,0 +1,49 @@
+\ProvidesPackage{pset}
+
+\usepackage{ifthen}
+\usepackage[hmargin=3cm,bottom=3.2cm,top=2.8cm]{geometry}  % page geometry
+
+% Header with line.
+\newenvironment{heading}{
+    \begin{flushleft}
+    \vspace*{-25pt}
+}{
+    \vspace*{-0.5em}
+    \hrulefill
+    \end{flushleft}
+
+    \aftergroup\@afterindentfalse
+    \aftergroup\@afterheading
+}
+
+% problem and solution environments
+\newcommand\mycmd[1][\@null]{
+  \ifx#1\@null
+    \mycmd@noargs{}
+  \else
+    \mycmd@withargs{#1}
+  \fi}
+
+\newenvironment{problem}[2][]{
+    \begin{trivlist}
+    \setlength{\labelwidth}{1.5em}
+    %\setlength{\labelsep}{0pt}
+    %\item[\hskip\labelsep \textbf{#1}]
+    \item[\hfill\textbf{#1}]
+    \ifthenelse{\equal{#2}{}}
+        {}
+        {\textbf{#2}}\begin{it}
+}{
+    \end{it}
+    \hfill\hspace*{-11pt}\raisebox{-2pt}{\ensuremath{\lrcorner}\hspace*{-1pt}}
+    \end{trivlist}
+}
+\newenvironment{solution}{
+    \begin{trivlist}
+    \item[]
+}{
+    \hfill\ensuremath{\Box}
+    \end{trivlist}
+    \vspace{\baselineskip}
+}
+

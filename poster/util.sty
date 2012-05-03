@@ -1,0 +1,17 @@
+\ProvidesPackage{util}
+
+% Useful packages
+\usepackage{enumerate}        % customization of item markers
+\usepackage{graphicx}         % images
+\usepackage{float}            % floating for figures, (esp. H option)
+%\usepackage{subfig}
+\usepackage{amssymb}          % still useful occasionally
+
+
+% Starred newcommand behaves better for short commands (use by default).
+
+% other utility commands
+\newcommand*{\lspace}{\vspace*{\baselineskip}}
+\newcommand*{\nlspace}{\vspace*{-\baselineskip}}
+\newcommand*{\nospace}{\setlength{\parskip}{0pt}\setlength{\itemsep}{0pt}}
+\newcommand*{\lsc}[1]{\textsc{\lowercase{#1}}}

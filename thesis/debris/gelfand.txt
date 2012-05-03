@@ -1,0 +1,28 @@
+
+Gelfand pair (?)
+    2-chain G => H
+    
+    If for every H-irreducible V that contains H-invariant vectors, the
+    decomposition of Ind_H^G V into G-irreducibles is multiplicity free.
+
+    The only H-irreducible that contains H-invariant vectors is the trivial
+    representation.
+
+    Thus, (G, H) is a Gelfand pair if Ind_H^G triv_H is G-multiplicity free.
+
+    The representation L(X) where X = G/H is a homogeneous space is the trivial
+    representation of H induced up to G.
+
+    So (G, H) is a Gelfand pair if and only if L(G/H) is multiplicity free.
+
+dihedral
+    N = S_2 = <s>
+    A = C_n = <r>
+
+    N acts on A by s(r) = -r
+
+    (s^i, r^j)(s^k, r^l) = (s^(i+j), r^((-1)^i l + j))
+
+    left-action on circle,
+        - first s flips,
+        - then r rotates
