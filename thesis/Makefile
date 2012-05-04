@@ -1,9 +1,9 @@
 all:
 	xelatex thesis.tex
-stuff:
+
+complete:
 	xelatex thesis.tex
 	bibtex thesis.aux
-	makeindex thesis.idx
 	xelatex thesis.tex
 	xelatex thesis.tex
 

@@ -1,4 +1,3 @@
-% Built to work with pset
 \ProvidesPackage{math}
 
 % AMS packages
@@ -11,64 +10,69 @@
 \usepackage[retainorgcmds]{IEEEtrantools} % nicer equation align
 \usepackage{tikz}                         % commutative diagrams
 \usetikzlibrary{matrix,arrows}
+\usepackage{extarrows}                    % long arrows
 
 % amsthm
 \theoremstyle{plain}
-\newtheorem{thmcounter}{} % uniform counter
+\newtheorem{ucounter}{} % counter for everything
 
-\newtheorem{theorem}[thmcounter]{Theorem}
-\newtheorem{proposition}[thmcounter]{Proposition}
-\newtheorem{corollary}[thmcounter]{Corollary}
+\newtheorem{theorem}[ucounter]{Theorem}
+\newtheorem{proposition}[ucounter]{Proposition}
+\newtheorem{corollary}[ucounter]{Corollary}
+\newtheorem{lemma}[ucounter]{Lemma}
 
 \theoremstyle{definition}
-\newtheorem{definition}[thmcounter]{Definition}
-\newtheorem{example}[thmcounter]{Example}
-\newtheorem{note}[thmcounter]{Note}
+\newtheorem{definition}[ucounter]{Definition}
+\newtheorem{example}[ucounter]{Example}
+\newtheorem{note}[ucounter]{Note}
 
-
-% starred newcommand behaves better for short commands (use by default)
 
 % math symbols
-\newcommand*{\Z}{\ensuremath{\mathbb{Z}}}
-\newcommand*{\Q}{\ensuremath{\mathbb{Q}}}
-\newcommand*{\C}{\ensuremath{\mathbb{C}}}
-\newcommand*{\R}{\ensuremath{\mathbb{R}}}
-\newcommand*{\A}{\ensuremath{\mathbb{A}}}
-\newcommand*{\inv}[1]{#1^{-1}}
-\newcommand*{\dual}[1]{#1^{\ast}}
-\newcommand*{\dd}{\,d}
-\newcommand*{\cinf}{C^\infty}
-\newcommand*{\g}{\mathfrak{g}}
-\newcommand*{\GL}{\mathfrak{GL}}
-\newcommand*{\gl}{\mathfrak{gl}}
-\newcommand*{\Proj}{\mathbb{P}}
-\newcommand*{\iso}{\cong}
-\newcommand*{\qedsc}{\textsc{qed}}
+\newcommand*{\A}{\mathbb{A}}
+\newcommand*{\C}{\mathbb{C}}
+\newcommand*{\N}{\mathbb{N}}
+\newcommand*{\Q}{\mathbb{Q}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\Z}{\mathbb{Z}}
 
-% scripty things
-\newcommand*{\ms}{\mathcal{M}}
+\newcommand*{\pb}{\mathbb{P}}
+
 \newcommand*{\as}{\mathcal{A}}
+\newcommand*{\bs}{\mathcal{B}}
+\newcommand*{\cs}{\mathcal{C}}
+\newcommand*{\fs}{\mathcal{F}}
+\newcommand*{\ls}{\mathcal{L}}
+\newcommand*{\ms}{\mathcal{M}}
+\newcommand*{\ns}{\mathcal{N}}
+\newcommand*{\ps}{\mathcal{P}}
+\newcommand*{\rs}{\mathcal{R}}
+\newcommand*{\xs}{\mathcal{X}}
+\newcommand*{\ys}{\mathcal{Y}}
+
+\newcommand*{\ff}{\mathfrak{f}}
+\newcommand*{\gf}{\mathfrak{g}}
+
+\newcommand*{\STB}{\::}  % set quantifier
 
 % Math operators; see the package amsmath for documentation.
 \DeclareMathOperator{\Hom}{Hom}
 \DeclareMathOperator{\Aut}{Aut}
 \DeclareMathOperator{\End}{End}
 \DeclareMathOperator{\id}{id}
-\DeclareMathOperator{\D}{D}
-\DeclareMathOperator{\Var}{Var}
-\DeclareMathOperator{\Cov}{Cov}
 \DeclareMathOperator{\Ad}{Ad}
 \DeclareMathOperator{\ad}{ad}
 \DeclareMathOperator{\tr}{tr}
-\DeclareMathOperator{\Span}{Span}
+\DeclareMathOperator{\rowspan}{rowspan}
+\DeclareMathOperator*{\argmax}{arg\ max}  % subscripts placed under, like lim
+
 
 % Suboptimal names.
 \DeclareMathOperator{\image}{Im}
-\DeclareMathOperator{\kernel}{Ker}
+\DeclareMathOperator{\kernel}{ker}
 \DeclareMathOperator{\character}{char}
 \DeclareMathOperator{\real}{Re}
 \DeclareMathOperator{\imag}{Im}
-\DeclareMathOperator{\rowspan}{rowspan}
+\DeclareMathOperator{\spann}{span}
 
 % Math brackets
 % See the package mathtools for documentation.
@@ -79,6 +83,17 @@
 \DeclarePairedDelimiter\cdel{\{}{\}}
 \DeclarePairedDelimiter\pdel{\lparen}{\rparen}
 \DeclarePairedDelimiter\vdel{\vert}{\vert}
+
+% More fancy things!
+
+\newcommand*{\iso}{\cong}
+\newcommand*{\inv}[1]{#1^{-1}}
+\newcommand*{\dual}[1]{#1^{\ast}}
+\newcommand*{\dd}{\,d}
+\newcommand*{\qedsc}{\textsc{qed}}
+\newcommand*{\spanset}[1]{\mathrm{span}\cdel*{#1}}
+\newcommand*{\pd}[1]{\pdel*{#1}}
+\newcommand*{\cd}[1]{\cdel*{#1}}
 
 \newenvironment{rmatrix}{
     \left[
