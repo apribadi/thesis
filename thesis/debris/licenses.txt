@@ -1,4 +1,0 @@
-
-hypercube
-    GNU Free documentation
-
