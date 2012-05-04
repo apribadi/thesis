@@ -741,9 +741,10 @@
     This claim occurs in practice.
 
     \begin{example}[Binary Multivariate Data]
-        Let $\xs = \{0, 1\}^n$.  The space $L(\xs)$ contains subspaces of $k$th
-        order effects.  For any subset $S \subset \{1, \ldots, n\}$ and function
-        $h: S \to \{0, 1\}$, define the function $f_{S,\,h} \in L(\xs)$ as
+        Let $\xs = \{0, 1\}^n$.  The space $L(\xs)$ contains subspaces of
+        $k$th-order effects.  For any subset $S \subset \{1, \ldots, n\}$ and
+        function $h: S \to \{0, 1\}$, define the function $f_{S,\,h} \in L(\xs)$
+        as
         \[
             f_{S,\,h} (b_1 \cdots b_n) = \begin{cases}
                 1 & \text{if $b_i = h(i)$ for all $i \in S$} \\
@@ -752,17 +753,17 @@
         \]
         where the $b_i$ are bits.  The function $f_{S,\,h}$ is an indicator
         function for bit strings for which the bits indexed by $S$ take on
-        particular values.  The space of $k$th order effects is the subspace
+        particular values.  The space of $k$th-order effects is the subspace
         \[
             \spanset{f_{S,\,h} \STB S \subset \{1, \ldots, n\}, |S| = 
             k, f : S \to \{0, 1\}}
         \]
         of $L(\xs)$.
-        The log-linear model associated with the space of $k$th order effects
-        only `cares' about the interaction between at most $k$ variates.  Zeroth
-        order effects produce only the uniform distribution.  First order
+        The log-linear model associated with the space of $k$th-order effects
+        only `cares' about the interaction between at most $k$ variates.
+        Zeroth-order effects produce only the uniform distribution.  First-order
         effects produce the independence model (Example~\ref{ex:independence1}).
-        Second order effects produce the Boltzmann machine
+        Second-order effects produce the Boltzmann machine
         (Example~\ref{ex:boltz}).  The low order spaces are considered more
         essential than higher order ones.
     \end{example}
@@ -919,16 +920,17 @@
         of $G$ with the induced action.  Fix $x_0 \in \xs$, and let $K =
         \mathrm{fix}_G (x_0)$ be the stabilizer of $x_0$.  Assume that $L(\xs)$
         is multiplicity-free, i.e. that $(G, K)$ is a Gelfand pair.  Let $L(\xs)
-        = W_1 \oplus \cdots \oplus W_k$ be the isotypic decomposition of
-        $L(\xs)$.  Fix any $1 \le j \le k$.  For each $g \in G$, there exists a
-        $g K\inv g$-invariant vector $f_{j, g}$ in $W_j$, unique up to scaling.
-        Then $\{f_{j, g} \STB g \in G\}$ is a spanning set for $W_j$.
+        = W_1 \oplus \cdots \oplus W_m$ be the isotypic decomposition of
+        $L(\xs)$.  Fix any $1 \le d \le m$.  For each $g \in G$, there exists a
+        $g K\inv g$-invariant vector $f_{d, g}$ in $W_d$, unique up to scaling.
+        Then $\{f_{d, g} \STB g \in G\}$ is a spanning set for $W_d$.
+        \label{thm:thm}
     \end{theorem}
     \begin{proof}
-        Let $f$ be a $K$-invariant vector in $W_j$.  Because $W_j$ is an
+        Let $f$ be a $K$-invariant vector in $W_d$.  Because $W_d$ is an
         irreducible representation of $G$, it is sufficient to show that
         \[
-            G f = \{g f \STB g \in G\} \subset \spanset{f_{j, g} \STB g
+            G f = \{g f \STB g \in G\} \subset \spanset{f_{d, g} \STB g
             \in G}.
         \]
         But for any $k \in K$,
@@ -946,7 +948,6 @@
             (gf)(x)
         \end{IEEEeqnarray*}
         so $gf$ is $g K \inv g$-invariant.  The result follows.
-        \label{thm:thm}
     \end{proof}
     The significance of this theorem is that we have a spanning set of $L(\xs)$
     which depends (up to scaling) only on $\xs$ and its automorphism group, and
@@ -1324,8 +1325,8 @@
     are all $K$-invariant.  Acting on the vectors with $S_2 \wr S_n$, and
     identifying vectors which are scalar multiples of each other, we get the
     following spanning sets.
-    \begin{figure}
-    \begin{gather}
+    \begin{figure}[H]
+    \begin{gather*}
         W_0 = \adel*{
         \begin{rmatrix}
             1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1 \\ 1
@@ -1349,7 +1350,6 @@
             1 \\ -1 \\ -1 \\ -3 \\ 3 \\ 1 \\ 1 \\ -1
         \end{rmatrix}
         } 
-        \label{eq:spanning}
         \\
         \nonumber
         W_4 = \adel*{
@@ -1376,15 +1376,18 @@
         \end{rmatrix}
         }
         \qquad
-    \end{gather}
+    \end{gather*}
+    \caption{Spanning set of invariant vectors for $L(\{0, 1\}^3)$}
+    \label{fig:spanning}
+    \end{figure}
 
 \section{Other Parametrizations}
 
-    Some of the motivation for identifying another spanning set comes from the
-    paper by \citet{SPEC}.  In that paper, the authors consider a number of
-    spanning sets for $L(\xs)$ where $\xs = \{0, 1\}^n$.  With these spanning
-    sets, the authors fit log-linear models with $L_1$ regularization to binary
-    data, as described in Section~\ref{sec:regularization} of this paper.
+    Some of the motivation for identifying a spanning set comes from the paper
+    by \citet{SPEC}.  In that paper, the authors consider a number of spanning
+    sets for $L(\xs)$ where $\xs = \{0, 1\}^n$.  With these spanning sets, the
+    authors fit log-linear models to binary data using $L_1$ regularization as
+    described in Section~\ref{sec:regularization} of this paper.
 
     The spanning sets considered in the paper by \citet{SPEC}, along with their
     names for them, are as follows.
@@ -1397,29 +1400,34 @@
         \end{cases}
     \]
     where $S$ is any subset of $\{1, \ldots, n\}$ and $g$ is any function $S \to
-    \{0, 1\}^{|S|}$.  This parametrization contains $3^n$ functions.
+    \{0, 1\}$.  This parametrization contains $3^n$ functions.
 
     The \emph{canonical parametrization} contains functions of the form
     \[
         f_S(b_1 \cdots b_n) = \begin{cases}
             1 & \text{when $b_i = 1$ for all $i \in S$} \\
             0 & \text{otherwise}
-        \end{cases}.
+        \end{cases}
     \]
     for all $S \subset \{1, \ldots, n\}$.  This parametrization contains $2^n$
     functions.
 
     The \emph{spectral parametrization} contains the $2^n$ Walsh functions on
-    $\{0, 1\}^n$ as in Theorem~\ref{thm:eigs} and Corollary~\ref{cor:walsh}.
+    $\{0, 1\}^n$ as in Corollary~\ref{cor:walsh}.
 
-    Our spanning set as in Equation~\ref{eq:spanning} shares with the spectral
+    Our spanning set as in Figure~\ref{fig:spanning} shares with the spectral
     parametrization the properties that the set is invariant (as a set) under
-    the action of $S_2 \wr S_n$ and that appropriate subsets of the set generate
-    the irreducible representations in $L(\xs)$.  Additionally, our spanning set
-    seems well-suited to weighting single points heavily while only selecting a
-    few subspaces.
-
-
+    the action of $S_2 \wr S_n$, and that appropriate subsets of the set generate
+    the irreducible representations in $L(\xs)$.  
+    
+    Additionally, the vectors generated by this abstract procedure seem to be
+    amenable to admitting interpretation.  Each vector is invariant under some
+    stabilizer subgroup, and heavily weights the outcomes fixed under that
+    subgroup.  In this case, each stabilizer actually fixes two points of the
+    sample space.  In the space of first-order effects, vectors concentrate
+    probability around a single outcome.  In the space of second-order effects,
+    vectors have a `polarizing' effect; an outcome and its opposite (e.g. $001$
+    and $110$) are both heavily weighted.
 
 \chapter{Conclusion}
 
@@ -1430,38 +1438,46 @@
     algebraic approach is that it reduces the number of arbitrary choices
     necessary for a model selection algorithm.
 
-    The effect of Theorem~\ref{thm:thm} is that we can construct a spanning set
-    of $L(\xs)$ that is natural in the sense that it depends only on $\xs$ and
-    its automorphism group.  It is possible that $\{0, 1\}^n$ is not the best
-    setting for this type of construction.  If the stabilizer of a base point is
-    a smaller group, then there are more $K$-invariant vectors.  In that case, a
-    chain of groups with each adjacent pair satisfying the Gelfand condition
-    yields a basis for the $K$-invariant vectors.  It is possible even that the
-    stabilizer will be the trivial group, in which case an actual basis for all
-    of $L(\xs)$ is recovered.  One potential issue with such an approach is that
-    the basis will depend on the choice of subgroup chain; an option would be,
-    for instance, to consider all possible chains.
+    The effect of Theorem~\ref{thm:thm} is that under certain conditions, we can
+    construct a spanning set of $L(\xs)$ that is natural, in the sense that it
+    depends only on $\xs$ and its automorphism group.  In the case of binary
+    data, these vectors also seem to admit interpretation.  An algorithm such as
+    that in Section~\ref{sec:regularization} can select a small subset of these
+    vectors that together describe the observed data well, restricting model
+    complexity.
 
-\section{Context and Future Directions}
+\section{Future Work}
 
     Future work could more closely examine the results of this approach on other
-    sample spaces.  For example, the symmetric group, its corresponding
-    homogeneous space, and some of its quotient spaces have applications in
-    voting theory.  While the interaction between representation theory and
-    statistics has been examined before in this setting, applications to model
-    construction from the statistical learning perspective have not been, to the
-    author's knowledge.
+    sample spaces.  For example, the symmetric group and quotient spaces of it
+    have applications in voting theory.  While the interaction between
+    representation theory and statistics has been examined before in this
+    setting, applications to model construction from the statistical learning
+    perspective have not been, to the author's knowledge.
+
+    It is possible other settings are superior to $\{0, 1\}^n$ for this type of
+    construction.  If the stabilizer of a base point is a smaller group, then
+    there are more $K$-invariant vectors.  In that case, a chain of groups the
+    Gelfand condition yields a basis for the $K$-invariant vectors; this is a
+    \emph{Gelfand-Tsetlin basis} \citep{Harm}.  It is possible even that the
+    stabilizer will is the trivial group, in which case a basis for all of
+    $L(\xs)$ is recovered.  One potential issue with such an approach is that
+    the basis will depend on the choice of subgroup chain.  
 
     The investigation into binary models was launched by questions about the
     geometry of a certain mixture model of log-linear binary models, known as
-    the restricted Boltzmann machine.  The interaction between mixtures and
-    log-linearity in general remains poorly understood.  One hopes that symmetry
-    can offer some help.
-
-    Mixture models?
+    the \emph{restricted Boltzmann machine}.  It is the model presented in
+    Example~\ref{ex:boltz}, with the additional stipulations that some of the
+    variates are hidden and that there are no interactions between visible and
+    hidden variates.  The visible distribution is the marginalization over all
+    hidden states.  There have recently been advances in understanding the
+    geometry of this model with tools from algebraic geometry and tropical
+    geometry \citep{CMS09}, but some questions remain open.  In general, the
+    interaction between mixture models and log-linearity remains incompletely
+    understood \citep{DSS08}.  It is possible that concerns of symmetry and
+    sparsity could play a role in better understanding and using such models.
 
 \appendix
-
 
 % \nocitep{*}
 
